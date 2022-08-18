@@ -1,0 +1,275 @@
+@import url('https://fonts.googleapis.com/css2?Libre+Barcode+39+Text&family=Libre+Barcode+39+Text&family=Comfortaa&family=Libre+Barcode+39+Text&family=Monofett&family=Monoton&family=Sonsie+One&family=Audiowide&family=Faster+One&family=Gugi&family=Monofett&family=Oxygen+Mono&display=swap');
+
+  @font-face {
+    font-family: 'Halo';
+    font-display: swap;
+    font-weight: normal;
+    font-style: normal;
+    src: url('fonts/halo.regular.ttf') format('truetype');
+  }
+  @font-face {
+    font-family: 'Julia Mono';
+    font-display: swap;
+    font-weight: normal;
+    font-style: normal;
+    src: url('fonts/JuliaMono-Regular.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Advantage';
+    font-display: swap;
+    font-weight: normal;
+    font-style: normal;
+    src: url('fonts/advantage.regular.ttf') format('truetype');
+  }
+:root {
+ --background: #111f11;
+ --text: #fbfff8;
+ /* background-color: linear-gradient(to bottom right, #ff0066, #2d27ff); */
+ height: 100%;
+  --font: 'Comfortaa';
+ color:var(--text);
+
+}
+
+html,
+body{
+    font-family: 'Julia Mono';
+    font-size:18px;
+    /* background: linear-gradient(to bottom right, #ff0066, white, #2d27ff); */
+    /* background-color: linear-gradient(to bottom right, #ff0066, white, #2d27ff);
+     */
+     color:var(--text);
+     background-color: var(--background);
+     width:100vw;
+}
+
+div{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    font-size:18px;
+    width:100%;
+}
+
+header{
+  
+    display: flex;
+    justify-content:  flex-end;
+    align-items:center;
+    width:88vw;
+    height:88px;
+}
+
+
+button {
+    /* color: orange; */
+    font-family: 'Julia Mono';
+    color:var(--text);
+    background-color:transparent;
+    border:none;
+    font-size:18px;
+    cursor: pointer;
+}
+a{
+    color: var(--text);
+    text-decoration:none;
+    cursor: pointer;
+    align-content: center;
+}
+.purple{
+    color: var(--text);
+    font-size: 38px;
+    font-family: var(--font);
+  }
+
+@media screen and (min-width: 550px) {
+  .purple{
+    font-size:58px;
+  }
+}
+.container{
+    width: 98vw;
+    display: flex;
+    flex-direction: column;
+    flex-wrap:wrap;
+    justify-content: flex-start;
+
+  
+    
+    
+  }
+
+  .pop{
+    /* flex-direction: row;
+    flex-wrap:wrap; */
+    /* height:360px; */
+    width:90%;
+    object-fit: contain;
+    /* margin:8px 8px 8px 8px; */
+    border: 1px solid var(--text);
+    /* border-radius: 3%; */
+    padding: 6px;
+    cursor:pointer;
+  }
+  .pop:hover{
+    transform: scale(1.011);
+    transition-duration: .3s;
+  }
+
+  .canvas {
+    display: flex; 
+    flex-direction: row;
+    flex-Wrap: wrap;
+    justify-content: flex-end;
+    
+  }
+  .row {
+    display: flex; 
+    flex-direction: row;
+    flex-Wrap: wrap;
+    max-width: 270px;
+    max-height:360px;
+    /* margin-top: 33px; */
+  
+  }
+
+/* s */
+.lightMode {
+    --text: #111f11;
+    --background: #fbfff8;
+    /* background: linear-gradient(to bottom right, #2d27ff,white,  #ff0066); */
+    /* background-image: linear-gradient(#d063ff,#ff69eb); */
+ }
+
+ .icon{
+     font-size: 27px;
+     color: var(--text);
+    
+ }
+
+ .reverse{
+   color: var(--background);
+   background-color: var(--text);
+   
+ }
+ 
+ .searchbar{
+  border-radius: 3%;
+  height:21px;
+  width: 188px; 
+  font-family: 'Courier New', Courier, monospace;
+  font-size:16px;
+}
+input:focus {
+  outline-width: 0;
+}
+
+::-webkit-input-placeholder{
+  color:gray;
+  text-indent: 65px;
+}
+
+.inline{
+  flex-direction: row;
+  margin-bottom: 1em;
+  justify-content: center;;
+}
+.view {
+  width: 55vw;
+  object-fit: contain;
+  border: 6px solid var(--text);
+  border-radius: 3%;
+  overflow-x:auto;
+  padding: 6px;
+  cursor:pointer; 
+  overflow:hidden;
+}
+@media screen and (max-width: 800px) {
+  .view{
+    width:72vw;
+  }
+}
+
+.descript{
+  width: 60%; 
+  text-align: justify;
+  word-wrap:break-word;
+  text-justify: inter-word;
+  text-align-last:center;
+}
+
+.avatar{
+  width:66px;
+  height:66px;
+  border-radius: 60%;
+  border: 3px solid var(--text);
+  padding:3px;  
+}
+
+.grid {
+  display: -webkit-box; /* Not needed if autoprefixing */
+  display: -ms-flexbox; /* Not needed if autoprefixing */
+  display: flex;
+  align-items: flex-start;
+  flex-direction:row;
+  width: 96vw;
+}
+.column {
+position: l;
+  background-clip: padding-box;
+align-items:left;
+}
+.column > * {
+  background-clip: padding-box;
+  
+}
+
+.center{
+  display:flex;
+  justify-content: center;
+}
+.text{
+  font-family: 'Julia Mono';
+  font-size:9px;
+  text-align: center;
+  width:120px;
+  height:120px;
+  word-break: keep-all;
+  /* display:block; */
+   white-space: pre;
+  overflow-x: auto;
+  overflow-wrap: normal;
+  justify-content: center;
+  margin:8px 8px 8px 8px;
+  border: 1px solid var(--text);
+  /* border-radius: 3%;  */
+  padding: 6px;
+  cursor:pointer;
+}
+.textObjkt{
+  font-family: 'Julia Mono';
+  font-size:1vw;
+  /* text-align: center; */
+  width:auto;
+  justify-content: center;
+  word-break: keep-all;
+  /* display:block; */
+  white-space: break-spaces;
+  overflow-x: auto;
+  overflow-wrap: normal;
+  padding: 6px;
+  cursor:pointer;
+}
+.text:hover{
+  transform: scale(1.011);
+  transition-duration: .3s;
+}
+
+audio::-webkit-media-controls-panel {
+     background-color: var(--background);
+}
+  
+audio::-webkit-media-controls-play-button {
+      background-color:  #e8e8e8;
+      border-radius: 50%;
+}
