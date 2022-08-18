@@ -4,8 +4,8 @@ import useSWR from 'swr';
 import ReactPlayer from 'react-player'
 import { useParams } from 'react-router-dom';
 import Masonry from 'react-masonry-css'
-import { Search } from '../components/search';
-import { useSearchParams } from 'react-router-dom';
+// import { Search } from '../components/search';
+// import { useSearchParams } from 'react-router-dom';
 
 const breakpointColumns = {
   default: 7,
@@ -47,16 +47,19 @@ query walletName($param: String!) {
   
 const fetcher = (key, query, param) => request(process.env.REACT_APP_TEZTOK_API, query, {param})
 
-export const Profile = ({banned}) => {
-  const [searchData,setSearchData] = useState([]);
-  const [searchParams] = useSearchParams();
+export const Profile = ({banned, app}) => {
+  // const [searchData,setSearchData] = useState([]);
+  // const [searchParams] = useSearchParams();
 //   const [pageIndex, setPageIndex] = useState(0);
   // const [offset, setOffset] = useState(0)
   const [view, setView] = useState(0)
   const [choices, setChoices] = useState([])
   const [count, setCount] = useState(0)
   const [submit, setSubmit] = useState(false)
-  const { account } = useParams();
+  let { account } = useParams();
+  console.log(account)
+  if (!account) account = app.address;
+
   const { data: alias } = useSWR(account.length !== 36 ? ['/api/name', getAddressbyName, account] : null, fetcher)
   // const { data: subjkt } = useSWR(account.length !== 36 ? ['/api/subjkt', getAddressbySubjkt, account.toLowerCase().replace(/\s+/g, '')] : null, hicFetcher)
   const address = account?.length === 36 ? account : alias?.tzprofiles[0]?.account || null
@@ -96,7 +99,7 @@ export const Profile = ({banned}) => {
        <div>
           <p></p>
        </div>
-       <Search returnSearch={setSearchData} query={searchParams.get('search')} banned={banned}/>
+       {/* <Search returnSearch={setSearchData} query={searchParams.get('search')} banned={banned}/> */}
 
        {count > 0 && <button onClick= {() => setSubmit(!submit)}><p>{!submit ? 'next' : 'back'}</p></button>}
        <div className='container'>
