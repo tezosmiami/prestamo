@@ -79,8 +79,8 @@ export const Profile = ({banned, app}) => {
 
   if (alias && !address) return <div>nada. . .<p/></div>
   if (error) return <p>error</p>
-  if (!data ) return <div>loading. . .<p/></div>
-  
+  if (!data ) return <div>loading. . .<p/></div>  
+  if(data.tokens.length === 0) return <div>no nfts in this wallet. . .<p/></div>
   const filtered = data.tokens.filter((i) => !banned.includes(i.artist_address))
   
 
