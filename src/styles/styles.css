@@ -52,12 +52,15 @@ div{
 }
 
 header{
-  
+    border-bottom: 3px dashed;
     display: flex;
-    justify-content:  flex-end;
+    justify-content:  space-between;
     align-items:center;
     width:88vw;
     height:88px;
+    margin-top: 18px;
+  
+    /* margin: 33px; */
 }
 
 
@@ -144,6 +147,9 @@ a{
  .icon{
      font-size: 27px;
      color: var(--text);
+     margin-left:27px;
+
+
     
  }
 

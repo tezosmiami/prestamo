@@ -23,8 +23,8 @@ export const LightButton = () => {
       setLightMode(!lightMode);
   }
   return(
-  <div>
-        <p style={{marginTop:0}}>
+  <div style={{alignItems: 'flex-start'}}>
+        <p>
             <button
                 onClick={handleLightToggle}
                 id={'lightButton'}

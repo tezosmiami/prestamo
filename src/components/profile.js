@@ -58,7 +58,7 @@ export const Profile = ({banned, app}) => {
   const [submit, setSubmit] = useState(false)
   let { account } = useParams();
   console.log(account)
-  if (!account) account = app.address;
+  if (!account) account = app.name || app.address;
 
   const { data: alias } = useSWR(account.length !== 36 ? ['/api/name', getAddressbyName, account] : null, fetcher)
   // const { data: subjkt } = useSWR(account.length !== 36 ? ['/api/subjkt', getAddressbySubjkt, account.toLowerCase().replace(/\s+/g, '')] : null, hicFetcher)
@@ -77,10 +77,10 @@ export const Profile = ({banned, app}) => {
   // choices.length > 0 ? setSubmit(true) : setSubmit(false)
   }
 
-  if (alias && !address) return <div>nada. . .<p/></div>
+  if (alias && !address) return <div><p/>nada. . .<p/></div>
   if (error) return <p>error</p>
-  if (!data ) return <div>loading. . .<p/></div>  
-  if(data.tokens.length === 0) return <div>no nfts in this wallet. . .<p/></div>
+  if (!data ) return <div><p/>loading. . .<p/></div>  
+  if(data.tokens.length === 0) return <div><p/>no nfts in this wallet. . .<p/></div>
   const filtered = data.tokens.filter((i) => !banned.includes(i.artist_address))
   
 
@@ -88,16 +88,16 @@ export const Profile = ({banned, app}) => {
 
     return (
       <>
-        <a style={{fontSize:'27px'}} href={alias?.tzprofiles[0]?.twitter ? `https://twitter.com/${alias.tzprofiles[0].twitter}`: null} target="blank"  rel="noopener noreferrer">
+        {/* <a style={{fontSize:'27px'}} href={alias?.tzprofiles[0]?.twitter ? `https://twitter.com/${alias.tzprofiles[0].twitter}`: null} target="blank"  rel="noopener noreferrer">
         {account?.length===36 ? address.substr(0, 4) + "..." + address.substr(-4) : account}
-      </a>
+      </a> */}
       {/* <img className='avatar' src={filteredcreated ? filteredcreated[0].minter_profile?.logo : null}/> */}
 
      
-          <div style= {{borderBottom: '6px dashed', width: '80%', marginTop:'33px'}} />
-         <div style= {{borderBottom: '6px dashed', width: '80%'}} />
+          {/* <div style= {{borderBottom: '6px dashed', width: '80%', marginTop:'33px'}} />
+         <div style= {{borderBottom: '6px dashed', width: '80%'}} /> */}
        <div>
-          <p></p>
+          <p>select objkts for collateral</p>
        </div>
        {/* <Search returnSearch={setSearchData} query={searchParams.get('search')} banned={banned}/> */}
 

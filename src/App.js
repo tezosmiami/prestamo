@@ -30,6 +30,11 @@ function App() {
   return(
     <>
     <header>
+   
+    <Link className='purple' to="/">prestamo</Link>
+    <LightButton />
+ 
+    <div style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
     {app.address && <Link to={`/${app.name || app.address}`}>
       {/* {app.address && <a href={`https://hicetnunc.miami/tz/${app.address}`}
       target="blank" rel="noopener noreferrer"> 
@@ -37,16 +42,18 @@ function App() {
         {(app.name.length > 0 && app.name + ' / ') || (app.address.substr(0, 4) + "..." + app.address.substr(-4)+' / ')}
       {/* </a>} */}
       </Link>}
-    
+      
   
       <button onClick={() => !app.activeAccount ? app.logIn() : app.logOut()}> 
         {!app.activeAccount ? "sync" : "unsync"}
       </button>
-
+      </div>
+      
     </header>     
-    <Link className='purple' to="/">prestamo</Link>
+     <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '18px'}} />
 
-    <LightButton />
+
+    
 
      <div>
      <Routes>
@@ -57,7 +64,6 @@ function App() {
        </Route>
       </Routes>
     </div>
-    <LightButton />
        <a href={`https://www.teztok.com`} target="blank"
          rel="noopener noreferrer"> indexed by teztok</a>
        <p>experimental dApp - enjoy at your own risk. . .</p>
