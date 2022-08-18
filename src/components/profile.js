@@ -109,7 +109,7 @@ export const Profile = ({banned, app}) => {
          columnClassName='column'>
         {filtered && !submit && filtered.map(p=> (
         // <Link  key={p.artifact_uri+ p.token_id} to={`/${p.fa2_address}/${p.token_id}`}>
-        <div style ={{backgroundColor: choices.includes(p) && "red"}} key={p.artifact_uri + p.token_id} onClick={() => {return add_remove(p)}}>
+        <div style ={{backgroundColor: choices.includes(p) && getComputedStyle(document.body).getPropertyValue('--text')}} key={p.artifact_uri + p.token_id} onClick={() => {return add_remove(p)}}>
         {p.mime_type.includes('image') && p.mime_type !== 'image/svg+xml' ?
       
         <img alt='' className= 'pop'  src={`https://ipfs.io/ipfs/${p.display_uri ? p.display_uri?.slice(7) : p.artifact_uri.slice(7)}`}/> 
