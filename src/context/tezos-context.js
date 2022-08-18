@@ -25,7 +25,7 @@ async function fetchGraphQL(queryObjkts, name, variables) {
 
 const TezosContext = createContext();
 const options = {
-  name: 'S1NGULARE'
+  name: 'prestamo.art'
  };
   
 const wallet = new BeaconWallet(options);
