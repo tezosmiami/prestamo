@@ -35,11 +35,11 @@ function App() {
     <LightButton />
  
     <div style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-    {app.address && <Link to={`/${app.name || app.address}`}>
+    {app.address && <Link to={`/${app.alias || app.address}`}>
       {/* {app.address && <a href={`https://hicetnunc.miami/tz/${app.address}`}
       target="blank" rel="noopener noreferrer"> 
        */}
-        {(app.name.length > 0 && app.name + ' / ') || (app.address.substr(0, 4) + "..." + app.address.substr(-4)+' / ')}
+        {(app.alias.length > 0 && app.alias + ' / ') || (app.address.substr(0, 4) + "..." + app.address.substr(-4)+' / ')}
       {/* </a>} */}
       </Link>}
       

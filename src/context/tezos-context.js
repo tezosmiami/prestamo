@@ -3,16 +3,16 @@ import { TezosToolkit } from "@taquito/taquito";
 import { BeaconWallet } from "@taquito/beacon-wallet";
 
 
-const querySubjkt = `
-query Subjkt($address: String!) {
-  hic_et_nunc_holder(where: {address: {_eq: $address}}) {
-    name
+const getAliasbyAddress = `
+query Alias($address: String!) {
+  tzprofiles(where: {account: {_eq: $address}}) {
+    alias
+    }
   }
-}
 `
 
 async function fetchGraphQL(queryObjkts, name, variables) {
-  let result = await fetch(process.env.REACT_APP_HICDEX_API, {
+  let result = await fetch(process.env.REACT_APP_TEZTOK_API, {
     method: 'POST',
     body: JSON.stringify({
       query: queryObjkts,
@@ -25,7 +25,8 @@ async function fetchGraphQL(queryObjkts, name, variables) {
 
 const TezosContext = createContext();
 const options = {
-  name: 'prestamo.art'
+  name: 'prestamo.art',
+  preferredNetwork: 'mainnet'
  };
   
 const wallet = new BeaconWallet(options);
@@ -45,9 +46,9 @@ export const TezosContextProvider = ({ children }) => {
   
   const [app, setApp] = useState("");
   const [address, setAddress] = useState("");
-  const [tezos, setTezos] = useState(new TezosToolkit("https://mainnet.api.tez.ie"));
+  const [tezos, setTezos] = useState(new TezosToolkit("https://mainnet.ecadinfra.com"));
   const [activeAccount, setActiveAccount] = useState("");
-  const [name, setName] = useState("")
+  const [alias, setAlias] = useState("")
 
   useEffect(() => {
      const getLoggedIn = async () => {
@@ -58,12 +59,13 @@ export const TezosContextProvider = ({ children }) => {
           tezos.setWalletProvider(wallet);
           setTezos(tezos)
           if(address) {
-            const { errors, data } = await fetchGraphQL(querySubjkt, 'Subjkt', { address: address});
+            const { errors, data } = await fetchGraphQL(getAliasbyAddress, 'Alias', { address: address});
            if (errors) {
              console.error(errors);
            }
-           data?.hic_et_nunc_holder[0]?.name && 
-           setName(data.hic_et_nunc_holder[0].name);
+           console.log(data)
+           data?.tzprofiles[0]?.alias && 
+           setAlias(data.tzprofiles[0].alias);
           }
       }
     };
@@ -84,12 +86,12 @@ export const TezosContextProvider = ({ children }) => {
     setAddress(address);
     setActiveAccount(await wallet?.client?.getActiveAccount());
     if(address) {
-        const { errors, data } = await fetchGraphQL(querySubjkt, 'Subjkt', { address: address});
+        const { errors, data } = await fetchGraphQL(getAliasbyAddress, 'Alias', { address: address});
      if (errors) {
        console.error(errors);
      }
      if(data?.hic_et_nunc_holder[0]?.name) {
-        setName(data.hic_et_nunc_holder[0].name);
+        setAlias(data.hic_et_nunc_holder[0].name);
       }
     }
    
@@ -99,7 +101,7 @@ export const TezosContextProvider = ({ children }) => {
     await wallet.client.clearActiveAccount();
     setActiveAccount("")
     setAddress("");
-    setName("")
+    setAlias("")
     //  window.location.reload();
   }
 
@@ -157,7 +159,7 @@ await batchOp.confirmation();
     // }
     return true;
 };
-  const wrapped = { ...app, tezos, proposal, collect, logIn, logOut, activeAccount, address, name};
+  const wrapped = { ...app, tezos, proposal, collect, logIn, logOut, activeAccount, address, alias};
 
   return (
    

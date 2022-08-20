@@ -16,7 +16,7 @@ const breakpointColumns = {
   680: 3,
 };
 
-export const getAddressbyName = gql`
+export const getAddressbyAlias = gql`
 query alias($param: String!) {
   tzprofiles(where: {alias: {_eq: $param}}) {
       account
@@ -25,13 +25,7 @@ query alias($param: String!) {
   }
 `
 
-export const getAddressbySubjkt = gql`
-query subjkt($param: String!) {
-  hic_et_nunc_holder(where: { name: {_eq: $param}}) {
-    address
-  }
-}
-`
+
 export const getObjkts = gql`
 query walletName($param: String!) {
   tokens(where: {holdings: {holder_address: {_eq: $param}, amount: {_gte: "1"}}, artifact_uri: {_is_null: false}, mime_type: {_is_null: false}}, order_by: {minted_at: desc}) {
@@ -57,10 +51,9 @@ export const Profile = ({banned, app}) => {
   const [count, setCount] = useState(0)
   const [submit, setSubmit] = useState(false)
   let { account } = useParams();
-  console.log(account)
-  if (!account) account = app.name || app.address;
-
-  const { data: alias } = useSWR(account.length !== 36 ? ['/api/name', getAddressbyName, account] : null, fetcher)
+  if (!account) {account = app.alias || app.address};
+console.log(account)
+  const { data: alias } = useSWR(account.length !== 36 ? ['/api/alias', getAddressbyAlias, account] : null, fetcher)
   // const { data: subjkt } = useSWR(account.length !== 36 ? ['/api/subjkt', getAddressbySubjkt, account.toLowerCase().replace(/\s+/g, '')] : null, hicFetcher)
   const address = account?.length === 36 ? account : alias?.tzprofiles[0]?.account || null
   const { data, error } = useSWR(address?.length === 36 ? ['/api/profile', getObjkts, address] : null, fetcher, { refreshInterval: 15000 })
