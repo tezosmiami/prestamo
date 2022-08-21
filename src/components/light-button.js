@@ -23,7 +23,7 @@ export const LightButton = () => {
       setLightMode(!lightMode);
   }
   return(
-  <div style={{alignItems: 'flex-start'}}>
+
         <p>
             <button
                 onClick={handleLightToggle}
@@ -33,6 +33,6 @@ export const LightButton = () => {
                 fontSize={'188px'}
             >ꜩ</button>
         </p>
- </div>
+
   )
 }

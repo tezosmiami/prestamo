@@ -36,14 +36,8 @@ function App() {
  
     <div style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
     {app.address && <Link to={`/${app.alias || app.address}`}>
-      {/* {app.address && <a href={`https://hicetnunc.miami/tz/${app.address}`}
-      target="blank" rel="noopener noreferrer"> 
-       */}
-        {(app.alias.length > 0 && app.alias + ' / ') || (app.address.substr(0, 4) + "..." + app.address.substr(-4)+' / ')}
-      {/* </a>} */}
+    {(app.alias.length > 0 && app.alias + ' / ') || (app.address.substr(0, 4) + "..." + app.address.substr(-4)+' / ')}
       </Link>}
-      
-  
       <button onClick={() => !app.activeAccount ? app.logIn() : app.logOut()}> 
         {!app.activeAccount ? "sync" : "unsync"}
       </button>

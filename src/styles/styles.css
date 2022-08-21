@@ -83,11 +83,12 @@ a{
     color: var(--text);
     font-size: 38px;
     font-family: var(--font);
+    flex:nowrap;
   }
 
-@media screen and (min-width: 550px) {
+@media screen and (min-width: 650px) {
   .purple{
-    font-size:58px;
+    font-size: 58px;
   }
 }
 .container{
@@ -145,7 +146,7 @@ a{
  }
 
  .icon{
-     font-size: 27px;
+     font-size: 23px;
      color: var(--text);
      margin-left:27px;
 
@@ -172,7 +173,8 @@ input:focus {
 
 ::-webkit-input-placeholder{
   color:gray;
-  text-indent: 65px;
+  align-items:center;
+  /* text-indent: 11px; */
 }
 
 .inline{
@@ -278,4 +280,43 @@ audio::-webkit-media-controls-panel {
 audio::-webkit-media-controls-play-button {
       background-color:  #e8e8e8;
       border-radius: 50%;
+}
+
+.formField {
+  display:flex;
+  flex-direction: row;
+  width:100%;
+
+
+}
+
+label {
+  display: flex;
+  margin-bottom: 4px;
+}
+
+.formInput {
+  display: block;
+  width: 66px;
+  /* margin:11px; */
+  background-color: var(--text);
+
+}
+
+.form {
+  /* display:flex;
+  flex-direction: row; */
+}
+
+.errorMessage {
+  display: block;
+  margin-top: 4px;
+  color: #cd0117;
+  font-size: 14px;
+}
+
+.formButton{
+  border: 1px solid var(--text);
+
+  margin-left: 68px;
 }

@@ -4,8 +4,30 @@ import useSWR from 'swr';
 import ReactPlayer from 'react-player'
 import { useParams } from 'react-router-dom';
 import Masonry from 'react-masonry-css'
+import { ErrorMessage, Field, Form, Formik } from 'formik';
+import * as yup from 'yup';
+import { subscribe } from 'graphql';
 // import { Search } from '../components/search';
 // import { useSearchParams } from 'react-router-dom';
+const min_term = 1;
+const max_term = 365;
+const min_amount = 1;
+const max_amount = 1000000;
+const min_interest = 1;
+const max_interest = 50;
+
+const validationSchema = yup.object().shape({
+  
+  term_days: yup.number()
+      .min(min_term)
+      .max(max_term),
+  loan_amount: yup.number()
+    .min(min_amount)
+    .max(max_amount),
+  loan_interest: yup.number()
+    .min(min_interest)
+    .max(max_interest),
+});
 
 const breakpointColumns = {
   default: 7,
@@ -49,10 +71,11 @@ export const Profile = ({banned, app}) => {
   const [view, setView] = useState(0)
   const [choices, setChoices] = useState([])
   const [count, setCount] = useState(0)
+  const [marketPayload, setMarketPayload] = useState({})
   const [submit, setSubmit] = useState(false)
   let { account } = useParams();
   if (!account) {account = app.alias || app.address};
-console.log(account)
+
   const { data: alias } = useSWR(account.length !== 36 ? ['/api/alias', getAddressbyAlias, account] : null, fetcher)
   // const { data: subjkt } = useSWR(account.length !== 36 ? ['/api/subjkt', getAddressbySubjkt, account.toLowerCase().replace(/\s+/g, '')] : null, hicFetcher)
   const address = account?.length === 36 ? account : alias?.tzprofiles[0]?.account || null
@@ -76,26 +99,35 @@ console.log(account)
   if(data.tokens.length === 0) return <div><p/>no nfts in this wallet. . .<p/></div>
   const filtered = data.tokens.filter((i) => !banned.includes(i.artist_address))
   
+  const initialValues = {
+    loan_term: marketPayload?.term || '',
+    loan_amount: marketPayload?.loan_amount || '',
+    interest: marketPayload?.interest || ''
+  };
+const handleSubmit = (values) => {
+    setMarketPayload({fa2: choices, terms: values });
+    console.log(values)
+  };
 
+// const triggerMarket = () => {
+//     setIsMinting(true)
+//     // handleMint(mintPayload);
+// };
 
-
-    return (
+console.log(marketPayload)
+  return (
       <>
-        {/* <a style={{fontSize:'27px'}} href={alias?.tzprofiles[0]?.twitter ? `https://twitter.com/${alias.tzprofiles[0].twitter}`: null} target="blank"  rel="noopener noreferrer">
-        {account?.length===36 ? address.substr(0, 4) + "..." + address.substr(-4) : account}
-      </a> */}
-      {/* <img className='avatar' src={filteredcreated ? filteredcreated[0].minter_profile?.logo : null}/> */}
-
-     
-          {/* <div style= {{borderBottom: '6px dashed', width: '80%', marginTop:'33px'}} />
-         <div style= {{borderBottom: '6px dashed', width: '80%'}} /> */}
-       <div>
-          <p>select objkts for collateral</p>
+       <div style={{marginTop:'11px'}}>
+          select objkts for collateral
        </div>
+      
+       <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '1px', marginTop: '27px'}} />
+          <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '18px'}} />
+      
        {/* <Search returnSearch={setSearchData} query={searchParams.get('search')} banned={banned}/> */}
 
        {count > 0 && <button onClick= {() => setSubmit(!submit)}><p>{!submit ? 'next' : 'back'}</p></button>}
-       <div className='container'>
+       <div className='container' >
        <Masonry
         breakpointCols={breakpointColumns}
         className={view===1 ? '' : 'grid'}
@@ -122,7 +154,7 @@ console.log(account)
           </Masonry>
           </div>
 
-          <div className='container'>
+    <div className='container'>
        <Masonry
         breakpointCols={breakpointColumns}
         className={view===1 ? '' : 'grid'}
@@ -146,19 +178,108 @@ console.log(account)
         {/* //  </Link> */}
         </div>
           ))}
+
           </Masonry>
           </div>
-       <div>
-          <p></p>
-       </div>
+          <p/>
+          <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '1px'}} />
+          <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '18px'}} />
+          <p/>
+
+          {submit && 
+          <Formik
+                onSubmit={handleSubmit}
+                initialValues={initialValues}
+                validationSchema={validationSchema}
+            >
+          {(formik) =>
+            <Form className='form' >
+                <div className='formField'>
+                            <label
+                                className='label'
+                                htmlFor='loan_amount'
+                                name='loan_amount'
+                            >Loan Amount : </label>
+                            <Field
+                                className='formInput'
+                                id="loan_amount"
+                                name="loan_amount"
+                                type="number"
+                                placeholder="ꜩ"
+                            />
+                            <ErrorMessage
+                                component="span"
+                                className='errorMessage'
+                                name="loan_amount"
+                            />
+                        </div>
+                    
+               
+
+                <div className='formField'>
+                            <label
+                                className='label'
+                                htmlFor='term'
+                            >Loan Term    :     </label>
+                            <Field
+                                className='formInput'
+                                id="loan_term"
+                                name="loan_term"
+                                type="number"
+                                placeholder='days'
+                            />
+                            <ErrorMessage
+                                component="span"
+                                className='errorMessage'
+                                name="royalties"
+                            />
+                            <p/>  
+                        </div>
+                        <div className='formField'>
+                            <label
+                                className='label'
+                                htmlFor='interest'
+                                name='interest'
+                            >Interest    :    </label>
+                            <Field
+                                className='formInput'
+                                id="linterest"
+                                name="interest"
+                                type="number"
+                                placeholder="%"
+                            />
+                            <ErrorMessage
+                                component="span"
+                                className='errorMessage'
+                                name="interest"
+                            />
+                        </div>
+                        <div style= {{borderBottom: '3px dashed', width: '100%', marginBottom: '1px', marginTop: '27px'}} />
+          <div style= {{borderBottom: '3px dashed', width: '100%', marginBottom: '18px'}} />
+                <p/>
+                      <button
+                      className='formButton'
+                      type="submit"
+                      >Submit
+                        </button> 
+                    
+                  </Form>
+
+                  
+            }    
+            </Formik>}
+       
+         <div><p/></div>
+     
      
    
-       {count > 0 && <button onClick= {() => setSubmit(!submit)}><p>{!submit ? 'next' : 'back'}</p></button>}
+       {/* {count > 0 && <button onClick= {() => setSubmit(!submit)}><p>{!submit ? 'next' : 'go back'}</p></button>} */}
+      
        {/* <div>
-          {pageIndex >= 1 && <button onClick={() => {setPageIndex(pageIndex - 1); setOffset(offset-99); setOffsetNew(offsetNew-27); mutate('/api/objkts')}}>Previous  &nbsp;- </button>}
+          {pageIndex >= 1 && <button onClick={() => {setPageIndex(pageIndex - 1); setlOffset(offset-99); setOffsetNew(offsetNew-27); mutate('/api/objkts')}}>Previous  &nbsp;- </button>}
           <button onClick={() => {setPageIndex(pageIndex + 1); setOffset(offset+99); setOffsetNew(offsetNew+27); mutate('/api/objkts')}}>Next</button>   
        </div> */}
-     </>
+  </>
     );
   }
   
