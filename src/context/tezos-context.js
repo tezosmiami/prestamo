@@ -26,7 +26,7 @@ async function fetchGraphQL(queryObjkts, name, variables) {
 const TezosContext = createContext();
 const options = {
   name: 'prestamo.art',
-  preferredNetwork: 'mainnet'
+  // preferredNetwork: 'mainnet'
  };
   
 const wallet = new BeaconWallet(options);
@@ -46,7 +46,7 @@ export const TezosContextProvider = ({ children }) => {
   
   const [app, setApp] = useState("");
   const [address, setAddress] = useState("");
-  const [tezos, setTezos] = useState(new TezosToolkit("https://mainnet.ecadinfra.com"));
+  const [tezos, setTezos] = useState(new TezosToolkit("https://mainnet.api.tez.ie"));
   const [activeAccount, setActiveAccount] = useState("");
   const [alias, setAlias] = useState("")
 
@@ -130,6 +130,12 @@ export const TezosContextProvider = ({ children }) => {
     return true;
 };
 
+async function getBigMap() {
+  const contract = await tezos.wallet.at('KT1HbQepzV1nVGg8QVznG7z4RcHseD5kwqBn');
+  const storage = await contract.storage();
+  console.log(storage)
+  return storage
+}
 async function proposal({objkts}) {
   const contract = await tezos.wallet.at('kt1..');
   const batch = tezos.wallet.batch() // or Tezos.contract.batch()
@@ -159,7 +165,7 @@ await batchOp.confirmation();
     // }
     return true;
 };
-  const wrapped = { ...app, tezos, proposal, collect, logIn, logOut, activeAccount, address, alias};
+  const wrapped = { ...app, tezos, proposal, getBigMap, collect, logIn, logOut, activeAccount, address, alias};
 
   return (
    

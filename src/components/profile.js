@@ -49,7 +49,7 @@ query alias($param: String!) {
 
 
 export const getObjkts = gql`
-query walletName($param: String!) {
+query walletbyAlias($param: String!) {
   tokens(where: {holdings: {holder_address: {_eq: $param}, amount: {_gte: "1"}}, artifact_uri: {_is_null: false}, mime_type: {_is_null: false}}, order_by: {minted_at: desc}) {
     artifact_uri
     display_uri
@@ -126,7 +126,7 @@ console.log(marketPayload)
       
        {/* <Search returnSearch={setSearchData} query={searchParams.get('search')} banned={banned}/> */}
 
-       {count > 0 && <button onClick= {() => setSubmit(!submit)}><p>{!submit ? 'next' : 'back'}</p></button>}
+       {count > 0 && <button onClick= {() => setSubmit(!submit)}><p>{!submit ? 'next >' : '< back'}</p></button>}
        <div className='container' >
        <Masonry
         breakpointCols={breakpointColumns}

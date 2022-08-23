@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Main } from '../components/main';
 import { Search } from '../components/search';
 import { useSearchParams } from 'react-router-dom';
-import { Profile } from '../components/profile';
+import { Market } from '../components/market';
 import { useTezosContext } from "../context/tezos-context";
 // import ToggleSwitch from '../components/toggle';
 
@@ -22,7 +22,7 @@ if(!app.address) return <div><p>sync to begin</p><p/></div>
        {!toggled ? <LatestSales /> : <LatestMints/>} */}
       {/* <Search returnSearch={setSearchData} query={searchParams.get('search')} banned={banned}/> */}
        
-      {!searchParams.get('search') ? <Profile banned={banned} app={app}/> : null}
+      {!searchParams.get('search') ? <Market banned={banned} app={app}/> : null}
 
       </>
     );

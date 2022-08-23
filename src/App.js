@@ -53,6 +53,7 @@ function App() {
      <Routes>
         <Route path="/" element={<Home banned={banned} />} />
         <Route path='/:account' element={<Gallery banned={banned}/>} />
+        
         <Route path=":contract" >
           <Route path=":id" element={<Objkt banned={banned}/>} />
        </Route>
