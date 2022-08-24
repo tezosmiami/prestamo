@@ -42,7 +42,7 @@ export const Market = ({app}) => {
       q.metadata=metadata.data
       ))
     ))
-console.log(result.data)
+    console.log(result.data)
     setBigmap(result.data)
     }
     getMarket();
@@ -86,9 +86,9 @@ console.log(tokens)
         breakpointCols={breakpointColumns}
         className= 'grid'
         columnClassName='column'>
-        
+        {console.log(p)}
 
-        {p.value.tokens.map(async (q,i) => (
+        {p?.value.tokens.map((q,i) => (
 
           console.log(q),
         
