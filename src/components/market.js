@@ -32,19 +32,19 @@ export const Market = ({app}) => {
 
   useEffect(() => {
     let bytes=''
-      let test=[]
-      let tokens_metadata={}
-      const  markets =[]
+    const markets =[]
     const getMarket = async () => {
     const result = await axios.get('https://api.jakartanet.tzkt.io/v1/bigmaps/98299/keys')
 
-    for (let i=0; i < result.length; i++){
+    for (let i=0; i < result.data.length; i++){
       markets.push(result.data[i].value)
       for(let token of result.data[i].value.tokens){
       const metadata = await getMetadata(token.contract_address, token.token_id)
       token.metadata = metadata
+      console.log(metadata)
     } 
     // result.data.map(p => (
+      console.log(markets)
     //  p.value.tokens.map(async(q)=> (
     //   metadata=await getMetadata(q.contract_address, q.token_id),
     //   q.metadata=metadata.data
