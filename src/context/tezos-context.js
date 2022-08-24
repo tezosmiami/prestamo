@@ -26,7 +26,7 @@ async function fetchGraphQL(queryObjkts, name, variables) {
 const TezosContext = createContext();
 const options = {
   name: 'prestamo.art',
-  // preferredNetwork: 'mainnet'
+  preferredNetwork: 'jakartanet'
  };
   
 const wallet = new BeaconWallet(options);
@@ -46,7 +46,7 @@ export const TezosContextProvider = ({ children }) => {
   
   const [app, setApp] = useState("");
   const [address, setAddress] = useState("");
-  const [tezos, setTezos] = useState(new TezosToolkit("https://mainnet.api.tez.ie"));
+  const [tezos, setTezos] = useState(new TezosToolkit("https://jakartanet.ecadinfra.com"));
   const [activeAccount, setActiveAccount] = useState("");
   const [alias, setAlias] = useState("")
 
@@ -77,7 +77,7 @@ export const TezosContextProvider = ({ children }) => {
     await wallet.client.clearActiveAccount();
     await wallet.client.requestPermissions({
       network: {
-        type: 'mainnet',
+        type: 'jakartanet',
       },
     });
     tezos.setWalletProvider(wallet);
