@@ -29,7 +29,27 @@ export const Market = ({app}) => {
   const [token, setToken] = useState({});
   const [bigmap, setBigmap] = useState()
   const [tokens,setTokens] = useState([])
-
+  /*
+  useEffect(() => {
+  const getMarket = async () => {
+    let result = await axios.get(
+      "https://api.jakartanet.tzkt.io/v1/bigmaps/98299/keys"
+    );
+    const parse_result = await Promise.all(
+      result.data.map(async (p) => {
+        const token = p.value.tokens.map(async (q) => {
+          const { data } = await getMetadata(q.contract_address, q.token_id);
+          return { ...q, metadata: data };
+        });
+        return Promise.all(token);
+      })
+    );
+    console.log(parse_result);
+    setBigmap(parse_result);
+  };
+  getMarket();
+}, []);
+  */
   useEffect(() => {
     let bytes=''
       let metadata=''
