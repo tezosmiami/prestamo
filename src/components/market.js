@@ -64,7 +64,6 @@ export const Market = ({app}) => {
       console.log(metadata)
     } 
     // result.data.map(p => (
-      console.log(markets)
     //  p.value.tokens.map(async(q)=> (
     //   metadata=await getMetadata(q.contract_address, q.token_id),
     //   q.metadata=metadata.data
@@ -142,7 +141,7 @@ console.log(bigmap)
           <a style={{margin: '18px'}}>Amount: {p.amount/1000000}ꜩ</a>
           <a style={{margin: '18px'}}>Interest: {p.interest/10}%</a>
           <a style={{margin: '18px'}}>Term: {p.term} days</a>
-          </p>
+            </p>
           </div>
           
           ))}
