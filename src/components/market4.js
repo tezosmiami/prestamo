@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import ReactPlayer from 'react-player'
 import Masonry from 'react-masonry-css'
-import usefetch from './hooks/useFetch'
+// import usefetch from '../hooks/useFetch'
 import { Objkt } from './objkt'
 
 const axios = require('axios')
@@ -28,21 +28,11 @@ export const Market = ({app}) => {
   const [objktView, setObjktView] = useState(false)
   const [token, setToken] = useState({});
   const [bigmap, setBigmap] = useState()
-  const [tokens,setTokens] = useState([])
+
 
   useEffect(() => {
-    let bytes=''
-      let metadata=''
-      let _markets=[]
     const getMarket = async () => {
     let result = await axios.get('https://api.jakartanet.tzkt.io/v1/bigmaps/98299/keys')
-    result.data.map(p => (
-     p.value.tokens.map(async(q)=> (
-      metadata=await getMetadata(q.contract_address, q.token_id),
-      q.metadata=metadata.data
-      ))
-    ))
-console.log(result.data)
     setBigmap(result.data)
     }
     getMarket();
@@ -50,14 +40,12 @@ console.log(result.data)
   }, [])
 
   const getMetadata = async(contract, id) => {
-    let metadata = ''
     let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/contracts/${contract}/bigmaps/token_metadata/keys/${id}`)
-    let data =await result.data   
-    let bytes=data.value.token_info['']
+      let data =await result.data   
+      let bytes=data.value.token_info['']
         bytes=hex2a(bytes)
         metadata =  await axios.get(bytes.replace('ipfs://', 'http://ipfs.io/ipfs/'))
-        data = await metadata
-        return data
+        return metadata.data
   }
   const hideObjkt = () => {
     setObjktView(false)
@@ -66,9 +54,8 @@ console.log(result.data)
     setToken(q)
     setObjktView(true)
   }
+let metadata = ''
 
-
-console.log(tokens)
   return (
       <>
        <div style={{marginTop:'11px'}}>
@@ -80,32 +67,31 @@ console.log(tokens)
           {objktView &&<Objkt hideObjkt={hideObjkt} token={token} setObjktView={setObjktView}/>}
       
        <div className='container' style={{opacity: objktView && '.2'}}>
-       {bigmap?.length > 0  && bigmap.map((p,i)=> (
-       <div key={p.id} className='market'>
+       {bigmap && bigmap.map((p,i)=> (
+       <div key={i} className='market'>
        <Masonry
         breakpointCols={breakpointColumns}
         className= 'grid'
-        columnClassName='column'>
-        
-
+        columnClassName='column'>         
         {p.value.tokens.map(async (q,i) => (
 
           console.log(q),
-        
-        <div key={i} onClick= {() => {showObjkt(q.metadata)}}>
-        {q.metadata.formats[0].mimeType?.includes('image') && q.metadata.formats[0].mimeType !== 'image/svg+xml' ?
+          metadata = await getMetadata(q.contract_address, q.token_id),
+          console.log(metadata),
+        <div key={i} onClick= {() => {showObjkt(metadata)}}>
+        {metadata.formats[0].mimeType?.includes('image') && metadata.formats[0].mimeType !== 'image/svg+xml' ?
       
-        <img alt='' className= 'pop'  src={`https://ipfs.io/ipfs/${q.metadata.display_uri ? q.metadata.display_uri?.slice(7) : q.metadata.artifact_uri.slice(7)}`}/> 
-        : q.metadata.formats[0].mimeType.includes('video') ? 
+        <img alt='' className= 'pop'  src={`https://ipfs.io/ipfs/${metadata.display_uri ? metadata.display_uri?.slice(7) : metadata.artifact_uri.slice(7)}`}/> 
+        : metadata.formats[0].mimeType.includes('video') ? 
          <div className='pop'>
-           <ReactPlayer url={'https://ipfs.io/ipfs/' + q.metadata.artifact_uri.slice(7)} width='100%' height='100%' muted={true} playing={false} loop={false}/>
+           <ReactPlayer url={'https://ipfs.io/ipfs/' + metadata.artifact_uri.slice(7)} width='100%' height='100%' muted={true} playing={false} loop={false}/>
           </div>
-          : q.metadata.formats[0].mimeType.includes('audio') ?  
+          : metadata.formats[0].mimeType.includes('audio') ?  
           <div className= 'pop'>
-            <img className= 'pop' alt='' src={'https://ipfs.io/ipfs/' + q.metadata.display_uri.slice(7)} />
-            <audio style={{width:'93%'}} src={'https://ipfs.io/ipfs/' + q.metadata.artifact_uri.slice(7)} controls />
+            <img className= 'pop' alt='' src={'https://ipfs.io/ipfs/' + metadata.display_uri.slice(7)} />
+            <audio style={{width:'93%'}} src={'https://ipfs.io/ipfs/' + metadata.artifact_uri.slice(7)} controls />
           </div>
-        : q.metadata.formats[0].mimeType.includes('text') ? <div className='text'>{q.metadata.description}</div> : ''}
+        : metadata.formats[0].mimeType.includes('text') ? <div className='text'>{metadata.description}</div> : ''}
 
         </div>
        ))}
