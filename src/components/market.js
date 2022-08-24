@@ -26,30 +26,30 @@ export function hex2a(hex) {
 export const Market = ({app}) => {
 
   const [objktView, setObjktView] = useState(false)
-  const [token, setToken] = useState({});
+  const [objkt, setObjkt] = useState({});
   const [bigmap, setBigmap] = useState()
   const [tokens,setTokens] = useState([])
-  /*
-  useEffect(() => {
-  const getMarket = async () => {
-    let result = await axios.get(
-      "https://api.jakartanet.tzkt.io/v1/bigmaps/98299/keys"
-    );
-    const parse_result = await Promise.all(
-      result.data.map(async (p) => {
-        const token = p.value.tokens.map(async (q) => {
-          const { data } = await getMetadata(q.contract_address, q.token_id);
-          return { ...q, metadata: data };
-        });
-        return Promise.all(token);
-      })
-    );
-    console.log(parse_result);
-    setBigmap(parse_result);
-  };
-  getMarket();
-}, []);
-  */
+//   /*
+//   useEffect(() => {
+//   const getMarket = async () => {
+//     let result = await axios.get(
+//       "https://api.jakartanet.tzkt.io/v1/bigmaps/98299/keys"
+//     );
+//     const parse_result = await Promise.all(
+//       result.data.map(async (p) => {
+//         const token = p.value.tokens.map(async (q) => {
+//           const { data } = await getMetadata(q.contract_address, q.token_id);
+//           return { ...q, metadata: data };
+//         });
+//         return Promise.all(token);
+//       })
+//     );
+//     console.log(parse_result);
+//     setBigmap(parse_result);
+//   };
+//   getMarket();
+// }, []);
+//   */
   useEffect(() => {
     let bytes=''
     const markets =[]
@@ -63,17 +63,10 @@ export const Market = ({app}) => {
       token.metadata = metadata
       console.log(metadata)
     } 
-    // result.data.map(p => (
-    //  p.value.tokens.map(async(q)=> (
-    //   metadata=await getMetadata(q.contract_address, q.token_id),
-    //   q.metadata=metadata.data
-    //   ))
-    // ))  
-    }
+  }
     setBigmap(markets)
   }
     getMarket();
-    
   }, [])
 
   const getMetadata = async(contract, id) => {
@@ -86,16 +79,12 @@ export const Market = ({app}) => {
         data = await metadata.data
         return data
   }
-  const hideObjkt = () => {
-    setObjktView(false)
-  }
-  const showObjkt = (q) => {
-    setToken(q)
+  
+  const showObjkt = (o) => {
+    if (objktView) return (setObjktView(false))
+    setObjkt(o)
     setObjktView(true)
   }
-
-
-console.log(bigmap)
   return (
       <>
        <div style={{marginTop:'11px'}}>
@@ -104,7 +93,7 @@ console.log(bigmap)
 
        <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '1px', marginTop: '27px'}} />
           <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '18px'}} />
-          {objktView &&<Objkt hideObjkt={hideObjkt} token={token} setObjktView={setObjktView}/>}
+          {objktView &&<Objkt objkt={objkt} setObjktView={setObjktView}/>}
       
        <div className='container' style={{opacity: objktView && '.2'}}>
        {bigmap?.length > 0  && bigmap.map((p,i)=> (
@@ -113,13 +102,10 @@ console.log(bigmap)
         breakpointCols={breakpointColumns}
         className= 'grid'
         columnClassName='column'>
-        {console.log(p.tokens)}
+
       
         {p.tokens.map((q,i) => (
-
-          console.log(q),
-        
-        <div key={i} onClick= {() => {showObjkt(q.metadata)}}>
+        <div key={i} onClick= {() => {showObjkt(q)}}>
         {q.metadata.formats[0].mimeType?.includes('image') && q.metadata.formats[0].mimeType !== 'image/svg+xml' ?
       
         <img alt='' className= 'pop'  src={`https://ipfs.io/ipfs/${q.metadata.displayUri ? q.metadata.displayUri?.slice(7) : q.metadata.artifactUri?.slice(7)}`}/> 
@@ -141,6 +127,7 @@ console.log(bigmap)
           <a style={{margin: '18px'}}>Amount: {p.amount/1000000}ꜩ</a>
           <a style={{margin: '18px'}}>Interest: {p.interest/10}%</a>
           <a style={{margin: '18px'}}>Term: {p.term} days</a>
+          <button className='formButton'>accept</button>
             </p>
           </div>
           

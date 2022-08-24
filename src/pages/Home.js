@@ -12,7 +12,7 @@ export const Home = ({banned}) => {
   const [searchParams] = useSearchParams();
   const  app = useTezosContext();
 
-if(!app.address) return <div><p>sync to begin</p><p/></div> 
+// if(!app.address) return <div><p>sync to begin</p><p/></div> 
     return (
       <>
       {/* <a style={{marginLeft:'21px'}}>{!toggled ? 'Sales' : 'Mints'}</a> */}

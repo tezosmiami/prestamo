@@ -91,6 +91,11 @@ a{
     font-size: 58px;
   }
 }
+@media screen and (min-width: 550px) {
+  .purple{
+    font-size: 48px;
+  }
+}
 .container{
     width: 98vw;
     display: flex;

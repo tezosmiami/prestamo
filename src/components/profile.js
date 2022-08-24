@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
-import { request, gql } from 'graphql-request'
-import useSWR from 'swr';
+import React, { useState, useEffect } from 'react'
 import ReactPlayer from 'react-player'
 import { useParams } from 'react-router-dom';
+import { Objkt } from './objkt'
 import Masonry from 'react-masonry-css'
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import * as yup from 'yup';
-import { subscribe } from 'graphql';
+
+const axios = require('axios')
+
 // import { Search } from '../components/search';
 // import { useSearchParams } from 'react-router-dom';
 const min_term = 1;
@@ -38,48 +39,48 @@ const breakpointColumns = {
   680: 3,
 };
 
-export const getAddressbyAlias = gql`
-query alias($param: String!) {
-  tzprofiles(where: {alias: {_eq: $param}}) {
-      account
-      twitter
-    }
-  }
-`
-
-
-export const getObjkts = gql`
-query walletbyAlias($param: String!) {
-  tokens(where: {holdings: {holder_address: {_eq: $param}, amount: {_gte: "1"}}, artifact_uri: {_is_null: false}, mime_type: {_is_null: false}}, order_by: {minted_at: desc}) {
-    artifact_uri
-    display_uri
-    platform
-    fa2_address
-    token_id
-    mime_type
-  }
-}
-` 
+export function hex2a(hex) {
+  var str = '';
+  for (var i = 0; i < hex.length; i += 2)
+      str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+  return str;
+}   
   
-const fetcher = (key, query, param) => request(process.env.REACT_APP_TEZTOK_API, query, {param})
-
-export const Profile = ({banned, app}) => {
-  // const [searchData,setSearchData] = useState([]);
-  // const [searchParams] = useSearchParams();
-//   const [pageIndex, setPageIndex] = useState(0);
-  // const [offset, setOffset] = useState(0)
+export const Profile = ({app}) => {
+  const [objktView, setObjktView] = useState(false)
+  const [objkt, setObjkt] = useState({});
   const [view, setView] = useState(0)
   const [choices, setChoices] = useState([])
   const [count, setCount] = useState(0)
   const [marketPayload, setMarketPayload] = useState({})
+  const [objkts, setObjkts] = useState()
   const [submit, setSubmit] = useState(false)
   let { account } = useParams();
-  if (!account) {account = app.alias || app.address};
+  if (!account) {account = app.address};
 
-  const { data: alias } = useSWR(account.length !== 36 ? ['/api/alias', getAddressbyAlias, account] : null, fetcher)
-  // const { data: subjkt } = useSWR(account.length !== 36 ? ['/api/subjkt', getAddressbySubjkt, account.toLowerCase().replace(/\s+/g, '')] : null, hicFetcher)
-  const address = account?.length === 36 ? account : alias?.tzprofiles[0]?.account || null
-  const { data, error } = useSWR(address?.length === 36 ? ['/api/profile', getObjkts, address] : null, fetcher, { refreshInterval: 15000 })
+  useEffect(() => {
+    let bytes=''
+    const getObjkts = async () => {
+      let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/tokens/balances?account=${account}`)
+     console.log(result)
+     setObjkts(result.data)
+  }
+    getObjkts();
+  }, [])
+  
+  const getMetadata = async(contract, id) => {
+    let metadata = ''
+    let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/contracts/${contract}/bigmaps/token_metadata/keys/${id}`)
+    let data =await result.data   
+    let bytes=data.value.token_info['']
+        bytes=hex2a(bytes)
+        metadata =  await axios.get(bytes.replace('ipfs://', 'http://ipfs.io/ipfs/'))
+        data = await metadata.data
+        return data
+  }
+  
+  const address = 'tz1ag87A25Q3uAHoDXGiJz6Bwv6uTefEFEqN';
+ 
   
   const add_remove = (p) => {
   
@@ -93,12 +94,7 @@ export const Profile = ({banned, app}) => {
   // choices.length > 0 ? setSubmit(true) : setSubmit(false)
   }
 
-  if (alias && !address) return <div><p/>nada. . .<p/></div>
-  if (error) return <p>error</p>
-  if (!data ) return <div><p/>loading. . .<p/></div>  
-  if(data.tokens.length === 0) return <div><p/>no nfts in this wallet. . .<p/></div>
-  const filtered = data.tokens.filter((i) => !banned.includes(i.artist_address))
-  
+
   const initialValues = {
     loan_term: marketPayload?.term || '',
     loan_amount: marketPayload?.loan_amount || '',
@@ -109,11 +105,16 @@ const handleSubmit = (values) => {
     console.log(values)
   };
 
+  const showObjkt = (o) => {
+    if (objktView) return (setObjktView(false))
+    setObjkt(o)
+    setObjktView(true)
+  }
 // const triggerMarket = () => {
 //     setIsMinting(true)
 //     // handleMint(mintPayload);
 // };
-
+console.log(objkts)
 console.log(marketPayload)
   return (
       <>
@@ -123,8 +124,7 @@ console.log(marketPayload)
       
        <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '1px', marginTop: '27px'}} />
           <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '18px'}} />
-      
-       {/* <Search returnSearch={setSearchData} query={searchParams.get('search')} banned={banned}/> */}
+    
 
        {count > 0 && <button onClick= {() => setSubmit(!submit)}><p>{!submit ? 'next >' : '< back'}</p></button>}
        <div className='container' >
@@ -132,50 +132,51 @@ console.log(marketPayload)
         breakpointCols={breakpointColumns}
         className={view===1 ? '' : 'grid'}
          columnClassName='column'>
-        {filtered && !submit && filtered.map(p=> (
-        // <Link  key={p.artifact_uri+ p.token_id} to={`/${p.fa2_address}/${p.token_id}`}>
-        <div style ={{backgroundColor: choices.includes(p) && getComputedStyle(document.body).getPropertyValue('--text')}} key={p.artifact_uri + p.token_id} onClick={() => {return add_remove(p)}}>
-        {p.mime_type.includes('image') && p.mime_type !== 'image/svg+xml' ?
+        {objkts && !submit && objkts.map((p,i)=> (
+       
+        <div style ={{backgroundColor: choices.includes(p) && getComputedStyle(document.body).getPropertyValue('--text')}} key={i} onClick={() => {return add_remove(p)}}>
+        {p.token.metadata.formats[0].mimeType.includes('image') && p.token.metadata.formats[0].mimeType !== 'image/svg+xml' ?
       
-        <img alt='' className= 'pop'  src={`https://ipfs.io/ipfs/${p.display_uri ? p.display_uri?.slice(7) : p.artifact_uri.slice(7)}`}/> 
-        : p.mime_type.includes('video') ? 
+        <img alt='' className= 'pop'  src={`https://ipfs.io/ipfs/${p.token.metadata.displayUri ? p.token.metadata.displayUri?.slice(7) : p.token.metadata.artifactUri?.slice(7)}`}/> 
+        : p.token.metadata.formats[0].mimeType.includes('video') ? 
          <div className='pop'>
-           <ReactPlayer url={'https://ipfs.io/ipfs/' + p.artifact_uri.slice(7)} width='100%' height='100%' muted={true} playing={false} loop={false}/>
+           <ReactPlayer url={'https://ipfs.io/ipfs/' + p.token.metadata.artifactUri.slice(7)} width='100%' height='100%' muted={true} playing={false} loop={false}/>
           </div>
-          : p.mime_type.includes('audio') ?  
+          : p.token.metadata.formats[0].mimeType.includes('audio') ?  
           <div className= 'pop'>
-            <img className= 'pop' alt='' src={'https://ipfs.io/ipfs/' + p.display_uri.slice(7)} />
-            <audio style={{width:'93%'}} src={'https://ipfs.io/ipfs/' + p.artifact_uri.slice(7)} controls />
+            <img className= 'pop' alt='' src={'https://ipfs.io/ipfs/' + p.token.metadata.displayUri.slice(7)} />
+            <audio style={{width:'93%'}} src={'https://ipfs.io/ipfs/' + p.token.metadata.artifactUri.slice(7)} controls />
           </div>
-        : p.mime_type.includes('text') ? <div className='text'>{p.description}</div> : ''}
-        {/* //  </Link> */}
+        : p.token.metadata.formats[0].mimeType.includes('text') ? <div className='text'>{p.token.metadata.description}</div> : ''}
+        
         </div>
-          ))}
+          ))} 
           </Masonry>
           </div>
-
-    <div className='container'>
+          {objktView && <Objkt objkt={objkt} setObjktView={setObjktView}/>}
+    <div className='container' style={{opacity: objktView && '.2'}}>
        <Masonry
         breakpointCols={breakpointColumns}
         className={view===1 ? '' : 'grid'}
          columnClassName='column'>
-        {filtered && submit && choices.map(p=> (
-        // <Link  key={p.artifact_uri+ p.token_id} to={`/${p.fa2_address}/${p.token_id}`}>
-        <div  key={p.artifact_uri + p.token_id}>
-        {p.mime_type.includes('image') && p.mime_type !== 'image/svg+xml' ?
       
-        <img alt='' className= 'pop'  src={`https://ipfs.io/ipfs/${p.display_uri ? p.display_uri?.slice(7) : p.artifact_uri.slice(7)}`}/> 
-        : p.mime_type.includes('video') ? 
+        {objkts && submit && choices.map((p,i)=> (
+          console.log(p),
+        // <Link  key={p.token.metadata.artifactUri+ p.token.token_id} to={`/${p.token.fa2_address}/${p.token.token_id}`}>
+        <div  key={i} onClick= {() => {showObjkt(p.token)}}>
+        {p.token.metadata.formats[0].mimeType.includes('image') && p.token.metadata.formats[0].mimeType !== 'image/svg+xml' ?
+      
+        <img alt='' className= 'pop'  src={`https://ipfs.io/ipfs/${p.token.metadata.displayUri ? p.token.metadata.displayUri?.slice(7) : p.token.metadata.artifactUri.slice(7)}`}/> 
+        : p.token.metadata.formats[0].mimeType.includes('video') ? 
          <div className='pop'>
-           <ReactPlayer url={'https://ipfs.io/ipfs/' + p.artifact_uri.slice(7)} width='100%' height='100%' muted={true} playing={false} loop={false}/>
+           <ReactPlayer url={'https://ipfs.io/ipfs/' + p.token.metadata.artifactUri.slice(7)} width='100%' height='100%' muted={true} playing={false} loop={false}/>
           </div>
-          : p.mime_type.includes('audio') ?  
+          : p.token.metadata.formats[0].mimeType.includes('audio') ?  
           <div className= 'pop'>
-            <img className= 'pop' alt='' src={'https://ipfs.io/ipfs/' + p.display_uri.slice(7)} />
-            <audio style={{width:'93%'}} src={'https://ipfs.io/ipfs/' + p.artifact_uri.slice(7)} controls />
+            <img className= 'pop' alt='' src={'https://ipfs.io/ipfs/' + p.token.metadata.displayUri.slice(7)} />
+            <audio style={{width:'93%'}} src={'https://ipfs.io/ipfs/' + p.token.metadata.artifactUri.slice(7)} controls />
           </div>
-        : p.mime_type.includes('text') ? <div className='text'>{p.description}</div> : ''}
-        {/* //  </Link> */}
+        : p.token.metadata.formats[0].mimeType.includes('text') ? <div className='text'>{p.token.metadata.description}</div> : ''}
         </div>
           ))}
 
