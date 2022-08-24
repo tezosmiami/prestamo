@@ -1,7 +1,7 @@
 import React from 'react'
-import { Profile } from '../components/profile';
+import { Create } from '../components/create';
 
-export const Gallery = ({banned}) => {
+export const Wallet = () => {
   // const [toggled, setToggled ] = useState(false);
     return (
       <>
@@ -10,7 +10,7 @@ export const Gallery = ({banned}) => {
         isToggled={toggled}
         handleToggle={() => setToggled(!toggled)}/>
        {!toggled ? <LatestSales /> : <LatestMints/>} */}
-       <Profile banned={banned}/>
+       <Create/>
       </>
     );
   }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useTezosContext } from "./context/tezos-context";
 import { Routes, Route, Link } from "react-router-dom";
 import { Home } from './pages/Home'
-import { Gallery } from './pages/Gallery'
+import { Wallet } from './pages/Wallet'
 import { Objkt } from './pages/Objkt'
 import { LightButton } from './components/light-button';
 import "./styles/styles.css";
@@ -11,8 +11,8 @@ import "./styles/styles.css";
 
 function App() {
   const  app = useTezosContext();
-  const axios = require('axios');
-  const [banned, setBanned] = useState();
+
+
   
 
   // useEffect(() => {
@@ -20,13 +20,7 @@ function App() {
   //   r.style.setProperty('--font', fonts[Math.floor(Math.random()* fonts.length)])
   // }, [])
 
-  useEffect(() => {
-    const getBanned = async () => {
-    const result = await axios.get('https://raw.githubusercontent.com/teia-community/teia-report/main/restricted.json') ;
-    setBanned(result.data)
-  }
-    getBanned();
-  }, [axios])
+
   return(
     <>
     <header>
@@ -51,11 +45,11 @@ function App() {
 
      <div>
      <Routes>
-        <Route path="/" element={<Home banned={banned} />} />
-        <Route path='/:account' element={<Gallery banned={banned}/>} />
+        <Route path="/" element={<Home />} />
+        <Route path='/:account' element={<Wallet />} />
         
         <Route path=":contract" >
-          <Route path=":id" element={<Objkt banned={banned}/>} />
+          <Route path=":id" element={<Objkt/>} />
        </Route>
       </Routes>
     </div>

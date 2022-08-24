@@ -46,7 +46,7 @@ export function hex2a(hex) {
   return str;
 }   
   
-export const Profile = ({app}) => {
+export const Create = ({app}) => {
   const [objktView, setObjktView] = useState(false)
   const [objkt, setObjkt] = useState({});
   const [view, setView] = useState(0)

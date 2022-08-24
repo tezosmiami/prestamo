@@ -6,61 +6,12 @@ import { useParams, Link } from 'react-router-dom';
 
 
 
-export const Objkt = ({banned}) => {
+export const Objkt = () => {
   const [objkt, setObjkt] = useState([]);
   const [message, setMessage] = useState();
   const app = useTezosContext();
   const params = useParams();
-  const queryObjkt = gql`
-    query objkt {
-      tokens(where: {editions: {_eq: "1"}, fa2_address: {_eq: "${params.contract}", _neq: "KT1EpGgjQs73QfFJs9z7m1Mxm5MTnpC2tqse"}, token_id: {_eq: "${params.id}"}}) {
-        artist_address
-        artifact_uri
-        display_uri
-        creators
-        name
-        description
-        minter_profile {
-          alias
-          twitter
-        }
-        price
-        mime_type
-        description
-        platform
-        eightbid_rgb
-        tags {
-          tag
-        }
-        listings (order_by: {created_at: desc}){
-          price
-          swap_id
-          contract_address
-          ask_id
-          type
-        }
-        holdings(where: {amount: {_gt: "0"}}, order_by: {first_received_at: asc}) {
-          holder_address
-          holder_profile {
-            alias
-          }
-        }
-      }
-    }  
-    `
-    useEffect(() => {
-      const getObjkt = async() => {
-          if (params && banned) { 
-          const result = await request(process.env.REACT_APP_TEZTOK_API, queryObjkt)
-          const filtered = result.tokens.filter((i) => !banned.includes(i.artist_address))
-          setObjkt(filtered[0] || ['nada'] )
-          }
-          }
-          getObjkt();
-      }, [params, banned, queryObjkt])
-
-    if (objkt.length === 0) return <div>loading. . .<p/></div>
-    if (objkt[0] === 'nada') return <div>nada. . .<p/></div>
+ 
 
     const handleCollect = () => async() => {
       !app.address && setMessage('please sync. . .') 
