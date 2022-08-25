@@ -6,12 +6,26 @@ import { useParams, Link } from 'react-router-dom';
 
 
 
-export const Objkt = () => {
+export const Objkt = ({banned}) => {
   const [objkt, setObjkt] = useState([]);
   const [message, setMessage] = useState();
   const app = useTezosContext();
   const params = useParams();
- 
+
+  
+    useEffect(() => {
+      const getObjkt = async() => {
+          if (params && banned) { 
+          const result = await request(process.env.REACT_APP_TEZTOK_API, queryObjkt)
+          const filtered = result.tokens.filter((i) => !banned.includes(i.artist_address))
+          setObjkt(filtered[0] || ['nada'] )
+          }
+          }
+          getObjkt();
+      }, [params, banned, queryObjkt])
+
+    if (objkt.length === 0) return <div>loading. . .<p/></div>
+    if (objkt[0] === 'nada') return <div>nada. . .<p/></div>
 
     const handleCollect = () => async() => {
       !app.address && setMessage('please sync. . .') 

@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react'
 
 import ReactPlayer from 'react-player'
 import Masonry from 'react-masonry-css'
-import usefetch from './hooks/useFetch'
 import { Objkt } from './objkt'
+import { useTezosContext } from "../context/tezos-context";
 
 const axios = require('axios')
-
 const breakpointColumns = {
   default: 7,
   1580: 7,
@@ -23,8 +22,8 @@ export function hex2a(hex) {
     return str;
 }   
 
-export const Market = ({app}) => {
-
+export const Markets = () => {
+  const app = useTezosContext();
   const [objktView, setObjktView] = useState(false)
   const [objkt, setObjkt] = useState({});
   const [bigmap, setBigmap] = useState()
@@ -57,6 +56,7 @@ export const Market = ({app}) => {
     const result = await axios.get('https://api.jakartanet.tzkt.io/v1/bigmaps/98299/keys')
 
     for (let i=0; i < result.data.length; i++){
+      result.data[i].value.market_id = result.data[i].key
       markets.push(result.data[i].value)
       for(let token of result.data[i].value.tokens){
       const metadata = await getMetadata(token.contract_address, token.token_id)
@@ -85,25 +85,29 @@ export const Market = ({app}) => {
     setObjkt(o)
     setObjktView(true)
   }
+  console.log(bigmap)
   return (
       <>
+      
        <div style={{marginTop:'11px'}}>
         Latest Markets
        </div>
 
        <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '1px', marginTop: '27px'}} />
           <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '18px'}} />
+         {/* <p><button className='formButton'>create</button></p><p/> */}
           {objktView &&<Objkt objkt={objkt} setObjktView={setObjktView}/>}
       
        <div className='container' style={{opacity: objktView && '.2'}}>
        {bigmap?.length > 0  && bigmap.map((p,i)=> (
+                console.log(p),
+        p.active &&
        <div key={i} className='market'>
        <Masonry
         breakpointCols={breakpointColumns}
         className= 'grid'
         columnClassName='column'>
 
-      
         {p.tokens.map((q,i) => (
         <div key={i} onClick= {() => {showObjkt(q)}}>
         {q.metadata.formats[0].mimeType?.includes('image') && q.metadata.formats[0].mimeType !== 'image/svg+xml' ?
@@ -126,8 +130,11 @@ export const Market = ({app}) => {
         <p>
           <a style={{margin: '18px'}}>Amount: {p.amount/1000000}ꜩ</a>
           <a style={{margin: '18px'}}>Interest: {p.interest/10}%</a>
-          <a style={{margin: '18px'}}>Term: {p.term} days</a>
-          <button className='formButton'>accept</button>
+          <a style={{margin: '18px'}}>Term: {p.term} minutes</a>
+          {p.active && !p.taker && <button className='formButton' onClick= {() => {app.take_market(p.market_id, p?.amount)}}>accept</button>}
+          {p.active && !p.taker && app.address == p.maker && <button className='formButton'>cancel</button>}
+          {/* {p.active && wallet == p.maker && !p.taker && <button className='formButton'>recover</button>} */}
+           {p.active && app.address == p.taker && p.taker &&  <button className='formButton'onClick= {() => {app.claim_market(p.market_id)}} >claim</button>}
             </p>
           </div>
           

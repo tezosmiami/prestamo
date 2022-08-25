@@ -3,7 +3,7 @@ import { useTezosContext } from "./context/tezos-context";
 import { Routes, Route, Link } from "react-router-dom";
 import { Home } from './pages/Home'
 import { Wallet } from './pages/Wallet'
-import { Objkt } from './pages/Objkt'
+// import { Objkt } from './pages/Objkt'
 import { LightButton } from './components/light-button';
 import "./styles/styles.css";
 
@@ -49,7 +49,7 @@ function App() {
         <Route path='/:account' element={<Wallet />} />
         
         <Route path=":contract" >
-          <Route path=":id" element={<Objkt/>} />
+          {/* <Route path=":id" element={<Objkt/>} /> */}
        </Route>
       </Routes>
     </div>

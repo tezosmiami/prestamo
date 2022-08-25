@@ -1,7 +1,6 @@
 import { useEffect, useState, createContext, useContext} from "react";
-import { TezosToolkit } from "@taquito/taquito";
+import { TezosToolkit, OpKind } from "@taquito/taquito";
 import { BeaconWallet } from "@taquito/beacon-wallet";
-
 
 const getAliasbyAddress = `
 query Alias($address: String!) {
@@ -49,6 +48,7 @@ export const TezosContextProvider = ({ children }) => {
   const [tezos, setTezos] = useState(new TezosToolkit("https://jakartanet.ecadinfra.com"));
   const [activeAccount, setActiveAccount] = useState("");
   const [alias, setAlias] = useState("")
+  const operator = "KT1KwLzwHwWvCRhU9bXNpkhBPSMUh6vHsnr9"
 
   useEffect(() => {
      const getLoggedIn = async () => {
@@ -105,67 +105,88 @@ export const TezosContextProvider = ({ children }) => {
     //  window.location.reload();
   }
 
-  async function collect({swap_id, price, contract, platform}) {
-    console.log(swap_id, platform)
-    try {
-      const interact = await tezos.wallet.at(contract)
-        const op = platform === 'VERSUM' ? await interact.methods['collect_swap'](1,swap_id)
-                  : platform === 'HEN' || 'TYPED' ? await interact.methods['collect'](swap_id)
-                  : platform === '8BIDOU'? await interact.methods['buy'](swap_id, 1, price) 
-                  : platform === 'OBJKT'? await interact.methods['fulfill_ask'](swap_id)
-                  : ''
+// async function getBigMap() {
+//   const contract = await tezos.wallet.at('KT1HbQepzV1nVGg8QVznG7z4RcHseD5kwqBn');
+//   const storage = await contract.storage();
+//   console.log(storage)
+//   return storage
+// }
 
-        if(op) {await op.send({
-          amount: price,
+async function take_market(id, amount) {
+  tezos.wallet
+  .at(operator)
+  .then((wallet) => {
+
+    return wallet.methods.take_market(id).send({
+          amount: parseFloat(amount),
           mutez: true,
           storageLimit: 310
-      }) 
-      // await op.confirmation(2)}
-    }
-
-    } catch(e) {
-        console.log('Error:', e);
-        return false;
-    }
-    return true;
-};
-
-async function getBigMap() {
-  const contract = await tezos.wallet.at('KT1HbQepzV1nVGg8QVznG7z4RcHseD5kwqBn');
-  const storage = await contract.storage();
-  console.log(storage)
-  return storage
+    });
+  })
+  .then((op) => {
+    console.log(`Waiting for ${op.opHash} to be confirmed...`);
+    return op.confirmation(1).then(() => op.opHash);
+  })
+  .then((hash) => console.log(`Operation injected: https://ithaca.tzstats.com/${hash}`))
+  .catch((error) => console.log(`Error: ${JSON.stringify(error, null, 2)}`));
 }
-async function proposal({objkts}) {
-  const contract = await tezos.wallet.at('kt1..');
-  const batch = tezos.wallet.batch() // or Tezos.contract.batch()
-  .withContractCall(contract.methods.interact('tezos'))
+
+async function claim_market(id) {
+  tezos.wallet
+  .at(operator)
+  .then((wallet) => {
+
+    return wallet.methods.repo_market(id).send()
+  })
+  .then((op) => {
+    console.log(`Waiting for ${op.opHash} to be confirmed...`);
+    return op.confirmation(1).then(() => op.opHash);
+  })
+  .then((hash) => console.log(`Operation injected: https://ithaca.tzstats.com/${hash}`))
+  .catch((error) => console.log(`Error: ${JSON.stringify(error, null, 2)}`));
+}
+
+async function make_market({fa2s, values}) {
+  console.log(fa2s)
+  console.log(values)
+  let transactions = []
+  let contract =''
+  fa2s.map(async p=>(
+    console.log(p),
+  contract = await tezos.wallet.at(p.contract_address),
+  transactions.push([{"kind": OpKind.TRANSACTION, ...contract.methods.update_operators(
+    { add_operator: {
+          operator: operator ,
+          token_id: parseFloat(p.token_id), 
+          owner: address }})}]) 
+  ))
+  contract = await tezos.wallet.at(operator)
+  console.log(contract)
+  transactions.push([{"kind": OpKind.TRANSACTION, ...contract.methods.make_market(
+    [{    amount: parseInt(values.loan_amount*1000000),
+          interest: values.interest, 
+          term: values.loan_term,
+          tokens: fa2s
+      
+        }])}])
+
+ fa2s.map(async p=>(
+  contract = await tezos.wallet.at(p.contract_address),
+  transactions.push([{"kind": OpKind.TRANSACTION, ...contract.methods.update_operators(
+    { remove_operator: {
+          operator: operator ,
+          token_id: parseFloat(p.tokenId), 
+          owner: address }})}]) 
+  ))
+  console.log(transactions)
+  const batch = tezos.wallet.batch(transactions)
+  
   const batchOp = await batch.send();
   console.log('Operation hash:', batchOp.hash);
-await batchOp.confirmation();
-    // try {
-      // const interact = await tezos.wallet.at(contract)
-      //   const op = platform === 'VERSUM' ? await interact.methods['collect_swap'](1,swap_id)
-      //             : platform === 'HEN' || 'TYPED' ? await interact.methods['collect'](swap_id)
-      //             : platform === '8BIDOU'? await interact.methods['buy'](swap_id, 1, price) 
-      //             : platform === 'OBJKT'? await interact.methods['fulfill_ask'](swap_id)
-      //             : ''
-
-      //   if(op) {await op.send({
-      //     amount: price,
-      //     mutez: true,
-      //     storageLimit: 310
-      // }) 
-      // await op.confirmation(2)}
-    // }
-
-    // } catch(e) {
-    //     console.log('Error:', e);
-    //     return false;
-    // }
-    return true;
+  await batchOp.confirmation();
+  return true;
 };
-  const wrapped = { ...app, tezos, proposal, getBigMap, collect, logIn, logOut, activeAccount, address, alias};
+  const wrapped = { ...app, tezos, make_market, take_market, claim_market, logIn, logOut, activeAccount, address, alias};
 
   return (
    

@@ -194,11 +194,11 @@ input:focus {
   cursor:pointer; 
   overflow:hidden;
 }
-@media screen and (max-width: 800px) {
+/* @media screen and (max-width: 800px) {
   .view{
     width:72vw;
   }
-}
+} */
 
 .descript{
   width: 60%; 
@@ -301,8 +301,15 @@ label {
   display: block;
   width: 66px;
   /* margin:11px; */
+  color:var(--background);
   background-color: var(--text);
 
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .form {
@@ -320,7 +327,6 @@ label {
 .formButton{
   border: 1px solid var(--text);
 
-  margin-left: 68px;
 }
 .market{
   width: 93vw;
@@ -335,7 +341,7 @@ label {
 .objkt{
   margin-top: 85px;
   position: absolute;
-  width: 30%;
+  width: 60%;
   border: 2px solid var(--text);
   background-color: var(--background);
   z-index:11;
