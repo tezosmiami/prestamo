@@ -163,11 +163,11 @@ await Promise.all(fa2s.map(async p=>{
 
   contract = await tezos.wallet.at(operator)
   transactions.push([{"kind": OpKind.TRANSACTION, ...contract.methods.make_market(
-    { amount: parseFloat(values.loan_amount*1000000),
-          interest: values.interest, 
-          term: values.loan_term,
-          tokens: fa2s
-        }).toTransferParams()
+          parseFloat(values.loan_amount*1000000),
+          parseFloat(values.interest), 
+          parseFloat(values.loan_term),
+          fa2s
+        ).toTransferParams({amount: 0, mutez: true, storageLimit: 150 })
       }])
 
 await Promise.all(fa2s.map(async p=>{
