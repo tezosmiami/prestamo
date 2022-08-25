@@ -90,12 +90,10 @@ const handleSubmit = (values) => {
              fa2s.push({
               'contract_address': p.contract.address, 
               'token_id': p.tokenId,
-              'token_amount': 1
+              'token_amount': parseFloat(1)
             })))
-            console.log(values)
-            console.log(fa2s)
     // setMarketPayload({fa2s: fa2s, terms: values });
-    app.make_market({fa2s, values})
+    app.make_market(fa2s, values)
    
   };
 
@@ -221,7 +219,7 @@ console.log(marketPayload)
                                 id="loan_term"
                                 name="loan_term"
                                 type="number"
-                                placeholder='days'
+                                placeholder='minutes'
                             />
                             <ErrorMessage
                                 component="span"
@@ -241,7 +239,7 @@ console.log(marketPayload)
                                 id="nterest"
                                 name="interest"
                                 type="number"
-                                placeholder='days'
+                                placeholder='%'
                             />
                             <ErrorMessage
                                 component="span"

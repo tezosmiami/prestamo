@@ -146,46 +146,49 @@ async function claim_market(id) {
   .catch((error) => console.log(`Error: ${JSON.stringify(error, null, 2)}`));
 }
 
-async function make_market({fa2s, values}) {
-  console.log(fa2s)
-  console.log(values)
+async function make_market(fa2s, values) {
   let transactions = []
   let contract =''
-  fa2s.map(async p=>(
-    console.log(p),
-  contract = await tezos.wallet.at(p.contract_address),
-  transactions.push([{"kind": OpKind.TRANSACTION, ...contract.methods.update_operators(
-    { add_operator: {
+
+await Promise.all(fa2s.map(async p=>{
+  contract = await tezos.wallet.at(p.contract_address)
+  return (transactions.push([{"kind": OpKind.TRANSACTION, ...contract.methods.update_operators(
+    [{add_operator: {
           operator: operator ,
           token_id: parseFloat(p.token_id), 
-          owner: address }})}]) 
-  ))
+          owner: address }}]).toTransferParams({ amount: 0, mutez: true, storageLimit: 150 })
+        }]))
+      }))
+
+
   contract = await tezos.wallet.at(operator)
-  console.log(contract)
   transactions.push([{"kind": OpKind.TRANSACTION, ...contract.methods.make_market(
-    [{    amount: parseInt(values.loan_amount*1000000),
+    { amount: parseFloat(values.loan_amount*1000000),
           interest: values.interest, 
           term: values.loan_term,
           tokens: fa2s
-      
-        }])}])
+        }).toTransferParams()
+      }])
 
- fa2s.map(async p=>(
-  contract = await tezos.wallet.at(p.contract_address),
-  transactions.push([{"kind": OpKind.TRANSACTION, ...contract.methods.update_operators(
-    { remove_operator: {
+await Promise.all(fa2s.map(async p=>{
+  contract = await tezos.wallet.at(p.contract_address)
+  return (transactions.push([{"kind": OpKind.TRANSACTION, ...contract.methods.update_operators(
+    [{remove_operator: {
           operator: operator ,
-          token_id: parseFloat(p.tokenId), 
-          owner: address }})}]) 
-  ))
+          token_id: parseFloat(p.token_id), 
+          owner: address }}]).toTransferParams({ amount: 0, mutez: true, storageLimit: 150 })
+        }]))
+      }))
+
   console.log(transactions)
-  const batch = tezos.wallet.batch(transactions)
-  
+ 
+  const batch = await tezos.wallet.batch(transactions)
   const batchOp = await batch.send();
   console.log('Operation hash:', batchOp.hash);
   await batchOp.confirmation();
   return true;
 };
+
   const wrapped = { ...app, tezos, make_market, take_market, claim_market, logIn, logOut, activeAccount, address, alias};
 
   return (
