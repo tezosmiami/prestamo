@@ -156,7 +156,7 @@ class Prestamo(sp.Contract):
         sp.set_type(market_id, sp.TNat)
         sp.verify(self.data.markets.contains(market_id), message="WRONG_market_ID")
         sp.verify(self.data.markets[market_id].taker == sp.some(sp.sender), message = "NOT_TAKER")
-        # sp.verify(self.data.markets[market_id].taker.is_some(), message = "MARKET_ALREADY_TAKEN")
+        sp.verify(self.data.markets[market_id].taker.is_some(), message = "MARKET_NOT_TAKEN")
         sp.verify(self.data.markets[market_id].active == True, message = "MARKET_NOT_ACTIVE" )    
         sp.verify(sp.now > self.data.markets[market_id].start_time.open_some().add_minutes(self.data.markets[market_id].term), message = "STILL_TIME")
         
@@ -174,7 +174,7 @@ class Prestamo(sp.Contract):
     @sp.entry_point
     def recover_market(self, market_id): 
         sp.set_type(market_id, sp.TNat)
-        sp.verify(self.data.markets.contains(market_id), message="WRONG_market_ID")
+        sp.verify(self.data.markets.contains(market_id), message="WRONG_MARKET_ID")
         sp.verify(self.data.markets[market_id].maker == sp.sender, message = "NOT_MAKER")
         sp.verify(self.data.markets[market_id].taker.is_some(), message = "MARKET_NOT_TAKEN")
         sp.verify(self.data.markets[market_id].active == True, message = "MARKET_NOT_ACTIVE" )

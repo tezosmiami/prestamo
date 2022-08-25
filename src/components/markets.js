@@ -28,14 +28,13 @@ export const getAmountwithInterest = (amount,interest) => {
   return total
 }
 export const checkTimesUp = (start_time, term) => {
-    //minutes for dev
-  //   console.log(Date.endtime)
-  // let end_time = new Date(start_time)
-  // console.log(end_time)
-  // console.log(Date.now > Date.end_time)
-  // console.log(end_time)
-
+  //minutes for dev check again
+  let st = new Date(start_time)
+  let end_time=st.getTime() + parseFloat(term) *60000
+  let now = Date.now()
+  return(end_time < now)
 }
+
 export const Markets = () => {
   const app = useTezosContext();
   const [objktView, setObjktView] = useState(false)
@@ -115,7 +114,7 @@ export const Markets = () => {
        <div className='container' style={{opacity: objktView && '.2'}}>
        {bigmap?.length > 0  && bigmap.map((p,i)=> (
                 console.log(p),
-        p.active &&
+        p.active && (!checkTimesUp() || app.address==(p.taker)) &&
        <div key={i} className='market'>
        <Masonry
         breakpointCols={breakpointColumns}
@@ -141,6 +140,10 @@ export const Markets = () => {
         </div>
        ))}
           </Masonry>
+            <div style={{alignItems: 'flex-start', margin: '11px'}}>
+          <a>maker: {p.maker.substr(0, 4) + "..." + p.maker.substr(-4)}</a>
+          {p.taker && <a>taker: {p.taker.substr(0, 4) + "..." + p.taker.substr(-4)}</a>}
+            </div>
         <p>
           <a style={{margin: '18px'}}>Amount: {p.amount/1000000}ꜩ</a>
           <a style={{margin: '18px'}}>Interest: {p.interest/10}%</a>
@@ -149,7 +152,7 @@ export const Markets = () => {
           {p.active && !p.taker && p.maker !== app.address && <button className='formButton' onClick = {() => {app.take_market(p.market_id, p.amount)}}>accept</button>}
           {p.active && !p.taker && app.address == p.maker && <button className='formButton' onClick = {() => {app.cancel_market(p.market_id)}}>cancel</button>}
           {p.active && p.taker && app.address == p.maker && !checkTimesUp(p.start_time, p.term) &&<button className='formButton' onClick = {() => {app.recover_market(p.market_id, getAmountwithInterest(p.amount,p.interest))}}>recover</button>}
-           {p.active && app.address == p.taker && p.taker &&  <button className='formButton'onClick = {() => {app.claim_market(p.market_id)}} >claim</button>}
+          {p.active && app.address == p.taker && p.taker && checkTimesUp(p.start_time, p.term) && <button className='formButton'onClick = {() => {app.claim_market(p.market_id)}} >claim</button>}
             </p>
           </div>
           
