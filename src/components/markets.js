@@ -4,6 +4,7 @@ import ReactPlayer from 'react-player'
 import Masonry from 'react-masonry-css'
 import { Objkt } from './objkt'
 import { useTezosContext } from "../context/tezos-context";
+import { parse } from 'graphql';
 
 const axios = require('axios')
 const breakpointColumns = {
@@ -15,13 +16,26 @@ const breakpointColumns = {
   680: 3,
 };
 
-export function hex2a(hex) {
+export const hex2a = (hex) => {
     var str = '';
     for (var i = 0; i < hex.length; i += 2)
         str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
     return str;
 }   
+export const getAmountwithInterest = (amount,interest) => {
+  interest = ((parseFloat(amount)/1000) * parseFloat(interest))
+  let total= interest + parseFloat(amount)
+  return total
+}
+export const checkTimesUp = (start_time, term) => {
+    //minutes for dev
+  //   console.log(Date.endtime)
+  // let end_time = new Date(start_time)
+  // console.log(end_time)
+  // console.log(Date.now > Date.end_time)
+  // console.log(end_time)
 
+}
 export const Markets = () => {
   const app = useTezosContext();
   const [objktView, setObjktView] = useState(false)
@@ -131,10 +145,11 @@ export const Markets = () => {
           <a style={{margin: '18px'}}>Amount: {p.amount/1000000}ꜩ</a>
           <a style={{margin: '18px'}}>Interest: {p.interest/10}%</a>
           <a style={{margin: '18px'}}>Term: {p.term} minutes</a>
-          {p.active && !p.taker && <button className='formButton' onClick= {() => {app.take_market(p.market_id, p?.amount)}}>accept</button>}
-          {p.active && !p.taker && app.address == p.maker && <button className='formButton'>cancel</button>}
-          {/* {p.active && wallet == p.maker && !p.taker && <button className='formButton'>recover</button>} */}
-           {p.active && app.address == p.taker && p.taker &&  <button className='formButton'onClick= {() => {app.claim_market(p.market_id)}} >claim</button>}
+          {/* {checkTimesUp(p.start_time,p.term)} */}
+          {p.active && !p.taker && p.maker !== app.address && <button className='formButton' onClick = {() => {app.take_market(p.market_id, p.amount)}}>accept</button>}
+          {p.active && !p.taker && app.address == p.maker && <button className='formButton' onClick = {() => {app.cancel_market(p.market_id)}}>cancel</button>}
+          {p.active && p.taker && app.address == p.maker && !checkTimesUp(p.start_time, p.term) &&<button className='formButton' onClick = {() => {app.recover_market(p.market_id, getAmountwithInterest(p.amount,p.interest))}}>recover</button>}
+           {p.active && app.address == p.taker && p.taker &&  <button className='formButton'onClick = {() => {app.claim_market(p.market_id)}} >claim</button>}
             </p>
           </div>
           

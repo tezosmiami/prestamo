@@ -152,35 +152,33 @@ async function make_market(fa2s, values) {
 
 await Promise.all(fa2s.map(async p=>{
   contract = await tezos.wallet.at(p.contract_address)
-  return (transactions.push([{"kind": OpKind.TRANSACTION, ...contract.methods.update_operators(
+  return (transactions.push({"kind": OpKind.TRANSACTION, ...contract.methods.update_operators(
     [{add_operator: {
           operator: operator ,
           token_id: parseFloat(p.token_id), 
-          owner: address }}]).toTransferParams({ amount: 0, mutez: true, storageLimit: 150 })
-        }]))
+          owner: address }}]).toTransferParams({ amount: 0, mutez: true, storageLimit: 180 })
+        }))
       }))
 
 
   contract = await tezos.wallet.at(operator)
-  transactions.push([{"kind": OpKind.TRANSACTION, ...contract.methods.make_market(
+  transactions.push({"kind": OpKind.TRANSACTION, ...contract.methods.make_market(
           parseFloat(values.loan_amount*1000000),
-          parseFloat(values.interest), 
+          parseFloat(values.interest*10), 
           parseFloat(values.loan_term),
           fa2s
-        ).toTransferParams({amount: 0, mutez: true, storageLimit: 150 })
-      }])
+        ).toTransferParams({amount: 0, mutez: true, storageLimit: 360 })
+      })
 
 await Promise.all(fa2s.map(async p=>{
   contract = await tezos.wallet.at(p.contract_address)
-  return (transactions.push([{"kind": OpKind.TRANSACTION, ...contract.methods.update_operators(
+  return (transactions.push({"kind": OpKind.TRANSACTION, ...contract.methods.update_operators(
     [{remove_operator: {
           operator: operator ,
           token_id: parseFloat(p.token_id), 
-          owner: address }}]).toTransferParams({ amount: 0, mutez: true, storageLimit: 150 })
-        }]))
+          owner: address }}]).toTransferParams({ amount: 0, mutez: true, storageLimit: 180 })
+        }))
       }))
-
-  console.log(transactions)
  
   const batch = await tezos.wallet.batch(transactions)
   const batchOp = await batch.send();
@@ -189,7 +187,35 @@ await Promise.all(fa2s.map(async p=>{
   return true;
 };
 
-  const wrapped = { ...app, tezos, make_market, take_market, claim_market, logIn, logOut, activeAccount, address, alias};
+async function recover_market(id,amount) {
+  tezos.wallet
+  .at(operator)
+  .then((wallet) => {
+    return wallet.methods.recover_market(id).send(amount)
+  })
+  .then((op) => {
+    console.log(`Waiting for ${op.opHash} to be confirmed...`);
+    return op.confirmation(1).then(() => op.opHash);
+  })
+  .then((hash) => console.log(`Operation injected: https://ithaca.tzstats.com/${hash}`))
+  .catch((error) => console.log(`Error: ${JSON.stringify(error, null, 2)}`));
+}
+
+async function cancel_market(id) {
+  tezos.wallet
+  .at(operator)
+  .then((wallet) => {
+    return wallet.methods.cancel_market(id).send()
+  })
+  .then((op) => {
+    console.log(`Waiting for ${op.opHash} to be confirmed...`);
+    return op.confirmation(1).then(() => op.opHash);
+  })
+  .then((hash) => console.log(`Operation injected: https://ithaca.tzstats.com/${hash}`))
+  .catch((error) => console.log(`Error: ${JSON.stringify(error, null, 2)}`));
+}
+
+  const wrapped = { ...app, tezos, make_market, take_market, claim_market, recover_market, cancel_market, logIn, logOut, activeAccount, address, alias};
 
   return (
    

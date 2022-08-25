@@ -40,7 +40,7 @@ const breakpointColumns = {
   680: 3,
 };
 
-export const Create = () => {
+export const Make = () => {
   const [objktView, setObjktView] = useState(false)
   const [objkt, setObjkt] = useState({});
   const [view, setView] = useState(0)
@@ -56,7 +56,7 @@ console.log(app.address)
   useEffect(() => {
     let bytes=''
     const getObjkts = async () => {
-      let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/tokens/balances?account=${account}`)
+      let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/tokens/balances?account=${account}&balance.gt=0`)
      console.log(result)
      setObjkts(result.data)
   }
@@ -102,22 +102,19 @@ const handleSubmit = (values) => {
     setObjkt(o)
     setObjktView(true)
   }
-// const triggerMarket = () => {
-//     setIsMinting(true)
-//     // handleMint(mintPayload);
-// };
-console.log(objkts)
-console.log(marketPayload)
+
   return (
       <>
        <div style={{marginTop:'11px'}}>
-          select objkts for collateral
+       <div>
+        {objkts && objkts.length == 0 ? 'no objkts in this Wallet'
+          : 'select objkts for collateral'}
+       </div>
        </div>
       
        <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '1px', marginTop: '27px'}} />
           <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '18px'}} />
-    
-
+  
        {count > 0 && <button onClick= {() => setSubmit(!submit)}><p>{!submit ? 'next >' : '< back'}</p></button>}
        <div className='container' >
        <Masonry
@@ -143,6 +140,7 @@ console.log(marketPayload)
         
         </div>
           ))} 
+
           </Masonry>
           </div>
           {objktView && <Objkt objkt={objkt} setObjktView={setObjktView}/>}

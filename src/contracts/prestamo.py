@@ -178,7 +178,7 @@ class Prestamo(sp.Contract):
         sp.verify(self.data.markets[market_id].maker == sp.sender, message = "NOT_MAKER")
         sp.verify(self.data.markets[market_id].taker.is_some(), message = "MARKET_NOT_TAKEN")
         sp.verify(self.data.markets[market_id].active == True, message = "MARKET_NOT_ACTIVE" )
-        sp.verify(sp.now < self.data.markets[market_id].start_time.open_some().add_minutes(self.data.markets[market_id].term), message = "STILL_TIME")    
+        sp.verify(sp.now < self.data.markets[market_id].start_time.open_some().add_minutes(self.data.markets[market_id].term), message = "TIMES_UP")    
         
         interest_amount = sp.local(
                 "interest_amount", sp.split_tokens(self.data.markets[market_id].amount, self.data.markets[market_id].interest, 1000))  

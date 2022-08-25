@@ -53,7 +53,7 @@ function App() {
        </Route>
       </Routes>
     </div>
-       <a href={`https://www.teztok.com`} target="blank"
+       <a href={`https://www.tzkt.io`} target="blank"
          rel="noopener noreferrer"> indexed by tzkt</a>
        <p>experimental dApp - enjoy at your own risk. . .</p>
     </>
