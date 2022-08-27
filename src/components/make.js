@@ -50,19 +50,18 @@ export const Make = () => {
   const [objkts, setObjkts] = useState()
   const [submit, setSubmit] = useState(false)
   const  app = useTezosContext();
-  let { account } = useParams();
-  if (!account) {account = app.address};
-  
-console.log(app.address)
+
+  const account = app.address
   useEffect(() => {
     let bytes=''
     const getObjkts = async () => {
-      let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/tokens/balances?account=${account}&balance.gt=0`)
+      if(account) {
+      let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/tokens/balances?account=${app.address}&balance.gt=0`)
      console.log(result)
-     setObjkts(result.data)
+     setObjkts(result.data)}
   }
     getObjkts();
-  }, [])
+  }, [account])
 
 
  
@@ -152,7 +151,7 @@ const handleSubmit = (values) => {
          columnClassName='column'>
       
         {objkts && submit && choices.map((p,i)=> (
-          console.log(p),
+
         // <Link  key={p.metadata.artifactUri+ p.token_id} to={`/${p.fa2_address}/${p.token_id}`}>
         <div  key={i} onClick= {() => {showObjkt(p)}}>
         {p.metadata.formats[0].mimeType.includes('image') && p.metadata.formats[0].mimeType !== 'image/svg+xml' ?

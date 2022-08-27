@@ -38,8 +38,9 @@ export const checkTimesUp = (start_time, term) => {
 export const Profile = () => {
   const app = useTezosContext();
   const [objktView, setObjktView] = useState(false)
-  const [objkt, setObjkt] = useState({});
-  const [bigmap, setBigmap] = useState()
+  const [objkt, setObjkt] = useState({})
+  const [maker, setMaker] = useState()
+  const [taker, setTaker] = useState()
   const [tokens,setTokens] = useState([])
 
   useEffect(() => {
@@ -56,8 +57,8 @@ export const Profile = () => {
       token.metadata = metadata
     } 
   }
-     
-    setBigmap(markets.filter(e => (e.maker==app.address || e.taker==app.address)))
+    setMaker(markets.filter(e => (e.maker==app.address)))
+    setTaker(markets.filter(e => (e.taker==app.address)))
   }
     getMarket();
   }, [])
@@ -78,22 +79,21 @@ export const Profile = () => {
     setObjkt(o)
     setObjktView(true)
   }
-  console.log(bigmap)
+
   return (
       <>
       
        <div style={{marginTop:'11px'}}>
-        Markets
+        Account Markets
        </div>
-
+      
        <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '1px', marginTop: '27px'}} />
           <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '18px'}} />
          {/* <p><button className='formButton'>create</button></p><p/> */}
           {objktView &&<Objkt objkt={objkt} setObjktView={setObjktView}/>}
-      
        <div className='container' style={{opacity: objktView && '.2'}}>
-        
-       {bigmap?.length > 0  && bigmap.reverse().map((p,i)=> (
+       <p>Maker</p>
+       {maker?.length > 0  && maker.reverse().map((p,i)=> (
                 console.log(p),
         p.active && (!checkTimesUp() || app.address==(p.taker)) &&
        <div key={i} className='market'>
@@ -145,7 +145,63 @@ export const Profile = () => {
           ))}
         
       </div>
- 
+
+
+
+      <div className='container' style={{opacity: objktView && '.2'}}>
+      <p>Taker</p>
+       {taker?.length > 0  && taker.reverse().map((p,i)=> (
+        p.active && (!checkTimesUp() || app.address==(p.taker)) &&
+       <div key={i} className='market'>
+        
+       <Masonry
+        breakpointCols={breakpointColumns}
+        className= 'grid'
+        columnClassName='column'>
+
+        {p.tokens.map((q,i) => (
+        <div key={i} onClick= {() => {showObjkt(q)}}>
+        {q.metadata.formats[0].mimeType?.includes('image') && q.metadata.formats[0].mimeType !== 'image/svg+xml' ?
+      
+        <img alt='' className= 'pop'  src={`https://ipfs.io/ipfs/${q.metadata.displayUri ? q.metadata.displayUri?.slice(7) : q.metadata.artifactUri?.slice(7)}`}/> 
+        : q.metadata.formats[0].mimeType.includes('video') ? 
+         <div className='pop'>
+           <ReactPlayer url={'https://ipfs.io/ipfs/' + q.metadata.artifactUri?.slice(7)} width='100%' height='100%' muted={true} playing={false} loop={false}/>
+          </div>
+          : q.metadata.formats[0].mimeType.includes('audio') ?  
+          <div className= 'pop'>
+            <img className= 'pop' alt='' src={'https://ipfs.io/ipfs/' + q.metadata.displayUri.slice(7)} />
+            <audio style={{width:'93%'}} src={'https://ipfs.io/ipfs/' + q.metadata.artifactUri.slice(7)} controls />
+          </div>
+        : q.metadata.formats[0].mimeType.includes('text') ? <div className='text'>{q.metadata.description}</div> : ''}
+
+        </div>
+       ))}
+          </Masonry>
+
+          
+        <div className='marketInfo' style={{alignItems:'flex-start'}}>
+        <a style={{margin: '15px'}}>Maker: {p.maker &&p.maker.substr(0, 4) + "..." + p.maker.substr(-4)}</a>
+         <a style={{margin: '15px'}}>Amount: {p.amount/1000000}ꜩ</a>
+          <a style={{margin: '15px'}}>Interest: {p.interest/10}%</a>
+          <a style={{margin: '15px'}}>Term: {p.term} Minutes</a> 
+          {p.taker && <a >Taker: {p.taker.substr(0, 4) + "..." + p.taker.substr(-4)}</a>}
+
+          <div style={{flexDirection: 'row', width:'auto', alignItems: 'flex-start'}}>
+          {p.active && !p.taker && p.maker !== app.address && <button className='formButton' onClick = {() => {app.take_market(p.market_id, p.amount)}}>accept</button>}
+          {p.active && !p.taker && app.address == p.maker && <button className='formButton' onClick = {() => {app.cancel_market(p.market_id)}}>cancel</button>}
+          {p.active && p.taker && app.address == p.maker
+           && !checkTimesUp(p.start_time, p.term)
+           &&<button className='formButton' onClick = {() => {app.recover_market(p.market_id, getAmountwithInterest(p.amount,p.interest))}}> recover</button>}
+          {p.active && app.address == p.taker && p.taker && checkTimesUp(p.start_time, p.term) && <button className='formButton'onClick = {() => {app.claim_market(p.market_id)}} >claim</button>}
+          </div>
+            </div>
+          </div>
+          
+          ))}
+        
+      </div>
+
       <div><p/></div>
      
   </>

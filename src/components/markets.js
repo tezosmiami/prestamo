@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-
+import { Link } from "react-router-dom";
 import ReactPlayer from 'react-player'
 import Masonry from 'react-masonry-css'
 import { Objkt } from './objkt'
@@ -74,7 +74,6 @@ export const Markets = () => {
       for(let token of result.data[i].value.tokens){
       const metadata = await getMetadata(token.contract_address, token.token_id)
       token.metadata = metadata
-      console.log(metadata)
     } 
   }
     setBigmap(markets)
@@ -98,7 +97,7 @@ export const Markets = () => {
     setObjkt(o)
     setObjktView(true)
   }
-  console.log(bigmap)
+
   return (
       <>
       
@@ -112,12 +111,15 @@ export const Markets = () => {
           {objktView &&<Objkt objkt={objkt} setObjktView={setObjktView}/>}
       
        <div className='container' style={{opacity: objktView && '.2'}}>
-        
+      {app.address && 
+        <Link style={{marginRight:'27px'}} to={`/Make`}>
+          <div className='formButton'>Make Market</div><p/>
+       </Link>}
        {bigmap?.length > 0  && bigmap.reverse().map((p,i)=> (
-                console.log(p),
+
         p.active && (!checkTimesUp() || app.address==(p.taker)) &&
-       <div key={i} className='market'>
-        
+
+       <div key={i} className='market'>  
        <Masonry
         breakpointCols={breakpointColumns}
         className= 'grid'
