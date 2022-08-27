@@ -79,19 +79,19 @@ export const Profile = () => {
     setObjkt(o)
     setObjktView(true)
   }
-
+  
   return (
       <>
       
        <div style={{marginTop:'11px'}}>
         Account Markets
        </div>
-      
+       {maker && taker && maker.length > 0 && taker.length > 0 && <div>No Markets</div>}
        <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '1px', marginTop: '27px'}} />
           <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '18px'}} />
           {objktView &&<Objkt objkt={objkt} setObjktView={setObjktView}/>}
        <div className='container' style={{opacity: objktView && '.2'}}>
-       {maker.length >0 && <p>Maker</p>}
+       {maker?.length >0 && <p>Maker</p>}
        {maker?.length > 0  && maker.reverse().map((p,i)=> (
                 console.log(p),
         p.active && (!checkTimesUp() || app.address==(p.taker)) &&
@@ -148,7 +148,7 @@ export const Profile = () => {
 
 
       <div className='container' style={{opacity: objktView && '.2'}}>
-      {taker.length > 0 && <p>Taker</p>}
+      {taker?.length > 0 && <p>Taker</p>}
        {taker?.length > 0  && taker.reverse().map((p,i)=> (
         p.active && (!checkTimesUp() || app.address==(p.taker)) &&
        <div key={i} className='market'>
