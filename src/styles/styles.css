@@ -103,6 +103,21 @@ a{
     font-size: 48px;
   }
 }
+@media screen and (max-width: 550px) {
+  .purple{
+    font-size: 38px;
+  }
+}
+@media screen and (max-width: 550px) {
+  .purple{
+    font-size: 28px;
+  }
+}
+@media screen and (max-width: 450px) {
+  .purple{
+    font-size: 18px;
+  }
+}
 .container{
     width: 98vw;
     display: flex;
@@ -156,7 +171,7 @@ a{
  .icon{
      font-size: 23px;
      color: var(--text);
-     margin-left:27px;
+     margin-left:9px;
 
 
     
