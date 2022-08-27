@@ -86,7 +86,7 @@ export const Profile = () => {
        <div style={{marginTop:'11px'}}>
         Account Markets
        </div>
-       {maker && taker && maker.length > 0 && taker.length > 0 && <div>No Markets</div>}
+       {maker && taker && maker.length < 1 && taker.length < 1 && <div>No Markets</div>}
        <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '1px', marginTop: '27px'}} />
           <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '18px'}} />
           {objktView &&<Objkt objkt={objkt} setObjktView={setObjktView}/>}
