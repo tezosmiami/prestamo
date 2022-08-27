@@ -66,7 +66,7 @@ export const Markets = () => {
     let bytes=''
     const markets =[]
     const getMarket = async () => {
-    const result = await axios.get('https://api.jakartanet.tzkt.io/v1/bigmaps/106622/keys')
+    const result = await axios.get('https://api.jakartanet.tzkt.io/v1/bigmaps/107783/keys')
 
     for (let i=0; i < result.data.length; i++){
       result.data[i].value.market_id = result.data[i].key

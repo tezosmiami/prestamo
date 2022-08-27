@@ -1,7 +1,18 @@
+
+
 import smartpy as sp
 
 
 class FA2(sp.Contract):
+    """This contract tries to simplify the FA2 contract template example in
+    smartpy.io v0.9.0.
+    The FA2 template was originally developed by Seb Mondet:
+    https://gitlab.com/smondet/fa2-smartpy
+    The contract follows the FA2 standard specification:
+    https://gitlab.com/tezos/tzip/-/blob/master/proposals/tzip-12/tzip-12.md
+    
+    Modified from @jagracar
+    """
 
     LEDGER_KEY_TYPE = sp.TPair(
         # The owner of the token editions

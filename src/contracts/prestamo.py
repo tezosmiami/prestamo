@@ -108,7 +108,7 @@ class Prestamo(sp.Contract):
             term=sp.TInt,
             tokens=sp.TList(Prestamo.token_type)).layout(
                 ("amount", ("interest", ("term", "tokens")))))
-        sp.verify(~self.data.markets_paused, message="markets_PAUSED")
+        sp.verify(~self.data.markets_paused, message="MARKETS_PAUSED")
         sp.verify(params.amount > sp.tez(1), message="LOW_AMOUNT")
         sp.verify(sp.len(params.tokens) > 0, message="ZERO_FA2s")
         sp.verify(params.term > 0, message="ZERO_TERM")
@@ -143,6 +143,7 @@ class Prestamo(sp.Contract):
     def take_market(self,market_id):
          sp.set_type(market_id, sp.TNat)
          sp.verify(self.data.markets.contains(market_id), message="WRONG_market_ID")
+         sp.verify(~self.data.markets_paused, message="MARKETS_PAUSED")
          sp.verify(self.data.markets[market_id].active == True, message ="MARKET_NOT_ACTIVE")
          sp.verify(self.data.markets[market_id].taker == sp.none, message="MARKET_TAKEN") 
          sp.verify(sp.sender != self.data.markets[market_id].maker, message="MAKER_TAKER")
@@ -256,13 +257,21 @@ class Prestamo(sp.Contract):
         self.check_admin()
         self.data.fees_recipient = fees_to
 
+    @sp.entry_point
+    def toggle_paused(self):
+        self.check_admin()
+        self.data.markets_paused(~self.data.markets_paused) 
 
     @sp.onchain_view()
     def get_admin(self):
         sp.result(self.data.admin)
+    
+    @sp.onchain_view()
+    def market_is_active(self,market_id):
+        sp.result(self.data.markets[market_id].active)
 
     @sp.onchain_view()
-    def markets_active(self):
+    def markets_paused(self):
         sp.result(self.data.markets_paused)
 
     @sp.onchain_view()
@@ -272,7 +281,7 @@ class Prestamo(sp.Contract):
         sp.result(self.data.markets[market_id])
 
     @sp.onchain_view()
-    def get_swaps_counter(self):
+    def get_markets_counter(self):
         sp.result(self.data.counter)
 
     @sp.onchain_view()
@@ -280,24 +289,10 @@ class Prestamo(sp.Contract):
         sp.result(self.data.fee)
 
     @sp.onchain_view()
-    def get_fee_recipient(self):
+    def get_fees_recipient(self):
         sp.result(self.data.fees_recipient)
 
 sp.add_compilation_target("prestamo", Prestamo(
     admin=sp.address("tz1ag87A25Q3uAHoDXGiJz6Bwv6uTefEFEqN"),
-    metadata=sp.utils.metadata_of_url("ipfs://aaa"),
+    metadata=sp.utils.metadata_of_url("ipfs://QmdjyY7GuajM785KaQfZiMLv89h2Y4w5kL5gCPSvXBhYGT"),
     fee=sp.nat(18)))
-
-@sp.add_test(name="Prestamo")
-def test():
-    sc = sp.test_scenario()
-    sc.table_of_contents()
-    sc.h1("Accounts")
-    sc.show(["tz1M9CMEtsXm3QxA7FmMU2Qh7xzsuGXVbcDr"])
-    sc.h2("Prestamo")
-    c1 = Prestamo(
-      admin=sp.address("tz1ag87A25Q3uAHoDXGiJz6Bwv6uTefEFEqN"),
-      metadata=sp.utils.metadata_of_url("ipfs://aaa"),
-      fee=sp.nat(18)
-    )
-    sc += c1

@@ -19,7 +19,7 @@
       "implementations": [ { "michelsonStorageView": { "returnType": { "prim": "nat" }, "code": [ { "prim": "CAR" }, { "prim": "GET", "args": [ { "int": "3" } ] } ] } } ]
     },
     {
-      "name": "get_fee_recipient",
+      "name": "get_fees_recipient",
       "pure": false,
       "implementations": [ { "michelsonStorageView": { "returnType": { "prim": "address" }, "code": [ { "prim": "CAR" }, { "prim": "GET", "args": [ { "int": "4" } ] } ] } } ]
     },
@@ -90,19 +90,43 @@
               { "prim": "CAR" },
               { "prim": "SWAP" },
               { "prim": "GET" },
-              { "prim": "IF_NONE", "args": [ [ { "prim": "PUSH", "args": [ { "prim": "int" }, { "int": "277" } ] }, { "prim": "FAILWITH" } ], [] ] }
+              { "prim": "IF_NONE", "args": [ [ { "prim": "PUSH", "args": [ { "prim": "int" }, { "int": "281" } ] }, { "prim": "FAILWITH" } ], [] ] }
             ]
           }
         }
       ]
     },
     {
-      "name": "get_swaps_counter",
+      "name": "get_markets_counter",
       "pure": false,
       "implementations": [ { "michelsonStorageView": { "returnType": { "prim": "nat" }, "code": [ { "prim": "CAR" }, { "prim": "CAR" }, { "prim": "CDR" } ] } } ]
     },
     {
-      "name": "markets_active",
+      "name": "market_is_active",
+      "pure": false,
+      "implementations": [
+        {
+          "michelsonStorageView": {
+            "parameter": { "prim": "nat" },
+            "returnType": { "prim": "bool" },
+            "code": [
+              { "prim": "UNPAIR" },
+              { "prim": "SWAP" },
+              { "prim": "GET", "args": [ { "int": "3" } ] },
+              { "prim": "CAR" },
+              { "prim": "SWAP" },
+              { "prim": "GET" },
+              { "prim": "IF_NONE", "args": [ [ { "prim": "PUSH", "args": [ { "prim": "int" }, { "int": "271" } ] }, { "prim": "FAILWITH" } ], [] ] },
+              { "prim": "CAR" },
+              { "prim": "CAR" },
+              { "prim": "CAR" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "markets_paused",
       "pure": false,
       "implementations": [ { "michelsonStorageView": { "returnType": { "prim": "bool" }, "code": [ { "prim": "GET", "args": [ { "int": "3" } ] }, { "prim": "CDR" } ] } } ]
     }

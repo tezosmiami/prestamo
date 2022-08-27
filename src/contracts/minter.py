@@ -1,6 +1,12 @@
 import smartpy as sp
 
-class GhostMinter(sp.Contract):
+class Minter(sp.Contract):
+
+    """A basic minter contract for the extended FA2 token contract.
+
+        Modified from @jagracar
+    """
+
 
     royalties_type = sp.TRecord(
         address=sp.TAddress,

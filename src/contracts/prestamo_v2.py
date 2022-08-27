@@ -1,7 +1,10 @@
 import smartpy as sp
 
+#   Experimental and unfinished version 2 implementing reward $presta token
+#   
 
 class Prestamo(sp.Contract):
+
 
     reward_type = sp.TRecord(
         contract_address=sp.TAddress,
