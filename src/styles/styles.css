@@ -386,3 +386,11 @@ input::-webkit-inner-spin-button {
     align-items: 'flex-start';
   }
 }
+
+.menubar{
+  width: 27px;
+  background-color: var(--text);
+  height: 3px;
+  margin-left:18px;
+  transition: all 0.2s linear;
+}

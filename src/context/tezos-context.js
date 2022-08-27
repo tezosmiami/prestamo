@@ -71,7 +71,7 @@ export const TezosContextProvider = ({ children }) => {
       getLoggedIn();
     }, [tezos]);
   
-  async function logIn() {
+  async function sync() {
     app.currentWallet && await app.currentWallet?.logOut();
     await wallet.client.clearActiveAccount();
     await wallet.client.requestPermissions({
@@ -93,7 +93,7 @@ export const TezosContextProvider = ({ children }) => {
    
   }
 
-  async function logOut() {
+  async function unsync() {
     await wallet.client.clearActiveAccount();
     setActiveAccount("")
     setAddress("");
@@ -211,7 +211,7 @@ async function cancel_market(id) {
   .catch((error) => console.log(`Error: ${JSON.stringify(error, null, 2)}`));
 }
 
-  const wrapped = { ...app, tezos, make_market, take_market, claim_market, recover_market, cancel_market, logIn, logOut, activeAccount, address, alias};
+  const wrapped = { ...app, tezos, make_market, take_market, claim_market, recover_market, cancel_market, sync, unsync, activeAccount, address, alias};
 
   return (
    

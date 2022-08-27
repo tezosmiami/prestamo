@@ -1,50 +1,38 @@
 import React, { useState, useEffect } from 'react'
-import { useTezosContext } from "./context/tezos-context";
-import { Routes, Route, Link } from "react-router-dom";
+import { useTezosContext } from "./context/tezos-context"
+import { Routes, Route, Link } from 'react-router-dom'
 import { Home } from './pages/Home'
 import { Wallet } from './pages/Wallet'
 import { Market } from './pages/Market'
-// import { Objkt } from './pages/Objkt'
-import { LightButton } from './components/light-button';
-import "./styles/styles.css";
-
-// const fonts = ['Halo', 'Advantage', 'Faster One', 'Monofett', 'Sonsie One', 'Libre Barcode 39 Text','Monoton']
+import { Menu } from './components/menu'
+import { LightButton } from './components/light-button'
+import "./styles/styles.css"
 
 function App() {
   const  app = useTezosContext();
-
-
-  
-
-  // useEffect(() => {
-  //   var r = document.querySelector(':root')
-  //   r.style.setProperty('--font', fonts[Math.floor(Math.random()* fonts.length)])
-  // }, [])
-
+  const [open, setOpen] = useState(false)
 
   return(
     <>
     <header>
-   
     <Link className='purple' to="/">prestamo</Link>
     <LightButton />
  
     <div style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
     {app.address && <Link to={`/${app.alias || app.address}`}>
-    {(app.alias.length > 0 && app.alias + ' / ') || (app.address.substr(0, 4) + "..." + app.address.substr(-4)+' / ')}
+    {(app.alias.length > 0 && app.alias) || (app.address.substr(0, 4) + "..." + app.address.substr(-4))}
       </Link>}
-      <button onClick={() => !app.activeAccount ? app.logIn() : app.logOut()}> 
-        {!app.activeAccount ? "sync" : "unsync"}
+      <button onClick={() => !app.activeAccount ? app.sync() : setOpen(!open)}> 
+        {!app.activeAccount ? "sync" : <div className='menubar' style={{transform: open ? 'rotate(90deg' : ''}}/>}
       </button>
       </div>
       
     </header>     
-     <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '18px'}} />
-
-
-    
-
-     <div>
+     <div style= {{borderBottom: '3px dashed', width: '88%', marginTop: '1px', marginBottom: '18px'}} />
+  
+    {open &&<Menu app={app} open={open} setOpen={setOpen}/>}
+  
+     <div style={{opacity:open && '0.3'}}>
      <Routes>
         <Route path="/" element={<Home />} />
         <Route path='/:account' element={<Wallet />} />
@@ -54,7 +42,7 @@ function App() {
        </Route> */}
       </Routes>
     </div>
-    <a href={`https://faucet.jakartanet.teztnets.xyz/`} target="blank"
+    <a href={`https:sa//faucet.jakartanet.teztnets.xyz/`} target="blank"
          rel="noopener noreferrer"> ꜩ faucet </a><p/>
        <a href={`https://www.tzkt.io`} target="blank"
          rel="noopener noreferrer"> Indexed by tzkt</a>

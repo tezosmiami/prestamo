@@ -111,10 +111,10 @@ export const Markets = () => {
           {objktView &&<Objkt objkt={objkt} setObjktView={setObjktView}/>}
       
        <div className='container' style={{opacity: objktView && '.2'}}>
-      {app.address && 
+      {/* {app.address && 
         <Link style={{marginRight:'27px'}} to={`/Make`}>
           <div className='formButton'>Make Market</div><p/>
-       </Link>}
+       </Link>} */}
        {bigmap?.length > 0  && bigmap.reverse().map((p,i)=> (
 
         p.active && (!checkTimesUp() || app.address==(p.taker)) &&
