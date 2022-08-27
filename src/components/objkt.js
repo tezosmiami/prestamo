@@ -1,9 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { useTezosContext } from "../context/tezos-context";
-import { request, gql } from 'graphql-request'
-import useSWR, { useSWRConfig } from 'swr';
+import React from 'react'
 import ReactPlayer from 'react-player'
-import { Link } from 'react-router-dom';
+
 
 export const Objkt = ({setObjktView, objkt}) => {
 return(
@@ -26,7 +23,7 @@ return(
    
     : objkt.metadata.formats[0].mimeType.includes('audio') ?  
     <div className='view'>
-       <img className='view' style={{width:'90%', margin: '12px'}} src={'https://ipfs.io/ipfs/' + objkt.metadata.displayUri.slice(7)} />
+       <img alt='' className='view' style={{width:'90%', margin: '12px'}} src={'https://ipfs.io/ipfs/' + objkt.metadata.displayUri.slice(7)} />
       <audio  style={{ margin: '3px'}}src={'https://ipfs.io/ipfs/' + objkt.metadata.artifactUri.slice(7)} controls />
     </div>
     :  objkt.metadata.formats[0].mimeType.includes('text') ? <a className='view' href = {`https://ipfs.io/ipfs/${objkt.metadata.artifactUri.slice(7)}`} target='blank'  rel='noopener noreferrer'><div className='textObjkt'>{objkt.metadata.description}</div></a> : null}
@@ -41,7 +38,7 @@ return(
             
             <p>created by: {objkt.metadata.creators[0].substr(0, 5) + "..." + objkt.metadata.creators[0].substr(-5)}</p>
             {/* <p>editions: {objkt.metadata.editions}</p> */}
-            <a>[-]</a>
+            <div>[-]</div>
             <p>contract: {objkt.contract_address ? objkt.contract_address.substr(0, 5) + "..." + objkt.contract_address.substr(-5)
                           : objkt.contract.address.substr(0, 5) + "..." + objkt.contract.address.substr(-5)}</p>
                {/* <div>

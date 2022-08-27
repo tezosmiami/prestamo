@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import ReactPlayer from 'react-player'
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Objkt } from './objkt'
 import Masonry from 'react-masonry-css'
 import { useTezosContext } from "../context/tezos-context";
@@ -40,23 +40,21 @@ const breakpointColumns = {
 
 export const Make = () => {
   const [objktView, setObjktView] = useState(false)
-  const [objkt, setObjkt] = useState({});
-  const [view, setView] = useState(0)
-  const [choices, setChoices] = useState([])
+  const [choices, setChoices] =useState([])
+  const [objkt, setObjkt] = useState({})
   const [count, setCount] = useState(0)
   const [marketPayload, setMarketPayload] = useState({})
   const [objkts, setObjkts] = useState()
   const [submit, setSubmit] = useState(false)
   const [message, setMessage] = useState('')
-  const  app = useTezosContext();
-  const navigate = useNavigate();
+  const  app = useTezosContext()
+  const navigate = useNavigate()
   const account = app.address
 
   useEffect(() => {
-    let bytes=''
     const getObjkts = async () => {
       if(account) {
-      let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/tokens/balances?account=${app.address}&balance.gt=0`)
+      let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/tokens/balances?account=${account}&balance.gt=0`)
      setObjkts(result.data)}
   }
     getObjkts();
@@ -65,13 +63,13 @@ export const Make = () => {
 
  
   
-  const add_remove = (p) => {
+  const add_remove = (c) => {
   
-    if(choices.includes(p)){
-      choices.splice(choices.findIndex(item => item === p), 1)
+    if(choices.includes(c)){
+      choices.splice(choices.findIndex(item => item === c), 1)
       setCount(count-1)
   } else {
-    choices.push(p)
+    setChoices([...choices, c])
     setCount(count+1)
   }
   // choices.length > 0 ? setSubmit(true) : setSubmit(false)
@@ -95,7 +93,7 @@ const handleSubmit = async (values) => {
      !app.address && setMessage('please sync. . .') 
       if(app.address) try {
           setMessage('ready wallet. . .');
-          isMade = await  app.make_market(fa2s, values)
+          isMade = await app.make_market(fa2s, values)
           setMessage(isMade ? 'Congratulations - Market Made!' : 'transaction issues - try again. . .');
         
       } catch(e) {
@@ -105,7 +103,7 @@ const handleSubmit = async (values) => {
       setTimeout(() => {
           setMessage(null)
       }, 3200)
-
+      setMarketPayload({fa2s,values})
       isMade && navigate('/')
     }
     
@@ -122,7 +120,7 @@ const handleSubmit = async (values) => {
       <>
        <div style={{marginTop:'11px'}}>
        <div>
-        {objkts && objkts.length == 0 ? 'no objkts in this Wallet'
+        {objkts && objkts.length === 0 ? 'no objkts in this Wallet'
           : 'select objkts for collateral'}
        </div>
        </div>
@@ -134,7 +132,7 @@ const handleSubmit = async (values) => {
        <div className='container' >
        <Masonry
         breakpointCols={breakpointColumns}
-        className={view===1 ? '' : 'grid'}
+        className={'grid'}
          columnClassName='column'>
         {objkts && !submit && objkts.map((p,i)=> (
         p.token.metadata && (
@@ -162,7 +160,7 @@ const handleSubmit = async (values) => {
     <div className='container' style={{opacity: objktView && '.2'}}>
        <Masonry
         breakpointCols={breakpointColumns}
-        className={view===1 ? '' : 'grid'}
+        className={'grid'}
          columnClassName='column'>
       
         {objkts && submit && choices.map((p,i)=> (
@@ -229,7 +227,7 @@ const handleSubmit = async (values) => {
                                 name="loan_term"
                             >Loan Term     
                             </label> 
-                            <a style={{marginLeft:'33px'}}>:&nbsp; </a>
+                            <span style={{marginLeft:'33px'}}>:&nbsp; </span>
                             <Field
                                 className='formInput'
                                 // style={{marginLeft:'22px'}}
@@ -252,7 +250,7 @@ const handleSubmit = async (values) => {
                                 name="loan_term"
                             >Interest 
                             </label>
-                            <a style={{marginLeft:'44px'}}>:&nbsp; </a>
+                            <span style={{marginLeft:'44px'}}>:&nbsp; </span>
                             <Field
                                 className='formInput'
                                 id="interest"

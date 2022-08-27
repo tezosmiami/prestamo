@@ -11,8 +11,8 @@ export const Menu = ({ open, setOpen}) => {
       <div style={{flexDirection:'row',  transition: 'all 1s linear', justifyContent:'space-evenly'}}>
        
         <Link to={`/${app.alias || app.address}`}  onClick={() => setOpen(false)} >account</Link>
-        <Link to='/Make'onClick={() => setOpen(false)} >make market</Link>
-        <a onClick={() => (app.unsync(), setOpen(false))}>unsync</a>
+        <Link to='/Make' onClick={() => setOpen(false)} >make market</Link>
+        <Link to={`/`}  onClick={() => {app.unsync(); setOpen(false)}}>unsync</Link>
         </div>}
         
         <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '1px',  marginTop: '27px'}} />

@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from "react-router-dom";
 import ReactPlayer from 'react-player'
 import Masonry from 'react-masonry-css'
 import { Objkt } from './objkt'
 import { useTezosContext } from "../context/tezos-context";
-import { parse } from 'graphql';
-
 const axios = require('axios')
 const breakpointColumns = {
   default: 7,
@@ -40,7 +37,6 @@ export const Markets = () => {
   const [objktView, setObjktView] = useState(false)
   const [objkt, setObjkt] = useState({});
   const [bigmap, setBigmap] = useState()
-  const [tokens,setTokens] = useState([])
 //   /*
 //   useEffect(() => {
 //   const getMarket = async () => {
@@ -63,7 +59,6 @@ export const Markets = () => {
 // }, []);
 //   */
   useEffect(() => {
-    let bytes=''
     const markets =[]
     const getMarket = async () => {
     const result = await axios.get('https://api.jakartanet.tzkt.io/v1/bigmaps/107783/keys')
@@ -117,7 +112,7 @@ export const Markets = () => {
        </Link>} */}
        {bigmap?.length > 0  && bigmap.reverse().map((p,i)=> (
 
-        p.active && (!checkTimesUp() || app.address==(p.taker)) &&
+        p.active && (!checkTimesUp() || app.address === (p.taker)) &&
 
        <div key={i} className='market'>  
        <Masonry
@@ -147,19 +142,20 @@ export const Markets = () => {
 
           
         <div className='marketInfo' style={{alignItems:'flex-start'}}>
-        <a style={{margin: '6px'}}>Maker: {p.maker &&p.maker.substr(0, 4) + "..." + p.maker.substr(-4)}</a>
-         <a style={{margin: '6px'}}>Amount: {p.amount/1000000}ꜩ</a>
-          <a style={{margin: '6px'}}>Interest: {p.interest/10}%</a>
-          <a style={{margin: '6px'}}>Term: {p.term} Minutes</a> 
-          {p.taker && <a >Taker: {p.taker.substr(0, 4) + "..." + p.taker.substr(-4)}</a>}
-
+        <ul>
+            <li style={{margin: '6px'}}>Maker: {p.maker &&p.maker.substr(0, 4) + "..." + p.maker.substr(-4)}</li>
+            <li style={{margin: '6px'}}>Amount: {p.amount/1000000}ꜩ</li>
+            <li style={{margin: '6px'}}>Interest: {p.interest/10}%</li>
+            <li style={{margin: '6px'}}>Term: {p.term} Minutes</li> 
+            {p.taker && <li >Taker: {p.taker.substr(0, 4) + "..." + p.taker.substr(-4)}</li>}
+          </ul>
           <div style={{margin: '12px', flexDirection: 'row', width:'auto', alignItems: 'flex-start'}}>
           {p.active && !p.taker && p.maker !== app.address && <button className='formButton' onClick = {() => {app.take_market(p.market_id, p.amount)}}>accept</button>}
-          {p.active && !p.taker && app.address == p.maker && <button className='formButton' onClick = {() => {app.cancel_market(p.market_id)}}>cancel</button>}
-          {p.active && p.taker && app.address == p.maker
+          {p.active && !p.taker && app.address === p.maker && <button className='formButton' onClick = {() => {app.cancel_market(p.market_id)}}>cancel</button>}
+          {p.active && p.taker && app.address === p.maker
            && !checkTimesUp(p.start_time, p.term)
            &&<button className='formButton' onClick = {() => {app.recover_market(p.market_id, getAmountwithInterest(p.amount,p.interest))}}> recover</button>}
-          {p.active && app.address == p.taker && p.taker && checkTimesUp(p.start_time, p.term) && <button className='formButton'onClick = {() => {app.claim_market(p.market_id)}} >claim</button>}
+          {p.active && app.address === p.taker && p.taker && checkTimesUp(p.start_time, p.term) && <button className='formButton'onClick = {() => {app.claim_market(p.market_id)}} >claim</button>}
           </div>
             </div>
           </div>

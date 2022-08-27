@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useTezosContext } from "./context/tezos-context"
 import { Routes, Route, Link } from 'react-router-dom'
 import { Home } from './pages/Home'

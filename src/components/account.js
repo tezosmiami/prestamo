@@ -4,7 +4,6 @@ import ReactPlayer from 'react-player'
 import Masonry from 'react-masonry-css'
 import { Objkt } from './objkt'
 import { useTezosContext } from "../context/tezos-context";
-import { parse } from 'graphql';
 
 const axios = require('axios')
 const breakpointColumns = {
@@ -41,11 +40,9 @@ export const Account = () => {
   const [objkt, setObjkt] = useState({})
   const [maker, setMaker] = useState()
   const [taker, setTaker] = useState()
-  const [tokens,setTokens] = useState([])
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
-    let bytes=''
     const markets =[]
     const getMarket = async () => {
     const result = await axios.get('https://api.jakartanet.tzkt.io/v1/bigmaps/107783/keys')
@@ -58,8 +55,8 @@ export const Account = () => {
       token.metadata = metadata
     } 
   }
-    setMaker(markets.filter(e => (e.maker==app.address)))
-    setTaker(markets.filter(e => (e.taker==app.address)))
+    setMaker(markets.filter(e => (e.maker===app.address)))
+    setTaker(markets.filter(e => (e.taker===app.address)))
     app.address  && setLoaded(true)
   }
     getMarket();
@@ -96,7 +93,7 @@ export const Account = () => {
        <div className='container' style={{opacity: objktView && '.2'}}>
        {maker?.length > 0 && <p>Maker</p>}
        {maker?.length > 0  && maker.reverse().map((p,i)=> (
-        p.active && (!checkTimesUp() || app.address==(p.taker)) &&
+        p.active && (!checkTimesUp() || app.address===(p.taker)) &&
        <div key={i} className='market'>
         
        <Masonry
@@ -126,19 +123,20 @@ export const Account = () => {
 
           
         <div className='marketInfo' style={{alignItems:'flex-start'}}>
-        <a style={{margin: '15px'}}>Maker: {p.maker &&p.maker.substr(0, 4) + "..." + p.maker.substr(-4)}</a>
-         <a style={{margin: '15px'}}>Amount: {p.amount/1000000}ꜩ</a>
-          <a style={{margin: '15px'}}>Interest: {p.interest/10}%</a>
-          <a style={{margin: '15px'}}>Term: {p.term} Minutes</a> 
-          {p.taker && <a >Taker: {p.taker.substr(0, 4) + "..." + p.taker.substr(-4)}</a>}
-
+        <ul>
+        <li style={{margin: '15px'}}>Maker: {p.maker &&p.maker.substr(0, 4) + "..." + p.maker.substr(-4)}</li>
+         <li style={{margin: '15px'}}>Amount: {p.amount/1000000}ꜩ</li>
+          <li style={{margin: '15px'}}>Interest: {p.interest/10}%</li>
+          <li style={{margin: '15px'}}>Term: {p.term} Minutes</li> 
+          {p.taker && <li >Taker: {p.taker.substr(0, 4) + "..." + p.taker.substr(-4)}</li>}
+          </ul>
           <div style={{flexDirection: 'row', width:'auto', alignItems: 'flex-start'}}>
           {p.active && !p.taker && p.maker !== app.address && <button className='formButton' onClick = {() => {app.take_market(p.market_id, p.amount)}}>accept</button>}
-          {p.active && !p.taker && app.address == p.maker && <button className='formButton' onClick = {() => {app.cancel_market(p.market_id)}}>cancel</button>}
-          {p.active && p.taker && app.address == p.maker
+          {p.active && !p.taker && app.address === p.maker && <button className='formButton' onClick = {() => {app.cancel_market(p.market_id)}}>cancel</button>}
+          {p.active && p.taker && app.address === p.maker
            && !checkTimesUp(p.start_time, p.term)
            &&<button className='formButton' onClick = {() => {app.recover_market(p.market_id, getAmountwithInterest(p.amount,p.interest))}}> recover</button>}
-          {p.active && app.address == p.taker && p.taker && checkTimesUp(p.start_time, p.term) && <button className='formButton'onClick = {() => {app.claim_market(p.market_id)}} >claim</button>}
+          {p.active && app.address === p.taker && p.taker && checkTimesUp(p.start_time, p.term) && <button className='formButton'onClick = {() => {app.claim_market(p.market_id)}} >claim</button>}
           </div>
             </div>
           </div>
@@ -152,7 +150,7 @@ export const Account = () => {
       <div className='container' style={{opacity: objktView && '.2'}}>
       {taker?.length > 0 && <p>Taker</p>}
        {taker?.length > 0  && taker.reverse().map((p,i)=> (
-        p.active && (!checkTimesUp() || app.address==(p.taker)) &&
+        p.active && (!checkTimesUp() || app.address===(p.taker)) &&
        <div key={i} className='market'>
         
        <Masonry
@@ -182,19 +180,20 @@ export const Account = () => {
 
           
         <div className='marketInfo' style={{alignItems:'flex-start'}}>
-        <a style={{margin: '15px'}}>Maker: {p.maker &&p.maker.substr(0, 4) + "..." + p.maker.substr(-4)}</a>
-         <a style={{margin: '15px'}}>Amount: {p.amount/1000000}ꜩ</a>
-          <a style={{margin: '15px'}}>Interest: {p.interest/10}%</a>
-          <a style={{margin: '15px'}}>Term: {p.term} Minutes</a> 
-          {p.taker && <a >Taker: {p.taker.substr(0, 4) + "..." + p.taker.substr(-4)}</a>}
-
+          <ul>
+             <li style={{margin: '15px'}}>Maker: {p.maker &&p.maker.substr(0, 4) + "..." + p.maker.substr(-4)}</li>
+             <li style={{margin: '15px'}}>Amount: {p.amount/1000000}ꜩ</li>
+             <li style={{margin: '15px'}}>Interest: {p.interest/10}%</li>
+             <li style={{margin: '15px'}}>Term: {p.term} Minutes</li> 
+          {p.taker && <li>Taker: {p.taker.substr(0, 4) + "..." + p.taker.substr(-4)}</li>}
+          </ul>
           <div style={{flexDirection: 'row', width:'auto', alignItems: 'flex-start'}}>
           {p.active && !p.taker && p.maker !== app.address && <button className='formButton' onClick = {() => {app.take_market(p.market_id, p.amount)}}>accept</button>}
-          {p.active && !p.taker && app.address == p.maker && <button className='formButton' onClick = {() => {app.cancel_market(p.market_id)}}>cancel</button>}
-          {p.active && p.taker && app.address == p.maker
+          {p.active && !p.taker && app.address === p.maker && <button className='formButton' onClick = {() => {app.cancel_market(p.market_id)}}>cancel</button>}
+          {p.active && p.taker && app.address === p.maker
            && !checkTimesUp(p.start_time, p.term)
            &&<button className='formButton' onClick = {() => {app.recover_market(p.market_id, getAmountwithInterest(p.amount,p.interest))}}> recover</button>}
-          {p.active && app.address == p.taker && p.taker && checkTimesUp(p.start_time, p.term) && <button className='formButton'onClick = {() => {app.claim_market(p.market_id)}} >claim</button>}
+          {p.active && app.address === p.taker && p.taker && checkTimesUp(p.start_time, p.term) && <button className='formButton'onClick = {() => {app.claim_market(p.market_id)}} >claim</button>}
           </div>
             </div>
           </div>
