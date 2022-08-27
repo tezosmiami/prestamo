@@ -32,7 +32,7 @@ function App() {
   
     {open &&<Menu app={app} open={open} setOpen={setOpen}/>}
   
-     <div style={{opacity:open && '0.3'}}>
+     <div style={{opacity:open && '0.2'}}>
      <Routes>
         <Route path="/" element={<Home />} />
         <Route path='/:account' element={<Wallet />} />
@@ -42,13 +42,14 @@ function App() {
        </Route> */}
       </Routes>
     </div>
+    <div style={{opacity: open && '0.2'}}>
     <a href={`https:sa//faucet.jakartanet.teztnets.xyz/`} target="blank"
          rel="noopener noreferrer"> ꜩ faucet </a><p/>
        <a href={`https://www.tzkt.io`} target="blank"
          rel="noopener noreferrer"> Indexed by tzkt</a>
           
        <p>experimental dApp - enjoy at your own risk. . .</p>
-     
+       </div>
     </>
     )
 }
