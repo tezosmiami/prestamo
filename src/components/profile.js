@@ -89,10 +89,9 @@ export const Profile = () => {
       
        <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '1px', marginTop: '27px'}} />
           <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '18px'}} />
-         {/* <p><button className='formButton'>create</button></p><p/> */}
           {objktView &&<Objkt objkt={objkt} setObjktView={setObjktView}/>}
        <div className='container' style={{opacity: objktView && '.2'}}>
-       <p>Maker</p>
+       {maker.length >0 && <p>Maker</p>}
        {maker?.length > 0  && maker.reverse().map((p,i)=> (
                 console.log(p),
         p.active && (!checkTimesUp() || app.address==(p.taker)) &&
@@ -149,7 +148,7 @@ export const Profile = () => {
 
 
       <div className='container' style={{opacity: objktView && '.2'}}>
-      <p>Taker</p>
+      {taker.length > 0 && <p>Taker</p>}
        {taker?.length > 0  && taker.reverse().map((p,i)=> (
         p.active && (!checkTimesUp() || app.address==(p.taker)) &&
        <div key={i} className='market'>
