@@ -48,7 +48,7 @@ export const TezosContextProvider = ({ children }) => {
   const [tezos, setTezos] = useState(new TezosToolkit("https://jakartanet.ecadinfra.com"));
   const [activeAccount, setActiveAccount] = useState("");
   const [alias, setAlias] = useState("")
-  const operator = "KT1KwLzwHwWvCRhU9bXNpkhBPSMUh6vHsnr9"
+  const operator = "KT1U7v29WSCT7bp62ShL8cfBF2zBbix2HEV2"
 
   useEffect(() => {
      const getLoggedIn = async () => {
@@ -63,7 +63,6 @@ export const TezosContextProvider = ({ children }) => {
            if (errors) {
              console.error(errors);
            }
-           console.log(data)
            data?.tzprofiles[0]?.alias && 
            setAlias(data.tzprofiles[0].alias);
           }

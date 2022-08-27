@@ -51,7 +51,7 @@ class FA2(sp.Contract):
             # The big map with the tokens metadata
             token_metadata=sp.TBigMap(sp.TNat, FA2.TOKEN_METADATA_VALUE_TYPE),
             # The big map with the tokens data (source code, description, etc)
-            token_data=sp.TBigMap(sp.TNat, sp.TMap(sp.TString, sp.TBytes)),
+            # token_data=sp.TBigMap(sp.TNat, sp.TMap(sp.TString, sp.TBytes)),
             # The big map with the tokens royalties for the minter and creators
             token_royalties=sp.TBigMap(sp.TNat, FA2.TOKEN_ROYALTIES_TYPE),
             # The big map with the tokens operators
@@ -68,42 +68,40 @@ class FA2(sp.Contract):
             ledger=sp.big_map(),
             supply=sp.big_map(),
             token_metadata=sp.big_map(),
-            token_data=sp.big_map(),
             token_royalties=sp.big_map(),
             operators=sp.big_map(),
             proposed_administrator=sp.none,
-             counter=sp.nat(0))
+            counter=sp.nat(0))
 
-        # Build the TZIP-016 contract metadata
-        # This is helpful to get the off-chain views code in json format
-        contract_metadata = {
-            "name": "Extended FA2 template contract",
-            "description" : "This contract tries to simplify and extend the "
-                "FA2 contract template example in smartpy.io v0.9.1",
-            "version": "v1.0.0",
-            "authors": ["Teia Community <https://twitter.com/TeiaCommunity>"],
-            "homepage": "https://teia.art",
-            "source": {
-                "tools": ["SmartPy 0.9.1"],
-                "location": "https://github.com/teia-community/teia-smart-contracts/blob/main/python/contracts/fa2.py"
-            },
+        self.generate_contract_metadata()
+        
+    def generate_contract_metadata(self):
+        """Generate a metadata json file with all the contract's offchain views
+        and standard TZIP-12 and TZIP-016 key/values."""
+        metadata_base = {
+            "name": 'Prestamo Objkts',
+            "description": 'NFTs for Prestamo',
+            "version": "1.0.0",
             "interfaces": ["TZIP-012", "TZIP-016"],
-            "views": [
-                self.get_balance,
-                self.total_supply,
-                self.all_tokens,
-                self.is_operator,
-                self.token_metadata,
-                self.token_data,
-                self.token_royalties],
-            "permissions": {
-                "operator": "owner-or-operator-transfer",
-                "receiver": "owner-no-hook",
-                "sender": "owner-no-hook"
-            }
+            "authors": [
+                "Seb Mondet <https://seb.mondet.org>",
+                "Javier Gracia Carpio <https://twitter.com/jagracar>"
+            ],
+            "homepage": "https://www.prestamo.art",
+            "source": {
+                "tools": ["SmartPy"],
+                "location": "https://github.com/jagracar/tezos-smart-contracts/blob/main/python/contracts/fa2Contract.py",
+            },
+            "license": { "name": "MIT" }
         }
-
-        self.init_metadata("contract_metadata", contract_metadata)
+        offchain_views = []
+        for f in dir(self):
+            attr = getattr(self, f)
+            if isinstance(attr, sp.OnOffchainView):
+                # Include onchain views as tip 16 offchain views
+                offchain_views.append(attr)
+        metadata_base["views"] = offchain_views
+        self.init_metadata("metadata_base", metadata_base)
 
     def check_is_administrator(self):
         """Checks that the address that called the entry point is the contract
@@ -127,9 +125,8 @@ class FA2(sp.Contract):
         sp.set_type(params, sp.TRecord(
             amount=sp.TNat,
             metadata=sp.TMap(sp.TString, sp.TBytes),
-            data=sp.TMap(sp.TString, sp.TBytes),
-            royalties=sp.TNat).layout(
-                ("amount", ("metadata", ("data", "royalties")))))
+            royalties=FA2.TOKEN_ROYALTIES_TYPE).layout(
+                ("amount", ("metadata", "royalties"))))
 
         # Check that the administrator executed the entry point
         self.check_is_administrator()
@@ -139,14 +136,15 @@ class FA2(sp.Contract):
         # Update the big maps
         token_id = sp.compute(self.data.counter)
         self.data.ledger[
-            (sp.sender, token_id)] = params.amount
+            (params.royalties.address, token_id)] = params.amount
         self.data.supply[token_id] = params.amount
         self.data.token_metadata[token_id] = sp.record(
             token_id=token_id,
             token_info=params.metadata)
-        self.data.token_data[token_id] = params.data
-        self.data.token_royalties[token_id].address = sp.sender
-        self.data.token_royalties[token_id].royalties = params.royalties
+        # self.data.token_data[token_id] = params.data
+        self.data.token_royalties[token_id] = sp.record(
+          address=params.royalties.address,
+          royalties=params.royalties.royalties)
         # Increase the tokens counter
         self.data.counter += 1
 
@@ -387,16 +385,16 @@ class FA2(sp.Contract):
         # Return the token metadata
         sp.result(self.data.token_metadata[token_id])
 
-    @sp.onchain_view(pure=True)
-    def token_data(self, token_id):
-        """Returns the token on-chain data.
+    # @sp.onchain_view(pure=True)
+    # def token_data(self, token_id):
+    #     """Returns the token on-chain data.
 
-        """
-        # Define the input parameter data type
-        sp.set_type(token_id, sp.TNat)
+    #     """
+    #     # Define the input parameter data type
+    #     sp.set_type(token_id, sp.TNat)
 
-        # Return the token on-chain data
-        sp.result(self.data.token_data[token_id])
+    #     # Return the token on-chain data
+    #     sp.result(self.data.token_data[token_id])
 
     @sp.onchain_view(pure=True)
     def token_royalties(self, token_id):
@@ -412,4 +410,19 @@ class FA2(sp.Contract):
 
 sp.add_compilation_target("fa2", FA2(
     administrator=sp.address("tz1aSkwEot3L2kmUvcoxzjMomb9mvBNuzFK6"),
-    metadata=sp.utils.metadata_of_url("ipfs://aaa")))
+    metadata=sp.utils.metadata_of_url("ipfs://QmYXJv8yTtDQKLZeChitD8tkUhwWK4qMPnvtnG48dXeqPU")))
+
+
+@sp.add_test(name="Fa2")
+def test():
+    sc = sp.test_scenario()
+    sc.table_of_contents()
+    sc.h1("Accounts")
+    sc.show(["tz1M9CMEtsXm3QxA7FmMU2Qh7xzsuGXVbcDr"])
+    sc.h2("Prestamo")
+    c1 = FA2(
+      administrator=sp.address("tz1ag87A25Q3uAHoDXGiJz6Bwv6uTefEFEqN"),
+      metadata=sp.utils.metadata_of_url("ipfs://QmYXJv8yTtDQKLZeChitD8tkUhwWK4qMPnvtnG48dXeqPU"),
+
+    )
+    sc += c1

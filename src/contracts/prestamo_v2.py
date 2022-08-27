@@ -3,6 +3,14 @@ import smartpy as sp
 
 class Prestamo(sp.Contract):
 
+    reward_type = sp.TRecord(
+        contract_address=sp.TAddress,
+        token_id=sp.TAddress,
+        reward_amount=sp.TNat,
+        active= sp.TBool).layout(
+            ("contract_address", ("token_id", ("reward_amount", "active"))))
+
+        
     token_type = sp.TRecord(
         contract_address=sp.TAddress,
         token_id=sp.TNat,
@@ -23,7 +31,7 @@ class Prestamo(sp.Contract):
         self.init_type(sp.TRecord(
             admin=sp.TAddress,
             metadata=sp.TBigMap(sp.TString, sp.TBytes),
-            # fa2s=sp.TSet(sp.TAddress),
+            rewards=Prestamo.reward_type,
             fee=sp.TNat,
             fees_recipient=sp.TAddress,
             markets=sp.TBigMap(sp.TNat, Prestamo.market_type),
@@ -36,41 +44,12 @@ class Prestamo(sp.Contract):
             admin=admin,
             metadata=metadata,
             fee=fee,
-            # fa2s=sp.set([]),
+            rewards=sp.record(),
             fees_recipient=admin,
             markets=sp.big_map(),
             counter=0,
             proposed_admin=sp.none,
             markets_paused=False)
-
-        self.generate_contract_metadata()
-        
-    def generate_contract_metadata(self):
-        """Generate a metadata json file with all the contract's offchain views
-        and standard TZIP-12 and TZIP-016 key/values."""
-        metadata_base = {
-            "name": 'Prestamo',
-            "description": 'P2P NFT Collaterized Lending',
-            "version": "1.0.0",
-            "interfaces": ["TZIP-012", "TZIP-016"],
-            "authors": [
-                "tezosmiami <https://github.com/tezosmiami>"
-            ],
-            "homepage": "https://www.prestamo.art",
-            "source": {
-                "tools": ["SmartPy"],
-                "location": "https://github.com/prestamo",
-            },
-            "license": { "name": "MIT" }
-        }
-        offchain_views = []
-        for f in dir(self):
-            attr = getattr(self, f)
-            if isinstance(attr, sp.OnOffchainView):
-                # Include onchain views as tip 16 offchain views
-                offchain_views.append(attr)
-        metadata_base["views"] = offchain_views
-        self.init_metadata("metadata_base", metadata_base)
 
     def check_admin(self):
         sp.verify(sp.sender == self.data.admin, message="ADMIN_REQUIRED")
@@ -78,6 +57,32 @@ class Prestamo(sp.Contract):
     def check_zero_amount(self):
         sp.verify(sp.amount > sp.mutez(0), message="ZERO_AMOUNT")
 
+    # def check_fa2(self, fa2):
+    # def check_is_maker(self):
+    # def check_is_taker(self):
+    # def check_is_open(self):   
+    # def check_term(self):
+    def _mint_tokens(self):
+        self.check_admin()
+        
+    def fa2_mint(self, to_, token_amount):
+        c = sp.contract(
+            t=sp.TList(sp.TRecord(
+                txs=sp.TList(sp.TRecord(
+                    to_=sp.TAddress,
+                    token=sp.TNat,
+                    amount=sp.TNat).layout(("to_", ("token_id", "amount")))))),
+            address=self.data.token_info.fa2,
+            entry_point="mint").open_some()
+            
+        sp.transfer(
+            arg=sp.list([sp.record(
+                txs=sp.list([sp.record(
+                    to_=to_,
+                    token=self.data.rewards.token_id,
+                    amount=token_amount)]))]),
+            amount=sp.mutez(0),
+            destination=c)
 
     def fa2_transfer(self, fa2, from_, to_, token_id, token_amount):
         c = sp.contract(
@@ -233,6 +238,17 @@ class Prestamo(sp.Contract):
         sp.set_type(proposed_admin, sp.TAddress)
         self.check_admin()
         self.data.proposed_admin = sp.some(proposed_admin)
+    
+    @sp.entry_point
+    def mint_presta(self, params):
+        sp.set_type(params, sp.TList(sp.TRecord(
+            _to=sp.TAddress,
+            amount=sp.TNat.layout(
+                ("_to", "amount"))))      
+        
+        sp.for x in params:       
+            self.fa2_mint(x._to, x.amount)
+
 
     
     @sp.entry_point    
@@ -255,33 +271,6 @@ class Prestamo(sp.Contract):
         sp.set_type(fees_to, sp.TAddress)
         self.check_admin()
         self.data.fees_recipient = fees_to
-
-
-    @sp.onchain_view()
-    def get_admin(self):
-        sp.result(self.data.admin)
-
-    @sp.onchain_view()
-    def markets_active(self):
-        sp.result(self.data.markets_paused)
-
-    @sp.onchain_view()
-    def get_market(self, market_id):
-        sp.set_type(market_id, sp.TNat)
-        sp.verify(self.data.markets.contains(market_id), message="WRONG_MARKET_ID")
-        sp.result(self.data.markets[market_id])
-
-    @sp.onchain_view()
-    def get_swaps_counter(self):
-        sp.result(self.data.counter)
-
-    @sp.onchain_view()
-    def get_fee(self):
-        sp.result(self.data.fee)
-
-    @sp.onchain_view()
-    def get_fee_recipient(self):
-        sp.result(self.data.fees_recipient)
 
 sp.add_compilation_target("prestamo", Prestamo(
     admin=sp.address("tz1ag87A25Q3uAHoDXGiJz6Bwv6uTefEFEqN"),

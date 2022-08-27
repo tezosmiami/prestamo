@@ -35,33 +35,13 @@ export const checkTimesUp = (start_time, term) => {
   return(end_time < now)
 }
 
-export const Markets = () => {
+export const Profile = () => {
   const app = useTezosContext();
   const [objktView, setObjktView] = useState(false)
   const [objkt, setObjkt] = useState({});
   const [bigmap, setBigmap] = useState()
   const [tokens,setTokens] = useState([])
-//   /*
-//   useEffect(() => {
-//   const getMarket = async () => {
-//     let result = await axios.get(
-//       "https://api.jakartanet.tzkt.io/v1/bigmaps/98299/keys"
-//     );
-//     const parse_result = await Promise.all(
-//       result.data.map(async (p) => {
-//         const token = p.value.tokens.map(async (q) => {
-//           const { data } = await getMetadata(q.contract_address, q.token_id);
-//           return { ...q, metadata: data };
-//         });
-//         return Promise.all(token);
-//       })
-//     );
-//     console.log(parse_result);
-//     setBigmap(parse_result);
-//   };
-//   getMarket();
-// }, []);
-//   */
+
   useEffect(() => {
     let bytes=''
     const markets =[]
@@ -74,10 +54,10 @@ export const Markets = () => {
       for(let token of result.data[i].value.tokens){
       const metadata = await getMetadata(token.contract_address, token.token_id)
       token.metadata = metadata
-      console.log(metadata)
     } 
   }
-    setBigmap(markets)
+     
+    setBigmap(markets.filter(e => (e.maker==app.address || e.taker==app.address)))
   }
     getMarket();
   }, [])
@@ -103,7 +83,7 @@ export const Markets = () => {
       <>
       
        <div style={{marginTop:'11px'}}>
-        Latest Markets
+        Markets
        </div>
 
        <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '1px', marginTop: '27px'}} />

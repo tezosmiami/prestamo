@@ -52,6 +52,7 @@ export const Make = () => {
   const  app = useTezosContext();
   let { account } = useParams();
   if (!account) {account = app.address};
+  
 console.log(app.address)
   useEffect(() => {
     let bytes=''
@@ -122,7 +123,7 @@ const handleSubmit = (values) => {
         className={view===1 ? '' : 'grid'}
          columnClassName='column'>
         {objkts && !submit && objkts.map((p,i)=> (
-       
+        p.token.metadata && (
         <div style ={{backgroundColor: choices.includes(p.token) && getComputedStyle(document.body).getPropertyValue('--text')}} key={i} onClick={() => {return add_remove(p.token)}}>
         {p.token.metadata.formats[0].mimeType.includes('image') && p.token.metadata.formats[0].mimeType !== 'image/svg+xml' ?
       
@@ -139,7 +140,7 @@ const handleSubmit = (values) => {
         : p.token.metadata.formats[0].mimeType.includes('text') ? <div className='text'>{p.token.metadata.description}</div> : ''}
         
         </div>
-          ))} 
+          )))} 
 
           </Masonry>
           </div>
