@@ -49,14 +49,18 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path='/:account' element={<Wallet />} />
         <Route path="/Make" element={<Market />} />
-        <Route path=":contract" >
-          {/* <Route path=":id" element={<Objkt/>} /> */}
-       </Route>
+        {/* <Route path=":contract" >
+          <Route path=":id" element={<Objkt/>} />
+       </Route> */}
       </Routes>
     </div>
+    <a href={`https://faucet.jakartanet.teztnets.xyz/`} target="blank"
+         rel="noopener noreferrer"> ꜩ faucet </a><p/>
        <a href={`https://www.tzkt.io`} target="blank"
-         rel="noopener noreferrer"> indexed by tzkt</a>
+         rel="noopener noreferrer"> Indexed by tzkt</a>
+          
        <p>experimental dApp - enjoy at your own risk. . .</p>
+     
     </>
     )
 }

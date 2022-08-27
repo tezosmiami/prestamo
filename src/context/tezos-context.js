@@ -84,15 +84,12 @@ export const TezosContextProvider = ({ children }) => {
     let address=await wallet.getPKH()
     setAddress(address);
     setActiveAccount(await wallet?.client?.getActiveAccount());
-    if(address) {
-        const { errors, data } = await fetchGraphQL(getAliasbyAddress, 'Alias', { address: address});
-     if (errors) {
-       console.error(errors);
-     }
-     if(data?.hic_et_nunc_holder[0]?.name) {
-        setAlias(data.hic_et_nunc_holder[0].name);
-      }
-    }
+    // if(address) {
+    //     const { errors, data } = await fetchGraphQL(getAliasbyAddress, 'Alias', { address: address});
+    //  if (errors) {
+    //    console.error(errors);
+    //  }
+    // }
    
   }
 
