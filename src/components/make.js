@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import ReactPlayer from 'react-player'
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Objkt } from './objkt'
 import Masonry from 'react-masonry-css'
 import { useTezosContext } from "../context/tezos-context";
@@ -9,24 +9,22 @@ import * as yup from 'yup';
 
 const axios = require('axios')
 
-// import { Search } from '../components/search';
-// import { useSearchParams } from 'react-router-dom';
 const min_term = 1;
 const max_term = 365;
-const min_amount = 1;
+const min_amount = 1.1;
 const max_amount = 1000000;
 const min_interest = 1;
 const max_interest = 50;
 
 const validationSchema = yup.object().shape({
   
-  term_days: yup.number()
+  loan_term: yup.number()
       .min(min_term)
       .max(max_term),
   loan_amount: yup.number()
     .min(min_amount)
     .max(max_amount),
-  loan_interest: yup.number()
+  interest: yup.number()
     .min(min_interest)
     .max(max_interest),
 });
@@ -49,15 +47,16 @@ export const Make = () => {
   const [marketPayload, setMarketPayload] = useState({})
   const [objkts, setObjkts] = useState()
   const [submit, setSubmit] = useState(false)
+  const [message, setMessage] = useState('')
   const  app = useTezosContext();
-
+  const navigate = useNavigate();
   const account = app.address
+
   useEffect(() => {
     let bytes=''
     const getObjkts = async () => {
       if(account) {
       let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/tokens/balances?account=${app.address}&balance.gt=0`)
-     console.log(result)
      setObjkts(result.data)}
   }
     getObjkts();
@@ -84,18 +83,34 @@ export const Make = () => {
     loan_amount: marketPayload?.loan_amount || '',
     interest: marketPayload?.interest || ''
   };
-const handleSubmit = (values) => {
+const handleSubmit = async (values) => {
     const fa2s = []
+    let isMade =''
     choices.map(p => (
              fa2s.push({
               'contract_address': p.contract.address, 
               'token_id': p.tokenId,
               'token_amount': parseFloat(1)
             })))
-    // setMarketPayload({fa2s: fa2s, terms: values });
-    app.make_market(fa2s, values)
+     !app.address && setMessage('please sync. . .') 
+      if(app.address) try {
+          setMessage('ready wallet. . .');
+          isMade = await  app.make_market(fa2s, values)
+          setMessage(isMade ? 'Congratulations - Market Made!' : 'transaction issues - try again. . .');
+        
+      } catch(e) {
+          setMessage('errors. . .');
+          console.log('Error: ', e);
+      }
+      setTimeout(() => {
+          setMessage(null)
+      }, 3200)
+
+      isMade && navigate('/')
+    }
+    
    
-  };
+
 
   const showObjkt = (o) => {
     if (objktView) return (setObjktView(false))
@@ -190,7 +205,8 @@ const handleSubmit = (values) => {
                                 className='label'
                                 htmlFor='loan_amount'
                                 name='loan_amount'
-                            >Loan Amount : </label>
+                            >Loan Amount :&nbsp;
+                            </label>
                             <Field
                                 className='formInput'
                                 id="loan_amount"
@@ -202,7 +218,7 @@ const handleSubmit = (values) => {
                                 component="span"
                                 className='errorMessage'
                                 name="loan_amount"
-                            />
+                            />&nbsp;ꜩ
                         </div>
                     
               
@@ -211,14 +227,17 @@ const handleSubmit = (values) => {
                                 className='label'
                                 htmlFor='term'
                                 name="loan_term"
-                            >Loan Term    :     </label>
+                            >Loan Term     
+                            </label> 
+                            <a style={{marginLeft:'33px'}}>:&nbsp; </a>
                             <Field
                                 className='formInput'
+                                // style={{marginLeft:'22px'}}
                                 id="loan_term"
                                 name="loan_term"
                                 type="number"
                                 placeholder='minutes'
-                            />
+                            /> &nbsp;minutes
                             <ErrorMessage
                                 component="span"
                                 className='errorMessage'
@@ -231,14 +250,16 @@ const handleSubmit = (values) => {
                                 className='label'
                                 htmlFor='interest'
                                 name="loan_term"
-                            >Interest    :     </label>
+                            >Interest 
+                            </label>
+                            <a style={{marginLeft:'44px'}}>:&nbsp; </a>
                             <Field
                                 className='formInput'
-                                id="nterest"
+                                id="interest"
                                 name="interest"
                                 type="number"
                                 placeholder='%'
-                            />
+                            />&nbsp;%<p/>
                             <ErrorMessage
                                 component="span"
                                 className='errorMessage'
@@ -253,6 +274,7 @@ const handleSubmit = (values) => {
                   <p/>
                       <button
                       className='formButton'
+                      style={{marginLeft:'108px'}}
                       type="submit"
                       >Submit
                         </button> 
@@ -262,8 +284,9 @@ const handleSubmit = (values) => {
                   
             }    
             </Formik>}
-       
-         <div><p/></div>
+        
+        <p>{message}</p> 
+        <div><p/><p/></div>
      
      
    

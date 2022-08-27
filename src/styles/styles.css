@@ -1,12 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?Libre+Barcode+39+Text&family=Libre+Barcode+39+Text&family=Comfortaa&family=Libre+Barcode+39+Text&family=Monofett&family=Monoton&family=Sonsie+One&family=Audiowide&family=Faster+One&family=Gugi&family=Monofett&family=Oxygen+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?Libre+Barcode+39+Text&family=Libre+Barcode+39+Text&family=Comfortaa&family=Libre+Barcode+39+Text&display=swap');
 
-  @font-face {
-    font-family: 'Halo';
-    font-display: swap;
-    font-weight: normal;
-    font-style: normal;
-    src: url('fonts/halo.regular.ttf') format('truetype');
-  }
+
   @font-face {
     font-family: 'Julia Mono';
     font-display: swap;
@@ -14,17 +8,11 @@
     font-style: normal;
     src: url('fonts/JuliaMono-Regular.woff2') format('woff2');
   }
-  @font-face {
-    font-family: 'Advantage';
-    font-display: swap;
-    font-weight: normal;
-    font-style: normal;
-    src: url('fonts/advantage.regular.ttf') format('truetype');
-  }
+
 :root {
  --background: #111f11;
  --text: #fbfff8;
- /* background-color: linear-gradient(to bottom right, #ff0066, #2d27ff); */
+ font-family: 'Julia Mono';
  height: 100%;
   --font: 'Comfortaa';
  color:var(--text);
@@ -35,9 +23,6 @@ html,
 body{
     font-family: 'Julia Mono';
     font-size:18px;
-    /* background: linear-gradient(to bottom right, #ff0066, white, #2d27ff); */
-    /* background-color: linear-gradient(to bottom right, #ff0066, white, #2d27ff);
-     */
      color:var(--text);
      background-color: var(--background);
      width:100vw;
@@ -340,10 +325,10 @@ input::-webkit-inner-spin-button {
 }
 
 .errorMessage {
-  display: block;
-  margin-top: 4px;
-  color: #cd0117;
+  position:absolute;
+  color: #ff0000;
   font-size: 14px;
+  margin-Top:400px;
 }
 
 .formButton{
