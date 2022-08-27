@@ -87,7 +87,7 @@ export const Markets = () => {
     let data =await result.data   
     let bytes=data.value.token_info['']
         bytes=hex2a(bytes)
-        metadata =  await axios.get(bytes.replace('ipfs://', 'http://ipfs.io/ipfs/'))
+        metadata =  await axios.get(bytes.replace('ipfs://', 'https://ipfs.io/ipfs/'))
         data = await metadata.data
         return data
   }
