@@ -37,7 +37,7 @@ let metadata=''
         let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/contracts/${contract}/bigmaps/token_metadata/keys/${id}`)
             let bytes=result.data.value.token_info['']
             bytes=hex2a(bytes)
-            metadata =  await axios.get(bytes.replace('ipfs://', 'http://ipfs.io/ipfs/'))
+            metadata =  await axios.get(bytes.replace('ipfs://', 'https://ipfs.io/ipfs/'))
          
             return metadata.data
       }
