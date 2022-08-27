@@ -42,6 +42,7 @@ export const Profile = () => {
   const [maker, setMaker] = useState()
   const [taker, setTaker] = useState()
   const [tokens,setTokens] = useState([])
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     let bytes=''
@@ -59,9 +60,10 @@ export const Profile = () => {
   }
     setMaker(markets.filter(e => (e.maker==app.address)))
     setTaker(markets.filter(e => (e.taker==app.address)))
+    app.address  && setLoaded(true)
   }
     getMarket();
-  }, [])
+  }, [app])
 
   const getMetadata = async(contract, id) => {
     let metadata = ''
@@ -90,11 +92,10 @@ export const Profile = () => {
        <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '1px', marginTop: '27px'}} />
           <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '18px'}} />
           {objktView &&<Objkt objkt={objkt} setObjktView={setObjktView}/>}
-          {maker && taker && maker.length < 1 && taker.length < 1 && <div>No Markets</div>}
+          {loaded && maker && taker && maker.length < 1 && taker.length < 1 && <div>No Markets</div>}
        <div className='container' style={{opacity: objktView && '.2'}}>
        {maker?.length >0 && <p>Maker</p>}
        {maker?.length > 0  && maker.reverse().map((p,i)=> (
-                console.log(p),
         p.active && (!checkTimesUp() || app.address==(p.taker)) &&
        <div key={i} className='market'>
         
