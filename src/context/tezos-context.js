@@ -63,8 +63,8 @@ export const TezosContextProvider = ({ children }) => {
            if (errors) {
              console.error(errors);
            }
-           data?.tzprofiles[0]?.alias && 
-           setAlias(data.tzprofiles[0].alias);
+          //  data?.tzprofiles[0]?.alias && 
+          //  setAlias(data.tzprofiles[0].alias);
           }
       }
     };

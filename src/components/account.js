@@ -35,7 +35,7 @@ export const checkTimesUp = (start_time, term) => {
   return(end_time < now)
 }
 
-export const Profile = () => {
+export const Account = () => {
   const app = useTezosContext();
   const [objktView, setObjktView] = useState(false)
   const [objkt, setObjkt] = useState({})
@@ -48,7 +48,7 @@ export const Profile = () => {
     let bytes=''
     const markets =[]
     const getMarket = async () => {
-    const result = await axios.get('https://api.jakartanet.tzkt.io/v1/bigmaps/106622/keys')
+    const result = await axios.get('https://api.jakartanet.tzkt.io/v1/bigmaps/107783/keys')
 
     for (let i=0; i < result.data.length; i++){
       result.data[i].value.market_id = result.data[i].key
@@ -94,7 +94,7 @@ export const Profile = () => {
           {objktView &&<Objkt objkt={objkt} setObjktView={setObjktView}/>}
           {loaded && maker && taker && maker.length < 1 && taker.length < 1 && <div>No Markets</div>}
        <div className='container' style={{opacity: objktView && '.2'}}>
-       {maker?.length >0 && <p>Maker</p>}
+       {maker?.length > 0 && <p>Maker</p>}
        {maker?.length > 0  && maker.reverse().map((p,i)=> (
         p.active && (!checkTimesUp() || app.address==(p.taker)) &&
        <div key={i} className='market'>

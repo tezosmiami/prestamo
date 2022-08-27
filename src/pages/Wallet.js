@@ -1,5 +1,5 @@
 import React from 'react'
-import { Profile } from '../components/profile';
+import { Account } from '../components/account';
 
 export const Wallet = () => {
   // const [toggled, setToggled ] = useState(false);
@@ -10,7 +10,7 @@ export const Wallet = () => {
         isToggled={toggled}
         handleToggle={() => setToggled(!toggled)}/>
        {!toggled ? <LatestSales /> : <LatestMints/>} */}
-       <Profile/>
+       <Account/>
       </>
     );
   }
