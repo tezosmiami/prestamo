@@ -147,13 +147,13 @@ export const Markets = () => {
 
           
         <div className='marketInfo' style={{alignItems:'flex-start'}}>
-        <a style={{margin: '15px'}}>Maker: {p.maker &&p.maker.substr(0, 4) + "..." + p.maker.substr(-4)}</a>
-         <a style={{margin: '15px'}}>Amount: {p.amount/1000000}ꜩ</a>
-          <a style={{margin: '15px'}}>Interest: {p.interest/10}%</a>
-          <a style={{margin: '15px'}}>Term: {p.term} Minutes</a> 
+        <a style={{margin: '6px'}}>Maker: {p.maker &&p.maker.substr(0, 4) + "..." + p.maker.substr(-4)}</a>
+         <a style={{margin: '6px'}}>Amount: {p.amount/1000000}ꜩ</a>
+          <a style={{margin: '6px'}}>Interest: {p.interest/10}%</a>
+          <a style={{margin: '6px'}}>Term: {p.term} Minutes</a> 
           {p.taker && <a >Taker: {p.taker.substr(0, 4) + "..." + p.taker.substr(-4)}</a>}
 
-          <div style={{flexDirection: 'row', width:'auto', alignItems: 'flex-start'}}>
+          <div style={{margin: '12px', flexDirection: 'row', width:'auto', alignItems: 'flex-start'}}>
           {p.active && !p.taker && p.maker !== app.address && <button className='formButton' onClick = {() => {app.take_market(p.market_id, p.amount)}}>accept</button>}
           {p.active && !p.taker && app.address == p.maker && <button className='formButton' onClick = {() => {app.cancel_market(p.market_id)}}>cancel</button>}
           {p.active && p.taker && app.address == p.maker
