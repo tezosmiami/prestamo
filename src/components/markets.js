@@ -19,8 +19,8 @@ export const hex2a = (hex) => {
         str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
     return str;
 }   
-export const getAmountwithInterest = (amount,interest) => {
-  interest = ((parseFloat(amount)/1000) * parseFloat(interest))
+export const getAmountwithInterest = (amount, interest) => {
+  interest = ((parseFloat(interest)/1000) * parseFloat(amount))
   let total= interest + parseFloat(amount)
   return total
 }
@@ -147,7 +147,7 @@ export const Markets = () => {
             <li style={{margin: '6px'}}>Amount: {p.amount/1000000}ꜩ</li>
             <li style={{margin: '6px'}}>Interest: {p.interest/10}%</li>
             <li style={{margin: '6px'}}>Term: {p.term} Minutes</li> 
-            {p.taker && <li >Taker: {p.taker.substr(0, 4) + "..." + p.taker.substr(-4)}</li>}
+            {p.taker && <li style={{margin: '6px'}} >Taker: {p.taker.substr(0, 4) + "..." + p.taker.substr(-4)}</li>}
           </ul>
           <div style={{margin: '12px', flexDirection: 'row', width:'auto', alignItems: 'flex-start'}}>
           {p.active && !p.taker && p.maker !== app.address && <button className='formButton' onClick = {() => {app.take_market(p.market_id, p.amount)}}>accept</button>}
