@@ -89,6 +89,11 @@ ul{
 }
 @media screen and (min-width: 600px) {
   .purple{
+    font-size: 58px;
+  }
+}
+@media screen and (max-width: 550px) {
+  .purple{
     font-size: 48px;
   }
 }
@@ -97,14 +102,9 @@ ul{
     font-size: 38px;
   }
 }
-@media screen and (max-width: 550px) {
-  .purple{
-    font-size: 28px;
-  }
-}
 @media screen and (max-width: 450px) {
   .purple{
-    font-size: 21px;
+    font-size: 28px;
   }
 }
 .container{
