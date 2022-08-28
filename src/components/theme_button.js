@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import {  useEffect } from 'react';
 
 export const ThemeButton = ({darkMode, setDarkMode}) => {
  
@@ -8,7 +8,7 @@ export const ThemeButton = ({darkMode, setDarkMode}) => {
       if(localMode) {document.documentElement.classList.add('darkMode');
       setDarkMode(true);
      }
-  }, [])
+  }, [setDarkMode])
  
   function handleThemeToggle() {
       if(!darkMode) {

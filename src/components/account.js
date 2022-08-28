@@ -55,8 +55,8 @@ export const Account = () => {
       token.metadata = metadata
     } 
   }
-    setMaker(markets.filter(e => (e.maker===app.address)))
-    setTaker(markets.filter(e => (e.taker===app.address)))
+    setMaker(markets.filter(e => (e.maker===app.address)).reverse())
+    setTaker(markets.filter(e => (e.taker===app.address)).reverse())
     app.address  && setLoaded(true)
   }
     getMarket();
@@ -92,8 +92,8 @@ export const Account = () => {
           {loaded && maker && taker && maker.length < 1 && taker.length < 1 && <div>No Markets</div>}
        <div className='container' style={{opacity: objktView && '.2'}}>
        {maker?.length > 0 && <p>Maker</p>}
-       {maker?.length > 0  && maker.reverse().map((p,i)=> (
-        p.active && (!checkTimesUp() || app.address===(p.taker)) &&
+       {maker?.length > 0  && maker.map((p,i)=> (
+       (!checkTimesUp() || app.address===(p.taker)) &&
        <div key={i} className='market'>
         
        <Masonry
@@ -149,8 +149,8 @@ export const Account = () => {
 
       <div className='container' style={{opacity: objktView && '.2'}}>
       {taker?.length > 0 && <p>Taker</p>}
-       {taker?.length > 0  && taker.reverse().map((p,i)=> (
-        p.active && (!checkTimesUp() || app.address===(p.taker)) &&
+       {taker?.length > 0  && taker.map((p,i)=> (
+        (!checkTimesUp() || app.address===(p.taker)) &&
        <div key={i} className='market'>
         
        <Masonry

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useTezosContext } from "./context/tezos-context"
 import { Routes, Route, Link } from 'react-router-dom'
 import { Home } from './pages/Home'
@@ -15,7 +15,7 @@ function App() {
   const  app = useTezosContext();
   const [open, setOpen] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
-console.log(darkMode)
+
   return(
     <>
     <header>
@@ -51,7 +51,7 @@ console.log(darkMode)
     <a href={`https://faucet.jakartanet.teztnets.xyz/`} target="blank"
          rel="noopener noreferrer"> ꜩ faucet </a><p/>
    
-      {darkMode !== null && <img style={{width:'55px', height:'55px'}} src={!darkMode ? presta2 : presta}/>}
+      {darkMode !== null && <img alt ='' style={{width:'55px', height:'55px'}} src={!darkMode ? presta2 : presta}/>}
       <p/>
        <a href={`https://www.tzkt.io`} target="blank"
          rel="noopener noreferrer"> Indexed by tzkt</a>
