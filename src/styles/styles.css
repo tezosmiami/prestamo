@@ -151,8 +151,8 @@ ul{
 
 /* s */
 .lightMode {
-    --text: #111f11;
-    --background: #fbfff8;
+    --text: #fbfff8;
+    --background:#111f11;
     /* background: linear-gradient(to bottom right, #2d27ff,white,  #ff0066); */
     /* background-image: linear-gradient(#d063ff,#ff69eb); */
  }
