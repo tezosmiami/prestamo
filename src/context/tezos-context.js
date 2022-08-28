@@ -132,7 +132,7 @@ async function claim_market(id) {
   .at(operator)
   .then((wallet) => {
 
-    return wallet.methods.repo_market(id).send()
+    return wallet.methods.claim_market(id).send()
   })
   .then((op) => {
     console.log(`Waiting for ${op.opHash} to be confirmed...`);
