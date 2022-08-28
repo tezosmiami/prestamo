@@ -1,3 +1,5 @@
+##Original basic functionality Prestamo Market Contract
+
 import smartpy as sp
 
 
@@ -179,7 +181,7 @@ class Prestamo(sp.Contract):
     @sp.entry_point    
     def claim_market(self,market_id):
         sp.set_type(market_id, sp.TNat)
-        sp.verify(self.data.markets.contains(market_id), message="WRONG_market_ID")
+        sp.verify(self.data.markets.contains(market_id), message="WRONG_MARKET_ID")
         sp.verify(self.data.markets[market_id].taker == sp.some(sp.sender), message = "NOT_TAKER")
         sp.verify(self.data.markets[market_id].taker.is_some(), message = "MARKET_NOT_TAKEN")
         sp.verify(self.data.markets[market_id].active == True, message = "MARKET_NOT_ACTIVE" )    

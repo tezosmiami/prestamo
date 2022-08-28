@@ -123,7 +123,7 @@ async function take_market(id, amount) {
     console.log(`Waiting for ${op.opHash} to be confirmed...`);
     return op.confirmation(1).then(() => op.opHash);
   })
-  .then((hash) => console.log(`Operation injected: https://ithaca.tzstats.com/${hash}`))
+  .then((hash) => console.log(`Operation injected: https://jakarata.tzkt.io/${hash}`))
   .catch((error) => console.log(`Error: ${JSON.stringify(error, null, 2)}`));
 }
 
@@ -138,7 +138,7 @@ async function claim_market(id) {
     console.log(`Waiting for ${op.opHash} to be confirmed...`);
     return op.confirmation(1).then(() => op.opHash);
   })
-  .then((hash) => console.log(`Operation injected: https://ithaca.tzstats.com/${hash}`))
+  .then((hash) => console.log(`Operation injected: https://jakarta.tzkt.io/${hash}`))
   .catch((error) => console.log(`Error: ${JSON.stringify(error, null, 2)}`));
 }
 

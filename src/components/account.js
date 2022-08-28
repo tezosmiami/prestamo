@@ -22,7 +22,7 @@ export const hex2a = (hex) => {
     return str;
 }   
 export const getAmountwithInterest = (amount,interest) => {
-  interest = ((parseFloat(amount)/1000) * parseFloat(interest))
+  interest = ((parseFloat(interest)/1000) * parseFloat(amount))
   let total= interest + parseFloat(amount)
   return total
 }
