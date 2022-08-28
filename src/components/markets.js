@@ -20,6 +20,7 @@ export const hex2a = (hex) => {
     return str;
 }   
 export const getAmountwithInterest = (amount, interest) => {
+  //  
   interest = ((parseFloat(interest)/1000) * parseFloat(amount))
   let total= interest + parseFloat(amount)
   return total
@@ -139,7 +140,6 @@ export const Markets = () => {
         </div>
        ))}
           </Masonry>
-
           
         <div className='marketInfo' style={{alignItems:'flex-start'}}>
         <ul>
@@ -154,7 +154,7 @@ export const Markets = () => {
           {p.active && !p.taker && app.address === p.maker && <button className='formButton' onClick = {() => {app.cancel_market(p.market_id)}}>cancel</button>}
           {p.active && p.taker && app.address === p.maker
            && !checkTimesUp(p.start_time, p.term)
-           &&<button className='formButton' onClick = {() => {app.recover_market(p.market_id, getAmountwithInterest(p.amount,p.interest))}}> recover</button>}
+           &&<button className='formButton' onClick = {() => {app.recover_market(p.market_id, parseFloat(getAmountwithInterest(p.amount, p.interest)))}}> recover</button>}
           {p.active && app.address === p.taker && p.taker && checkTimesUp(p.start_time, p.term) && <button className='formButton'onClick = {() => {app.claim_market(p.market_id)}} >claim</button>}
           </div>
             </div>

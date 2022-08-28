@@ -144,7 +144,7 @@ class Prestamo(sp.Contract):
     @sp.entry_point    
     def take_market(self,market_id):
          sp.set_type(market_id, sp.TNat)
-         sp.verify(self.data.markets.contains(market_id), message="WRONG_market_ID")
+         sp.verify(self.data.markets.contains(market_id), message="WRONG_MARKET_ID")
          sp.verify(~self.data.markets_paused, message="MARKETS_PAUSED")
          sp.verify(self.data.markets[market_id].active == True, message ="MARKET_NOT_ACTIVE")
          sp.verify(self.data.markets[market_id].taker == sp.none, message="MARKET_TAKEN") 
@@ -210,6 +210,8 @@ class Prestamo(sp.Contract):
         interest_amount = sp.local(
                 "interest_amount", sp.split_tokens(self.data.markets[market_id].amount, self.data.markets[market_id].interest, 1000))  
         
+        og_fee_amount = sp.local(
+                "og_fee_amount", sp.split_tokens(sp.amount, self.data.fee, 1000))
         fee_amount = sp.local(
                 "fee_amount", sp.split_tokens(sp.amount, self.data.fee, 1000))
         

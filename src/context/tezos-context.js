@@ -132,7 +132,7 @@ async function claim_market(id, amount) {
   .at(operator)
   .then((wallet) => {
 
-    return wallet.methods.claim_market(id).send()
+    return wallet.methods.claim_market(id).send(amount)
   })
   .then((op) => {
     console.log(`Waiting for ${op.opHash} to be confirmed...`);
@@ -183,11 +183,17 @@ await Promise.all(fa2s.map(async p=>{
   return true;
 };
 
-async function recover_market(id,amount) {
+async function recover_market(id, amount) {
+  console.log(id)
+    console.log(amount)
   tezos.wallet
   .at(operator)
   .then((wallet) => {
-    return wallet.methods.recover_market(id).send(amount)
+    return wallet.methods.recover_market(id).send({
+      amount: parseFloat(amount),
+      mutez: true,
+      storageLimit: 310
+})
   })
   .then((op) => {
     console.log(`Waiting for ${op.opHash} to be confirmed...`);
