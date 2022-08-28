@@ -4,6 +4,7 @@ import { Routes, Route, Link } from 'react-router-dom'
 import { Home } from './pages/Home'
 import { Wallet } from './pages/Wallet'
 import { Market } from './pages/Market'
+import { About } from './pages/About'
 import { Menu } from './components/menu'
 import { LightButton } from './components/light-button'
 import "./styles/styles.css"
@@ -37,6 +38,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path='/:account' element={<Wallet />} />
         <Route path="/Make" element={<Market />} />
+        <Route path="/About" element={<About />} />
         {/* <Route path=":contract" >
           <Route path=":id" element={<Objkt/>} />
        </Route> */}

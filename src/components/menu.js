@@ -12,6 +12,7 @@ export const Menu = ({ open, setOpen}) => {
        
         <Link to={`/${app.alias || app.address}`}  onClick={() => setOpen(false)} >account</Link>
         <Link to='/Make' onClick={() => setOpen(false)} >make market</Link>
+        <Link to={`/Faqs`}  onClick={() => {app.unsync(); setOpen(false)}}>faqs</Link>
         <Link to={`/`}  onClick={() => {app.unsync(); setOpen(false)}}>unsync</Link>
         </div>}
         

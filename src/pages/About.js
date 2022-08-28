@@ -1,13 +1,10 @@
+import { Faqs } from '../components/faqs'
+
 
 export const About = () => {
-
-
-
     return (
       <>
-        <p>
-            it is what it is. . .
-        </p>
+      <Faqs/>
       </>
     );
   }
