@@ -102,7 +102,6 @@ export const Account = () => {
         columnClassName='column'>
 
         {p.tokens.map((q,i) => (
-          console.log(p),
         <div key={i} onClick= {() => {showObjkt(q)}}>
         {q.metadata.formats[0].mimeType?.includes('image') && q.metadata.formats[0].mimeType !== 'image/svg+xml' ?
       

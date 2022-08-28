@@ -2,25 +2,25 @@ import { useEffect, useState, createContext, useContext} from "react";
 import { TezosToolkit, OpKind } from "@taquito/taquito";
 import { BeaconWallet } from "@taquito/beacon-wallet";
 
-const getAliasbyAddress = `
-query Alias($address: String!) {
-  tzprofiles(where: {account: {_eq: $address}}) {
-    alias
-    }
-  }
-`
+// const getAliasbyAddress = `
+// query Alias($address: String!) {
+//   tzprofiles(where: {account: {_eq: $address}}) {
+//     alias
+//     }
+//   }
+// `
 
-async function fetchGraphQL(queryObjkts, name, variables) {
-  let result = await fetch(process.env.REACT_APP_TEZTOK_API, {
-    method: 'POST',
-    body: JSON.stringify({
-      query: queryObjkts,
-      variables: variables,
-      operationName: name,
-    }),
-  })
-  return await result.json()
-}
+// async function fetchGraphQL(queryObjkts, name, variables) {
+//   let result = await fetch(process.env.REACT_APP_TEZTOK_API, {
+//     method: 'POST',
+//     body: JSON.stringify({
+//       query: queryObjkts,
+//       variables: variables,
+//       operationName: name,
+//     }),
+//   })
+//   return await result.json()
+// }
 
 const TezosContext = createContext();
 const options = {
@@ -58,14 +58,14 @@ export const TezosContextProvider = ({ children }) => {
           setAddress(address);
           tezos.setWalletProvider(wallet);
           setTezos(tezos)
-          if(address) {
-            const { errors, data } = await fetchGraphQL(getAliasbyAddress, 'Alias', { address: address});
-           if (errors) {
-             console.error(errors);
-           }
-          //  data?.tzprofiles[0]?.alias && 
-          //  setAlias(data.tzprofiles[0].alias);
-          }
+          // if(address) {
+          //   const { errors, data } = await fetchGraphQL(getAliasbyAddress, 'Alias', { address: address});
+          //  if (errors) {
+          //    console.error(errors);
+          //  }
+          // //  data?.tzprofiles[0]?.alias && 
+          // //  setAlias(data.tzprofiles[0].alias);
+          // }
       }
     };
       getLoggedIn();
@@ -79,11 +79,13 @@ export const TezosContextProvider = ({ children }) => {
         type: 'jakartanet',
       },
     });
+
     tezos.setWalletProvider(wallet);
     setTezos(tezos)
     let address=await wallet.getPKH()
     setAddress(address);
     setActiveAccount(await wallet?.client?.getActiveAccount());
+    setApp(app)
     // if(address) {
     //     const { errors, data } = await fetchGraphQL(getAliasbyAddress, 'Alias', { address: address});
     //  if (errors) {
