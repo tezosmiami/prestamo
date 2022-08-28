@@ -43,7 +43,7 @@ function App() {
       </Routes>
     </div>
     <div style={{opacity: open && '0.2'}}>
-    <a href={`https:sa//faucet.jakartanet.teztnets.xyz/`} target="blank"
+    <a href={`https://faucet.jakartanet.teztnets.xyz/`} target="blank"
          rel="noopener noreferrer"> ꜩ faucet </a><p/>
        <a href={`https://www.tzkt.io`} target="blank"
          rel="noopener noreferrer"> Indexed by tzkt</a>
