@@ -72,7 +72,7 @@ export const Markets = () => {
       token.metadata = metadata
     } 
   }
-    setBigmap(markets)
+    setBigmap(markets.reverse())
   }
     getMarket();
   }, [])
@@ -111,7 +111,7 @@ export const Markets = () => {
         <Link style={{marginRight:'27px'}} to={`/Make`}>
           <div className='formButton'>Make Market</div><p/>
        </Link>} */}
-       {bigmap?.length > 0  && bigmap.reverse().map((p,i)=> (
+       {bigmap?.length > 0  && bigmap.map((p,i)=> (
 
         p.active && (!checkTimesUp() || app.address === (p.taker)) &&
 

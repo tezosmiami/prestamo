@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTezosContext } from "./context/tezos-context"
 import { Routes, Route, Link } from 'react-router-dom'
 import { Home } from './pages/Home'
@@ -6,18 +6,21 @@ import { Wallet } from './pages/Wallet'
 import { Market } from './pages/Market'
 import { About } from './pages/About'
 import { Menu } from './components/menu'
-import { LightButton } from './components/light-button'
+import { ThemeButton } from './components/theme_button'
+import presta from './presta.png'
+import presta2 from './presta2.png'
 import "./styles/styles.css"
 
 function App() {
   const  app = useTezosContext();
   const [open, setOpen] = useState(false)
-
+  const [darkMode, setDarkMode] = useState(false)
+console.log(darkMode)
   return(
     <>
     <header>
     <Link className='purple' to="/">prestamo</Link>
-    <LightButton />
+    <ThemeButton darkMode={darkMode} setDarkMode={setDarkMode} />
  
     <div style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
     {app.address && <Link to={`/${app.alias || app.address}`}>
@@ -47,9 +50,11 @@ function App() {
     <div style={{opacity: open && '0.2'}}>
     <a href={`https://faucet.jakartanet.teztnets.xyz/`} target="blank"
          rel="noopener noreferrer"> ꜩ faucet </a><p/>
+   
+      {darkMode !== null && <img style={{width:'55px', height:'55px'}} src={!darkMode ? presta2 : presta}/>}
+      <p/>
        <a href={`https://www.tzkt.io`} target="blank"
          rel="noopener noreferrer"> Indexed by tzkt</a>
-          
        <p>experimental dApp - enjoy at your own risk. . .</p>
        </div>
     </>

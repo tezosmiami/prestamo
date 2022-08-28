@@ -145,7 +145,7 @@ li{
   }
 
 /* s */
-.lightMode {
+.darkMode {
     --text: #fbfff8;
     --background:#111f11;
     /* background: linear-gradient(to bottom right, #2d27ff,white,  #ff0066); */
