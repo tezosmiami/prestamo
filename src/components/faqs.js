@@ -53,16 +53,14 @@ export const Faqs = () => {
           The lender and only the lender can then claim the NFT/Objkts as
           compensation.
         </li>
-        <p>Q: Who has access to the tokens?</p>
+        <p>Q: Who has access to the NFTs/Objkts?</p>
         <li>
-          The maker can recover the tokens before the the loan is given by
+          The maker can recover the NFTs/Objkts before the the loan is given by
           cancelling the market or by paying back the loan + interest before the
           term is up. The taker can only claim the tokens if the term is up and
           the loan has not been paid back. The contract admin DOES NOT have
           access to the tokens at any time.
         </li>
-        <p>Q: How to get testnet ꜩ?</p>
-        <li>Please use faucet link at bottom of page.</li>
         <p>Q: How to get NFT/Objkts to Participate?</p>
         <li>
           If your testnet wallet doesnt have any NFT Objkts you can accept a
@@ -70,6 +68,8 @@ export const Faqs = () => {
           NFT/Objkts when the time is up. You can then make a market with those
           for testing. Testnet minting site coming soon. . .
         </li>
+        <p>Q: How to get testnet ꜩ?</p>
+        <li>Please use faucet link at bottom of page.</li>
         <p />
         <p>faqs: Drafted by @2box</p>
         <p />
