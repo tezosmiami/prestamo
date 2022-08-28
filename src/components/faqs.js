@@ -2,12 +2,13 @@ export const Faqs = () => {
   return (
     <>
       <div className="container" style={{ textAlign: "justify" }}>
+        -
         <p> Q: What is Prestamo?</p>
         <li style={{ margin: "18px" }}>
           Prestamo is an experimental decentralized NFT/Objkts lending platform
           on the Tezos blockchain. Borrow or lend ꜩ with NFT/Objkts as
           collateral.
-        </li>
+        </li> -
         <p>Q: How does it work?</p>
         <li style={{ margin: "18px" }}>
           The borrower makes a market including the amount of ꜩ to borrow, the
@@ -29,6 +30,7 @@ export const Faqs = () => {
             giver/taker.
           </p>
         </li>
+        -
         <p>Q: How to borrow Tezos on Prestamo?</p>
         <li style={{ margin: "18px" }}>
           A: To borrow tezos first sync wallet then choose make from the menu,
@@ -37,7 +39,7 @@ export const Faqs = () => {
           you pay back the ꜩ with interest, the NFT/Objkts are returned from the
           contract to your wallet. If you don't pay in time, the taker of the
           offer can claim your NFT/Objkts as compensation.
-        </li>
+        </li> - 
         <p>Q: How to lend Tezos and earn interest?</p>
         <li style={{ margin: "18px" }}>
           A: To lend Tezos and earn the interest rate you have to select one of
@@ -47,12 +49,12 @@ export const Faqs = () => {
           person who burrowed might not pay you back, so pay close attention to
           the value of the NFT/Objkts left as collateral. For now the interest
           is paid in full minus 1% market fees regardless of duration.
-        </li>
+        </li>-
         <p>Q: What happens if the borrower doesn't pay the lender back?</p>
         <li style={{ margin: "18px" }}>
           The lender and only the lender can then claim the NFT/Objkts as
           compensation.
-        </li>
+        </li>-
         <p>Q: Who has access to the NFTs/Objkts?</p>
         <li>
           The maker can recover the NFTs/Objkts before the the loan is given by
@@ -60,18 +62,18 @@ export const Faqs = () => {
           term is up. The taker can only claim the tokens if the term is up and
           the loan has not been paid back. The contract admin DOES NOT have
           access to the tokens at any time.
-        </li>
+        </li>-
         <p>Q: How to get NFT/Objkts to Participate?</p>
         <li>
           If your testnet wallet doesnt have any NFT Objkts you can accept a
           market with a short term - set to minutes for testing - and claim
           NFT/Objkts when the time is up. You can then make a market with those
           for testing. Testnet minting site coming soon. . .
-        </li>
-        <p>Q: How to get testnet ꜩ?</p>
+        </li>-
+        <p>Q: How to get jakartanet ꜩ?</p>
         <li>Please use faucet link at bottom of page.</li>
-        <p />
-        <p>faqs: Drafted by @2box</p>
+        <p />-
+        <p>faqs: Drafted by @2box</p>-
         <p />
         <p />
       </div>
