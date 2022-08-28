@@ -28,6 +28,8 @@ www.prestamo.art
 contract address (jakartanet):
 
  - KT1VYGJeJwiAqVDr8Q2JL38XWYBTKEHqovhf
+ 
+   (loan term set to minutes for testing)
 
 -------------------------------------------------------------------
 
@@ -36,10 +38,13 @@ to do:
 - indexer
 - search engine
 - market page
+- formal verification
+- ligo contracts
 - ghostnet + minting link?
 - interest accrue with time?
 - v2 tokenized reward mechanism for succesful borrowing and lending?
 - grace period for reclaiming objkts maybe with dutch auction?
+- ctez, wxtz - others?
 - mainnet
 
 
