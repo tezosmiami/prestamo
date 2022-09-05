@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import ReactPlayer from 'react-player'
 import Masonry from 'react-masonry-css'
 import { Objkt } from './objkt'
+import presta from '../presta.png'
+import presta2 from '../presta2.png'
 import { useTezosContext } from "../context/tezos-context";
 const axios = require('axios')
 const breakpointColumns = {
@@ -36,6 +38,7 @@ export const checkTimesUp = (start_time, term) => {
 export const Markets = () => {
   const app = useTezosContext();
   const [objktView, setObjktView] = useState(false)
+  const [degree, setDegree] = useState(0)
   const [objkt, setObjkt] = useState({});
   const [bigmap, setBigmap] = useState()
 //   /*
@@ -62,8 +65,10 @@ export const Markets = () => {
   useEffect(() => {
     const markets =[]
     const getMarket = async () => {
+    const interval = setInterval(() => {
+      setDegree((degree) => degree+=3)
+    }, 80);
     const result = await axios.get('https://api.jakartanet.tzkt.io/v1/bigmaps/107783/keys')
-
     for (let i=0; i < result.data.length; i++){
       result.data[i].value.market_id = result.data[i].key
       markets.push(result.data[i].value)
@@ -71,32 +76,43 @@ export const Markets = () => {
       const metadata = await getMetadata(token.contract_address, token.token_id)
       token.metadata = metadata
     } 
-  }
+  } clearInterval(interval);
     setBigmap(markets.reverse())
   }
     getMarket();
   }, [])
 
   const getMetadata = async(contract, id) => {
-    let metadata = ''
-    let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/contracts/${contract}/bigmaps/token_metadata/keys/${id}`)
-    let data =await result.data   
-    let bytes=data.value.token_info['']
-        bytes=hex2a(bytes)
-        metadata =  await axios.get(bytes.replace('ipfs://', 'https://ipfs.io/ipfs/'))
-        data = await metadata.data
-        return data
+    // let metadata = ''
+    // let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/contracts/${contract}/bigmaps/token_metadata/keys/${id}`)
+    let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/tokens?contract=${contract}&tokenId=${id}`)
+    let metadata =await result.data[0].metadata  
+    // let bytes=data.value.token_info['']
+    //     bytes=hex2a(bytes)
+    //     metadata =  await axios.get(bytes.replace('ipfs://', 'https://ipfs.io/ipfs/'))
+    //     data = await metadata.data
+        return metadata
   }
-  
+
   const showObjkt = (o) => {
     if (objktView) return (setObjktView(false))
     setObjkt(o)
     setObjktView(true)
   }
 
+  // !bigmap && setInterval(() => {setLoader(!loader); setDegree(degree+33)}, 1000)
+const darkMode = window.localStorage.getItem('darkMode');
+  if (!bigmap) return (
+      <>
+        <img alt='' src={darkMode ? presta : presta2} style={{width:'33px', height: '33px', transform:`rotate(${degree}deg)`}}></img>
+        <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '1px', marginTop: '27px'}} />
+        <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '18px'}} />
+       </>
+    )
+    console.log(degree)
+
   return (
       <>
-      
        <div style={{marginTop:'11px'}}>
         Latest Markets
        </div>

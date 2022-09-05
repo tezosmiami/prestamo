@@ -36,7 +36,7 @@ function App() {
   
     {open &&<Menu app={app} open={open} setOpen={setOpen}/>}
   
-     <div style={{opacity:open && '0.2'}}>
+     <div style={{minHeight: '50vh', opacity:open && '0.2'}}>
      <Routes>
         <Route path="/" element={<Home />} />
         <Route path='/:account' element={<Wallet />} />

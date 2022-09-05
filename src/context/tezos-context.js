@@ -147,7 +147,7 @@ async function claim_market(id, amount) {
 async function make_market(fa2s, values) {
   let transactions = []
   let contract =''
-
+console.log(app.address, fa2s)
 await Promise.all(fa2s.map(async p=>{
   contract = await tezos.wallet.at(p.contract_address)
   return (transactions.push({"kind": OpKind.TRANSACTION, ...contract.methods.update_operators(

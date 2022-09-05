@@ -26,6 +26,7 @@ body{
      color:var(--text);
      background-color: var(--background);
      width:100vw;
+     height:100vh;
 }
 
 div{
@@ -144,7 +145,6 @@ li{
   
   }
 
-/* s */
 .darkMode {
     --text: #fbfff8;
     --background:#111f11;

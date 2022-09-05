@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
-
 import ReactPlayer from 'react-player'
 import Masonry from 'react-masonry-css'
+import presta from '../presta.png'
+import presta2 from '../presta2.png'
 import { Objkt } from './objkt'
 import { useTezosContext } from "../context/tezos-context";
 
@@ -40,11 +41,15 @@ export const Account = () => {
   const [objkt, setObjkt] = useState({})
   const [maker, setMaker] = useState()
   const [taker, setTaker] = useState()
-  const [loaded, setLoaded] = useState(false)
+  const [degree, setDegree] = useState(0)
+  const [loaded, setLoaded] =useState(false)
 
   useEffect(() => {
     const markets =[]
     const getMarket = async () => {
+     let interval= setInterval(() => {
+        setDegree((degree) => degree+=3)
+      }, 80);
     const result = await axios.get('https://api.jakartanet.tzkt.io/v1/bigmaps/107783/keys')
 
     for (let i=0; i < result.data.length; i++){
@@ -54,14 +59,17 @@ export const Account = () => {
       const metadata = await getMetadata(token.contract_address, token.token_id)
       token.metadata = metadata
     } 
+  
   }
+
     setMaker(markets.filter(e => (e.maker===app.address)).reverse())
     setTaker(markets.filter(e => (e.taker===app.address)).reverse())
     app.address  && setLoaded(true)
+    clearInterval(interval)
   }
     getMarket();
   }, [app])
-
+console.log(degree)
   const getMetadata = async(contract, id) => {
     let metadata = ''
     let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/contracts/${contract}/bigmaps/token_metadata/keys/${id}`)
@@ -78,7 +86,17 @@ export const Account = () => {
     setObjkt(o)
     setObjktView(true)
   }
-  
+
+  const darkMode = window.localStorage.getItem('darkMode');
+  if (!maker && !taker) return (
+    <>
+       <img alt='' src={darkMode ? presta : presta2} style={{width:'33px', height: '33px', transform:`rotate(${degree}deg)`}}></img>
+      <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '1px', marginTop: '27px'}} />
+      <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '18px'}} />
+    </>
+  )
+
+  console.log(maker)
   return (
       <>
       
@@ -142,11 +160,8 @@ export const Account = () => {
           </div>
           
           ))}
-        
+   
       </div>
-
-
-
       <div className='container' style={{opacity: objktView && '.2'}}>
       {taker?.length > 0 && <p>Taker</p>}
        {taker?.length > 0  && taker.map((p,i)=> (
