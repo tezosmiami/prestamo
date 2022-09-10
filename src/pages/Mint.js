@@ -127,9 +127,9 @@ export const Mint = () => {
     return (
         <div >
             <Dropzone multiple={false}  
-            accept={{
-                   'image/*': ['.jpeg', '.png', '.gif'], 'video/*': ['.mp4']
-                 }} 
+            accept={
+                   'image/png, image/gif, image/jpeg, image/mp4'
+                 } 
                 onDrop={file => handleDrop(file)}>
                 {({getRootProps, getInputProps}) => (
                
