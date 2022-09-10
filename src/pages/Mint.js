@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect} from 'react';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useTezosContext } from '../context/tezos-context'
+import { useNavigate } from "react-router-dom";
 import { setMetadata }  from '../utils/ipfs'
 import {useDropzone} from 'react-dropzone';
 import * as yup from 'yup'
@@ -37,6 +38,7 @@ export const Mint = () => {
     const [message, setMessage] = useState('')
     const app = useTezosContext()
     const scrollRef = useRef()
+    const navigate = useNavigate();
     const {acceptedFiles, getRootProps, getInputProps} = useDropzone({
         accept: {
           'image/*': [],
@@ -76,21 +78,27 @@ export const Mint = () => {
         setIsMinting(true)
         setMessage('Ipfs. . .')
         const metadataUri = await setMetadata({values: mintPayload , file: file, setMessage})
-        console.log(metadataUri)
-        setMessage('Minting. . .');
-        const isSuccessful = await app.mint(metadataUri, mintPayload.editions, mintPayload.royalties);
-        setMessage(isSuccessful ? 'Completed' : 'Failed to mint');
-        setIsMinting(false)
-        setTimeout(() => {
-            setMessage(null);
-        }, 1500)
+        setTimeout(async () => {
+            setMessage('Minting. . .');
+            const isSuccessful = await app.mint(metadataUri, mintPayload.editions, mintPayload.royalties);
+            setMessage(isSuccessful ? 'Completed' : 'Failed to mint');
+            setIsMinting(false)
+            setTimeout(() => {
+                setMessage(null);
+                navigate('/Make')
+            }, 1200)
+        }, 3200)
+
+      
+      
+
     };
 
 
 
     useEffect(() => {
         // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
-        return () => file.forEach(file => URL.revokeObjectURL(file.preview));
+        return () => (file => URL.revokeObjectURL(file.preview));
       }, []);
     
 

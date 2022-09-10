@@ -56,7 +56,6 @@ export const setMetadata = async({values, file, setMessage}) => {
     );
     console.log(metadata.toString());
     const md = await addToIpfs(metadata);
-    console.log(md)
     return md
     
 }
