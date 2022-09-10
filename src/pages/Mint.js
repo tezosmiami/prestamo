@@ -124,8 +124,6 @@ export const Mint = () => {
         setMintPayload(values);
         setIsPreview(true)
         // const element = document.getElementById("formik");
-       
-       
         // setIsForm(false);
         // console.log(values)
     };
@@ -135,16 +133,16 @@ export const Mint = () => {
 console.log(file)
     return (
         <div >
-                    <div {...getRootProps()}>
-                       
-                        { !loaded ? (<input type='file' {...getInputProps()} />,
-                        <div className='view'> 
+                    <div {...getRootProps({className: 'view'})}>
+                      <input {...getInputProps()} />
+                        {/* <div className='view'>  */}
                         <p>drag 'n' drop file here - or click to select</p>
-                        <p>[jpeg, png, gif, mp4]</p></div>) 
+                        {/* <p>[jpeg, png, gif, mp4]</p> */}
+                        {/* </div>)  */}
     
-                        : file.type.includes('image') ? <img className='view' src={file.preview} />
+                        {/* : file.type.includes('image') ? <img className='view' src={file.preview} />
                         : file.type.includes('video') ? <video className='view' src={file.preview}  controls autoPlay/>
-                        : null}
+                        : null} */}
                    
                     </div>
                   
