@@ -55,7 +55,7 @@ export const Make = () => {
     const getObjkts = async () => {
       if(account) {
       let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/tokens/balances?account=${account}&balance.gt=0`)
-     setObjkts(result.data)}
+     setObjkts(result.data.reverse())}
   }
     getObjkts();
   }, [account])
@@ -115,7 +115,7 @@ const handleSubmit = async (values) => {
     setObjkt(o)
     setObjktView(true)
   }
-
+  console.log(objkts)
   return (
       <>
        <div style={{marginTop:'11px'}}>

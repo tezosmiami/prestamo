@@ -75,6 +75,7 @@ a{
 
 li{
   list-style-type: square;
+  margin:6px;
 }
 .purple{
     color: var(--text);
@@ -190,10 +191,9 @@ input:focus {
   justify-content: center;;
 }
 .view {
-  width: 20vw;
+  width: 50vw;
   object-fit: contain;
   border: 1px solid var(--text);
-  border-radius: 3%;
   margin-top:22px;
   overflow-x:auto;
   padding: 6px;
@@ -292,6 +292,7 @@ audio::-webkit-media-controls-play-button {
 
 .formField {
   display:flex;
+  margin-bottom: 21px;
   flex-direction: row;
   width:100%;
 
@@ -305,7 +306,7 @@ label {
 
 .formInput {
   display: block;
-  width: 66px;
+  width: 88px;
   /* margin:11px; */
   color:var(--background);
   background-color: var(--text);
@@ -318,6 +319,14 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
+.fields{
+  display: block;
+  width: 100%;
+  background-color: var(--text);
+  color: var(--background);
+  text-align: center;
+}
+
 .form {
   /* display:flex;
   flex-direction: row; */
@@ -327,7 +336,8 @@ input::-webkit-inner-spin-button {
   position:absolute;
   color: #ff0000;
   font-size: 14px;
-  margin-Top:400px;
+  margin-top: 50px; 
+  margin-left: 150px;
 }
 
 .formButton{

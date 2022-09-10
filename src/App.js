@@ -4,6 +4,7 @@ import { Routes, Route, Link } from 'react-router-dom'
 import { Home } from './pages/Home'
 import { Wallet } from './pages/Wallet'
 import { Market } from './pages/Market'
+import { Mint } from './pages/Mint'
 import { About } from './pages/About'
 import { Menu } from './components/menu'
 import { ThemeButton } from './components/theme_button'
@@ -14,7 +15,7 @@ import "./styles/styles.css"
 function App() {
   const  app = useTezosContext();
   const [open, setOpen] = useState(false)
-  const [darkMode, setDarkMode] = useState(false)
+  const [darkMode, setDarkMode] = useState()
 
   return(
     <>
@@ -41,6 +42,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path='/:account' element={<Wallet />} />
         <Route path="/Make" element={<Market />} />
+        <Route path="/Mint" element={<Mint />} />
         <Route path="/About" element={<About />} />
         {/* <Route path=":contract" >
           <Route path=":id" element={<Objkt/>} />
@@ -50,8 +52,8 @@ function App() {
     <div style={{opacity: open && '0.2'}}>
     <a href={`https://faucet.jakartanet.teztnets.xyz/`} target="blank"
          rel="noopener noreferrer"> ꜩ faucet </a><p/>
-   
-      {darkMode !== null && <img alt ='' style={{width:'55px', height:'55px'}} src={!darkMode ? presta2 : presta}/>}
+
+      {darkMode !== null && <img alt ='' style={{width:'55px', height:'55px'}} src={darkMode ? presta : presta2}/>}
       <p/>
        <a href={`https://www.tzkt.io`} target="blank"
          rel="noopener noreferrer"> Indexed by tzkt</a>

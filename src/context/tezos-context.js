@@ -1,5 +1,5 @@
 import { useEffect, useState, createContext, useContext} from "react";
-import { TezosToolkit, OpKind } from "@taquito/taquito";
+import { TezosToolkit, OpKind, MichelsonMap } from "@taquito/taquito";
 import { BeaconWallet } from "@taquito/beacon-wallet";
 
 // const getAliasbyAddress = `
@@ -219,7 +219,40 @@ async function cancel_market(id) {
   .catch((error) => console.log(`Error: ${JSON.stringify(error, null, 2)}`));
 }
 
-  const wrapped = { ...app, tezos, make_market, take_market, claim_market, recover_market, cancel_market, sync, unsync, activeAccount, address, alias};
+const mint = async(metadata, editions, royalties ) => {
+   
+  const token_metadata = new MichelsonMap()
+  token_metadata.set(
+   '',
+   metadata.split('')
+     .reduce(
+         (hex, c) =>
+             (hex += c.charCodeAt(0)
+                 .toString(16)
+                 .padStart(2, '0')),
+         ''
+     )
+   );
+  console.log(token_metadata)
+   try {
+       const contract = await tezos.wallet
+           .at(process.env.REACT_APP_PRESTAMO_MINT);
+       const operation = await contract.methods.mint(
+          process.env.REACT_APP_PRESTAMO_FA2, 
+          editions,
+          token_metadata,
+          parseFloat(royalties) * 10
+       ).send({amount: 0, storageLimit: 310});
+       await operation.confirmation(1);
+       console.log('Minted');
+       console.log('Operation hash:', operation.hash);
+   } catch(e) {
+       console.log('Error:', e);
+       return false;
+   }
+   return true;
+};
+  const wrapped = { ...app, tezos, mint, make_market, take_market, claim_market, recover_market, cancel_market, sync, unsync, activeAccount, address, alias};
 
   return (
    

@@ -41,6 +41,7 @@ export const Markets = () => {
   const [degree, setDegree] = useState(0)
   const [objkt, setObjkt] = useState({});
   const [bigmap, setBigmap] = useState()
+  const darkMode = window.localStorage.getItem('darkMode'); 
 //   /*
 //   useEffect(() => {
 //   const getMarket = async () => {
@@ -65,6 +66,7 @@ export const Markets = () => {
   useEffect(() => {
     const markets =[]
     const getMarket = async () => {
+  
     const interval = setInterval(() => {
       setDegree((degree) => degree+=3)
     }, 80);
@@ -101,15 +103,14 @@ export const Markets = () => {
   }
 
   // !bigmap && setInterval(() => {setLoader(!loader); setDegree(degree+33)}, 1000)
-const darkMode = window.localStorage.getItem('darkMode');
+
   if (!bigmap) return (
       <>
-        <img alt='' src={darkMode ? presta : presta2} style={{width:'33px', height: '33px', transform:`rotate(${degree}deg)`}}></img>
+        <img alt='' src={darkMode=='true' ? presta : presta2} style={{width:'33px', height: '33px', transform:`rotate(${degree}deg)`}}></img>
         <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '1px', marginTop: '27px'}} />
         <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '18px'}} />
        </>
     )
-    console.log(degree)
 
   return (
       <>
@@ -159,11 +160,11 @@ const darkMode = window.localStorage.getItem('darkMode');
           
         <div className='marketInfo' style={{alignItems:'flex-start'}}>
         <ul>
-            <li style={{margin: '6px'}}>Maker: {p.maker &&p.maker.substr(0, 4) + "..." + p.maker.substr(-4)}</li>
-            <li style={{margin: '6px'}}>Amount: {p.amount/1000000}ꜩ</li>
-            <li style={{margin: '6px'}}>Interest: {p.interest/10}%</li>
-            <li style={{margin: '6px'}}>Term: {p.term} Minutes</li> 
-            {p.taker && <li style={{margin: '6px'}} >Taker: {p.taker.substr(0, 4) + "..." + p.taker.substr(-4)}</li>}
+            <li>Maker: {p.maker &&p.maker.substr(0, 4) + "..." + p.maker.substr(-4)}</li>
+            <li>Amount: {p.amount/1000000}ꜩ</li>
+            <li>Interest: {p.interest/10}%</li>
+            <li>Term: {p.term} Minutes</li> 
+            {p.taker && <li>Taker: {p.taker.substr(0, 4) + "..." + p.taker.substr(-4)}</li>}
           </ul>
           <div style={{margin: '12px', flexDirection: 'row', width:'auto', alignItems: 'flex-start'}}>
           {p.active && !p.taker && p.maker !== app.address && <button className='formButton' onClick = {() => {app.take_market(p.market_id, p.amount)}}>accept</button>}
