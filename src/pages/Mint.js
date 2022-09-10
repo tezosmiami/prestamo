@@ -40,10 +40,10 @@ export const Mint = () => {
     const scrollRef = useRef()
     const navigate = useNavigate();
     const {acceptedFiles, getRootProps, getInputProps} = useDropzone({
-        // accept: {
-        //   'image/*': [],
-        //   'video/*': [],
-        // },
+        accept: {
+          'image/*': [],
+          'video/*': [],
+        },
         onDropAccepted: acceptedFiles => {
             let reader = new window.FileReader();
             reader.readAsArrayBuffer(acceptedFiles[0]);
@@ -137,7 +137,7 @@ console.log(file)
         <div >
                     <div {...getRootProps()}>
                        
-                        { !loaded ? (<input {...getInputProps()} />,
+                        { !loaded ? (<input type='file' {...getInputProps()} />,
                         <div className='view'> 
                         <p>drag 'n' drop file here - or click to select</p>
                         <p>[jpeg, png, gif, mp4]</p></div>) 
