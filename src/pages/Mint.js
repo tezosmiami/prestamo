@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect} from 'react';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useTezosContext } from '../context/tezos-context'
 import { setMetadata }  from '../utils/ipfs'
-import Dropzone from 'react-dropzone'
+import {useDropzone} from 'react-dropzone';
 import * as yup from 'yup'
 
 const min_mint = 1;
@@ -27,31 +27,32 @@ const validationSchema = yup.object().shape({
 const bytesToMb = bytes => bytes / 1_000_000;
 
 
-
-
 export const Mint = () => {
     const [mintPayload, setMintPayload] = useState();
     const [isMinting, setIsMinting] = useState(false);
     const [isForm, setIsForm] = useState(true);
     const [file, setFile] = useState(null);
-    const [isPreview, setIsPreview] = useState(false)
-    const [preview, setPreview] = useState(null)
+    const [isPreview, setIsPreview] = useState(null)
     const [loaded, setLoaded] = useState(false)
     const [message, setMessage] = useState('')
     const app = useTezosContext()
     const scrollRef = useRef()
-
-    const handleDrop = (file) => {
-        if (!file[0]?.type) return
-        setPreview(URL.createObjectURL(file[0]))
-        let reader = new window.FileReader();
-        reader.readAsArrayBuffer(file[0]);
-        reader.onloadend = async()=>{
-        file[0].buffer=reader.result
-     }
-        setFile(file[0])
-        setLoaded(true)
-    }
+    const {acceptedFiles, getRootProps, getInputProps} = useDropzone({
+        accept: {
+          'image/*': [],
+          'video/*': [],
+        },
+        onDropAccepted: acceptedFiles => {
+            let reader = new window.FileReader();
+            reader.readAsArrayBuffer(acceptedFiles[0]);
+            reader.onloadend = async()=>{
+               acceptedFiles[0].buffer=reader.result
+            }
+            setFile(Object.assign(acceptedFiles[0], {
+                preview: URL.createObjectURL(acceptedFiles[0])}));
+            setLoaded(true)
+        }
+      });
 
     useEffect(() => {
         scrollRef.current && loaded && 
@@ -87,7 +88,11 @@ export const Mint = () => {
 
 
 
-
+    useEffect(() => {
+        // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
+        return () => file.forEach(file => URL.revokeObjectURL(file.preview));
+      }, []);
+    
 
             // let isMinted = ''
             // !app.address && setMessage('please sync. . .') 
@@ -123,15 +128,10 @@ export const Mint = () => {
    
     
     if(!app.address) return(<p>please sync to mint</p>)
-
+console.log(file)
     return (
         <div >
-            <Dropzone multiple={false}  
-            // accept={
-            //        'image/png, image/gif, image/jpeg, video/mp4'
-            //      } 
-                onDrop={file => handleDrop(file)}>
-                {({getRootProps, getInputProps}) => (
+        
                
                     <div {...getRootProps()}>
                        
@@ -140,15 +140,15 @@ export const Mint = () => {
                         <p>drag 'n' drop file here - or click to select</p>
                         <p>[jpeg, png, gif, mp4]</p></div>) 
     
-                        : file.type.includes('image') ? <img className='view' src={preview} />
-                        : file.type.includes('video') ? <video className='view' src={preview}  controls autoPlay/>
+                        : file.type.includes('image') ? <img className='view' src={file.preview} />
+                        : file.type.includes('video') ? <video className='view' src={file.preview}  controls autoPlay/>
                         : null}
                    
                     </div>
                   
                  
-                )}
-            </Dropzone><p/>
+        
+            <p/>
            
             {loaded && !isPreview && <Formik
                 onSubmit={handleSubmit}
