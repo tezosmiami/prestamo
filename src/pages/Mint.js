@@ -134,7 +134,7 @@ console.log(file)
     return (
         <div >   
                     <div {...getRootProps()}>
-                      <input type='file' {...getInputProps({className: 'view'})} />
+                      <input {...getInputProps({className: 'view'})} />
                       {!loaded ? <div className='view'> 
                        <p>drag 'n' drop file here - or click to select</p>
                         <p>[jpeg, png, gif, mp4]</p>
@@ -165,7 +165,6 @@ console.log(file)
                                 id="title"
                                 name="title"
                                 type="text"
-                                autoFocus={true}
                             />
                             <ErrorMessage
                                 component="span"
