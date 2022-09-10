@@ -20,30 +20,28 @@ export const Faqs = () => {
           <p>
             A lender sees the market offer listed and takes it. The loan amount
             minus 1% market fee is transferd to the market maker and the term
-            countdown begins. Before the time is up the maker or borrower can
-            pay back the loan amount + indicated interest. If the maker/borrower
-            doesn't pay back in time, the lender/taker can claim the NFT/Objkts
+            countdown begins. Before the time is up the borrower can
+            pay back the loan amount + indicated interest. If the borrower
+            doesn't pay back in time, the lender can claim the NFT/Objkts
             and they will be transfered from the contract to the taker. If the
-            maker/borrower pays back with interest before the term is up the
-            NFT/Objkts are transfered back to the original owner and the loan
-            amount + interest minus 1% market fee is transfered to the loan
-            giver/taker.
+            borrower pays back with interest before the term is up the
+            NFT/Objkts are transfered back and the loan
+            amount + interest minus 1% market fee is transfered to the lender.
           </p>
         </li>
         -
         <p>Q: How to borrow Tezos on Prestamo?</p>
         <li style={{ margin: "18px" }}>
-          A: To borrow tezos first sync wallet then choose make market from the menu,
+          A: To borrow tezos first sync wallet then choose borrow from the menu,
           select NFTs/Objkts, click next > and there enter the amount ꜩ to
           borrow, the proposed interest rate and the time/term to pay back. When
           you pay back the ꜩ with full interest, the NFT/Objkts are returned from the
-          contract to your wallet. If you don't pay in time, the taker of the
-          offer can claim your NFT/Objkts as compensation.
+          contract to your wallet. If you don't pay in time, the lender can claim your NFT/Objkts as compensation.
         </li> - 
         <p>Q: How to lend Tezos and earn interest?</p>
         <li style={{ margin: "18px" }}>
           A: To lend Tezos and earn the interest rate you have to select one of
-          the offers/markets listed, and click accept. If borrower/maker doesn't
+          the offers/markets listed, and click accept. If borrower doesn't
           pay you back with full interest in the agreed time, you can claim the 
           NFT/Objkts and they will be transfered to your wallet. Please keep in mind that the
           person who borrowed might not pay you back, so be sure to research the 
@@ -51,23 +49,24 @@ export const Faqs = () => {
            </li>-
         <p>Q: What happens if the borrower doesn't pay the lender back?</p>
         <li style={{ margin: "18px" }}>
-          The lender/taker and only the lender/taker can then claim the NFT/Objkts as
+          The lender and only the lender can then claim the NFT/Objkts as
           compensation.
         </li>-
         <p>Q: Who has access to the NFTs/Objkts?</p>
         <li>
-          The maker can recover the NFTs/Objkts before the the loan is given by
+          The borrower can recover the NFTs/Objkts before the the loan is given by
           cancelling the market or, if the loan has been given then by paying 
-          back the loan + interest before the term is up. The taker can only 
+          back the loan + interest before the term is up. The lender can only 
          claim the tokens if the term is up and the loan has not been paid back.
           The contract admin DOES NOT have  access to the tokens at any time.
         </li>-
         <p>Q: How to get NFT/Objkts to Participate?</p>
         <li>
-          If your testnet wallet doesn't have any NFT/Objkts you can accept a
-          market with a short term - set to minutes for testing - and claim
-          NFT/Objkts when the time is up. You can then make a market with those
-          for testing. Testnet minting site coming soon. . .
+          If your testnet wallet doesn't have any NFT/Objkts then the easiest way now is
+          to mint new NFT/Obkts on the mint page - link in menu. Another way is to accept
+          a market with a short term - they are set to minutes for testing - and claim the
+          NFT/Objkts when the time is up. You can then make a market to borrow with those
+          for testing. 
         </li>-
         <p>Q: How to get jakartanet ꜩ?</p>
         <li>Please use faucet link at bottom of page.</li>
