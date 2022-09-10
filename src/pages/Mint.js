@@ -3,7 +3,7 @@ import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useTezosContext } from '../context/tezos-context'
 import { useNavigate } from "react-router-dom";
 import { setMetadata }  from '../utils/ipfs'
-import {useDropzone} from 'react-dropzone';
+import { useDropzone } from 'react-dropzone';
 import * as yup from 'yup'
 
 const min_mint = 1;
@@ -45,11 +45,11 @@ export const Mint = () => {
           'video/*': [],
         },
         onDropAccepted: acceptedFiles => {
-            let reader = new window.FileReader();
-            reader.readAsArrayBuffer(acceptedFiles[0]);
-            reader.onloadend = async()=>{
-               acceptedFiles[0].buffer=reader.result
-            }
+            // let reader = new window.FileReader();
+            // reader.readAsArrayBuffer(acceptedFiles[0]);
+            // reader.onloadend = async()=>{
+            //    acceptedFiles[0].buffer=reader.result
+            // }
             setFile(Object.assign(acceptedFiles[0], {
                 preview: URL.createObjectURL(acceptedFiles[0])}));
             setLoaded(true)
@@ -88,10 +88,6 @@ export const Mint = () => {
                 navigate('/Make')
             }, 1200)
         }, 3200)
-
-      
-      
-
     };
 
 
@@ -139,8 +135,6 @@ export const Mint = () => {
 console.log(file)
     return (
         <div >
-        
-               
                     <div {...getRootProps()}>
                        
                         { !loaded ? (<input {...getInputProps()} />,
