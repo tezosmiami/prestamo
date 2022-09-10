@@ -40,16 +40,16 @@ export const Mint = () => {
     const scrollRef = useRef()
     const navigate = useNavigate();
     const {acceptedFiles, getRootProps, getInputProps} = useDropzone({
-        accept: {
-          'image/*': [],
-          'video/*': [],
-        },
+        // accept: {
+        //   'image/*': [],
+        //   'video/*': [],
+        // },
         onDropAccepted: acceptedFiles => {
-            // let reader = new window.FileReader();
-            // reader.readAsArrayBuffer(acceptedFiles[0]);
-            // reader.onloadend = async()=>{
-            //    acceptedFiles[0].buffer=reader.result
-            // }
+            let reader = new window.FileReader();
+            reader.readAsArrayBuffer(acceptedFiles[0]);
+            reader.onloadend = async()=>{
+               acceptedFiles[0].buffer=reader.result
+            }
             setFile(Object.assign(acceptedFiles[0], {
                 preview: URL.createObjectURL(acceptedFiles[0])}));
             setLoaded(true)
