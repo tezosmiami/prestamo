@@ -132,24 +132,18 @@ export const Mint = () => {
     if(!app.address) return(<p>please sync to mint</p>)
 console.log(file)
     return (
-        <div >  
-                    <div className={!loaded &&'view'}>
+        <div >   
                     <div {...getRootProps()}>
-                      <input {...getInputProps({className: 'view'})} />
-                        {/* <div className='view'>  */}
-                        {!loaded ?<p>drag 'n' drop file here - or click to select</p>
-                        // {/* <p>[jpeg, png, gif, mp4]</p> */}
-                        // {/* </div>)  */}
-    
+                      <input type='file' {...getInputProps({className: 'view'})} />
+                      {!loaded ? <div className='view'> 
+                       <p>drag 'n' drop file here - or click to select</p>
+                        <p>[jpeg, png, gif, mp4]</p>
+                        </div>
                         : file.type.includes('image') ? <img className='view' src={file.preview} />
                         : file.type.includes('video') ? <video className='view' src={file.preview}  controls autoPlay/>
-                        : null}
-                    </div>
-                    </div>
-                  
-                 
-        
-            <p/>
+                        : null}   
+                        </div>
+                      <p/>
            
             {loaded && !isPreview && <Formik
                 onSubmit={handleSubmit}
