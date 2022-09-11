@@ -41,7 +41,7 @@ function App() {
      <Routes>
         <Route path="/" element={<Home />} />
         <Route path='/:account' element={<Wallet />} />
-        <Route path="/Make" element={<Market />} />
+        <Route path="/Borrow" element={<Market />} />
         <Route path="/Mint" element={<Mint />} />
         <Route path="/About" element={<About />} />
         {/* <Route path=":contract" >
