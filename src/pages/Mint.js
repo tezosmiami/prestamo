@@ -81,13 +81,13 @@ export const Mint = () => {
         setTimeout(async () => {
             setMessage('Minting. . .');
             const isSuccessful = await app.mint(metadataUri, mintPayload.editions, mintPayload.royalties);
-            setMessage(isSuccessful ? 'Completed' : 'Failed to mint');
+            setMessage(isSuccessful ? 'Completed' : 'Error minting - try again. . .');
             setIsMinting(false)
             setTimeout(() => {
                 setMessage(null);
                 navigate('/Make')
-            }, 1200)
-        }, 3200)
+            }, 800)
+        }, 1800)
     };
 
 

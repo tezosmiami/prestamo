@@ -38,7 +38,15 @@ const breakpointColumns = {
   680: 3,
 };
 
-export const Make = () => {
+const hex2a = (hex) => {
+  var str = '';
+  for (var i = 0; i < hex.length; i += 2)
+      str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+  return str;
+}   
+
+
+export const Borrow = () => {
   const [objktView, setObjktView] = useState(false)
   const [choices, setChoices] =useState([])
   const [objkt, setObjkt] = useState({})
@@ -55,7 +63,11 @@ export const Make = () => {
     const getObjkts = async () => {
       if(account) {
       let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/tokens/balances?account=${account}&balance.gt=0`)
-     setObjkts(result.data.reverse())}
+        console.log(result)
+      for(let data of result.data){
+        data.token.metadata = !data.token.metadata ? await getMetadata(data.token.tokenId) : data.token.metadata
+      } 
+      setObjkts(result.data.reverse())}
   }
     getObjkts();
   }, [account])
@@ -108,7 +120,14 @@ const handleSubmit = async (values) => {
     }
     
    
-
+    const getMetadata = async(id) => {
+      let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/contracts/${process.env.REACT_APP_PRESTAMO_FA2}/bigmaps/token_metadata/keys/${id}`)
+      let bytes=result.data.value.token_info['']
+          bytes=hex2a(bytes)
+          let data =  await axios.get(bytes.replace('ipfs://', 'https://ipfs.io/ipfs/'))
+          let metadata = await data.data
+          return metadata
+    }
 
   const showObjkt = (o) => {
     if (objktView) return (setObjktView(false))
@@ -135,7 +154,7 @@ const handleSubmit = async (values) => {
         className={'grid'}
          columnClassName='column'>
         {objkts && !submit && objkts.map((p,i)=> (
-        p.token.metadata && (
+          p.token.metadata && (
         <div style ={{backgroundColor: choices.includes(p.token) && getComputedStyle(document.body).getPropertyValue('--text')}} key={i} onClick={() => {return add_remove(p.token)}}>
         {p.token.metadata.formats[0].mimeType.includes('image') && p.token.metadata.formats[0].mimeType !== 'image/svg+xml' ?
       

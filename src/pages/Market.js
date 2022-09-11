@@ -1,5 +1,5 @@
 import React from 'react'
-import { Make } from '../components/make';
+import { Borrow } from '../components/borrow';
 
 export const Market = () => {
   // const [toggled, setToggled ] = useState(false);
@@ -10,7 +10,7 @@ export const Market = () => {
         isToggled={toggled}
         handleToggle={() => setToggled(!toggled)}/>
        {!toggled ? <LatestSales /> : <LatestMints/>} */}
-       <Make/>
+       <Borrow/>
       </>
     );
   }
