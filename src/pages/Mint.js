@@ -86,8 +86,8 @@ export const Mint = () => {
             setTimeout(() => {
                 setMessage(null);
             }, 800)
+          navigate('/Borrow')
         }, 1200)
-        navigate('/Borrow')
     };
 
 
