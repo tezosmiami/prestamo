@@ -77,7 +77,7 @@ export const Mint = () => {
     const handleMint = async () => {
         setIsMinting(true)
         setMessage('Ipfs. . .')
-        const metadataUri = await setMetadata({values: mintPayload , file: file, setMessage})
+        const metadataUri = await setMetadata({values: mintPayload , file: file})
         setTimeout(async () => {
             setMessage('Minting. . .');
             const isSuccessful = await app.mint(metadataUri, mintPayload.editions, mintPayload.royalties);
@@ -85,9 +85,9 @@ export const Mint = () => {
             setIsMinting(false)
             setTimeout(() => {
                 setMessage(null);
-                navigate('/Make')
             }, 800)
-        }, 1800)
+        }, 1200)
+        navigate('/Borrow')
     };
 
 

@@ -1,6 +1,6 @@
 
 
-export const setMetadata = async({values, file, setMessage}) => {
+export const setMetadata = async({values, file}) => {
     const { create } = await import('ipfs-http-client')
     const auth =
     'Basic ' + Buffer.from(process.env.REACT_APP_INFURA_ID + ':' + process.env.REACT_APP_INFURA_KEY).toString('base64');
@@ -27,7 +27,6 @@ export const setMetadata = async({values, file, setMessage}) => {
     // let reader = new window.FileReader();
     // reader.readAsArrayBuffer(file);
     // reader.onloadend = async () =>{ 
-    setMessage('Uploading to IPFS…');
 
     const artifactUri = await addToIpfs(file.buffer);
     const displayUri = await addToIpfs(file.buffer);
