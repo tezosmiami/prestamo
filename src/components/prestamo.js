@@ -46,7 +46,7 @@ const hex2a = (hex) => {
 }   
 
 
-export const Borrow = () => {
+export const Prestamo = () => {
   const [objktView, setObjktView] = useState(false)
   const [choices, setChoices] =useState([])
   const [objkt, setObjkt] = useState({})
@@ -63,7 +63,6 @@ export const Borrow = () => {
     const getObjkts = async () => {
       if(account) {
       let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/tokens/balances?account=${account}&balance.gt=0`)
-        console.log(result)
       for(let data of result.data){
         data.token.metadata = !data.token.metadata ? await getMetadata(data.token.tokenId) : data.token.metadata
       } 
@@ -134,7 +133,7 @@ const handleSubmit = async (values) => {
     setObjkt(o)
     setObjktView(true)
   }
-  console.log(objkts)
+  
   return (
       <>
        <div style={{marginTop:'11px'}}>
