@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect} from 'react';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useTezosContext } from '../context/tezos-context'
 import { useNavigate } from "react-router-dom";
-import { setMetadata }  from '../utils/ipfs'
+import { setMetadata }  from '../utils/metadata'
 import { useDropzone } from 'react-dropzone';
 import * as yup from 'yup'
 
