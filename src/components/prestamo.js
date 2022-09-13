@@ -72,8 +72,6 @@ export const Prestamo = () => {
     getObjkts();
   }, [account])
 
-
- 
   
   const add_remove = (c) => {
   
@@ -114,7 +112,7 @@ const handleSubmit = async (values) => {
       }
       setTimeout(() => {
           setMessage(null)
-      }, 3200)
+      }, 1800)
       setMarketPayload({fa2s,values})
       isMade && navigate('/')
     }

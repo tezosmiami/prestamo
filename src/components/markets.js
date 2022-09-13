@@ -16,12 +16,6 @@ const breakpointColumns = {
   680: 3,
 };
 
-export const hex2a = (hex) => {
-    var str = '';
-    for (var i = 0; i < hex.length; i += 2)
-        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-    return str;
-}   
 export const getAmountwithInterest = (amount, interest) => {
   //  
   interest = ((parseFloat(interest)/1000) * parseFloat(amount))
@@ -70,7 +64,7 @@ export const Markets = () => {
   
     const interval = setInterval(() => {
       setDegree((degree) => degree+=3)
-    }, 80);
+    }, 90);
     const result = await axios.get('https://api.jakartanet.tzkt.io/v1/bigmaps/107783/keys')
     for (let i=0; i < result.data.length; i++){
       result.data[i].value.market_id = result.data[i].key
