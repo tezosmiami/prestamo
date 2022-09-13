@@ -7,7 +7,7 @@
 
 -------------------------------------------------------------------
 
-Prestamo - Tezos NFT Peer 2 Peer Collaterized Lending Platform:
+Prestamo - Tezos NFT Peer 2 Peer Collateralized Lending Platform:
 
 -------------------------------------------------------------------
 

@@ -61,19 +61,20 @@ export const Markets = () => {
   useEffect(() => {
     const markets =[]
     const getMarket = async () => {
-  
     const interval = setInterval(() => {
       setDegree((degree) => degree+=3)
-    }, 90);
+    }, 50);
     const result = await axios.get('https://api.jakartanet.tzkt.io/v1/bigmaps/107783/keys')
-    for (let i=0; i < result.data.length; i++){
-      result.data[i].value.market_id = result.data[i].key
-      markets.push(result.data[i].value)
-      for(let token of result.data[i].value.tokens){
+    const filtered = result.data.filter((f)=>f.value.active)
+    for (let i=0; i < filtered.length; i++){
+      filtered[i].value.market_id = filtered[i].key
+      markets.push(filtered[i].value)
+      for(let token of filtered[i].value.tokens){
       const metadata = await getMetadata(token.contract_address, token.token_id)
       token.metadata = metadata
     } 
-  } clearInterval(interval);
+  } 
+    clearInterval(interval);
     setBigmap(markets.reverse())
   }
     getMarket();
