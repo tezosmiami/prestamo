@@ -62,7 +62,7 @@ export const Markets = () => {
     const getMarket = async () => {
     const interval = setInterval(() => {
       setDegree((degree) => degree+=3)
-    }, 50);
+    }, 80);
     const result = await axios.get('https://api.jakartanet.tzkt.io/v1/bigmaps/107783/keys')
     const filtered = result.data.filter((f)=>f.value.active)
     for (let i=0; i < filtered.length; i++){

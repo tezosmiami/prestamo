@@ -46,7 +46,7 @@ export const Account = () => {
     const getMarket = async () => {
      let interval= setInterval(() => {
         setDegree((degree) => degree+=3)
-      }, 50);
+      }, 80);
     const result = await axios.get('https://api.jakartanet.tzkt.io/v1/bigmaps/107783/keys')
     const filtered = result.data.filter((f)=>((f.value.maker || f.value.taker) === app.address) && f.value.active)
 
@@ -150,7 +150,6 @@ export const Account = () => {
    
       </div>
       <div className='container' style={{opacity: objktView && '.2'}}>
-       <p>Active Loans Received</p>
        {borrowed?.length > 0  &&  <p>Active Loans Received</p>}
        {borrowed?.length > 0  && borrowed.map((p,i)=> (
        (!checkTimesUp() || app.address===(p.taker)) &&
