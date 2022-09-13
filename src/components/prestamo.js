@@ -3,6 +3,7 @@ import ReactPlayer from 'react-player'
 import { useNavigate } from 'react-router-dom';
 import { Objkt } from './objkt'
 import Masonry from 'react-masonry-css'
+import { getMetadata } from '../utils/metadata'
 import { useTezosContext } from "../context/tezos-context";
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import * as yup from 'yup';
@@ -64,7 +65,7 @@ export const Prestamo = () => {
       if(account) {
       let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/tokens/balances?account=${account}&balance.gt=0`)
       for(let data of result.data){
-        data.token.metadata = !data.token.metadata ? await getMetadata(data.token.tokenId) : data.token.metadata
+        data.token.metadata = !data.token.metadata ? await getMetadata(process.env.REACT_APP_PRESTAMO_FA2, data.token.tokenId) : data.token.metadata
       } 
       setObjkts(result.data.reverse())}
   }
@@ -118,16 +119,7 @@ const handleSubmit = async (values) => {
       isMade && navigate('/')
     }
     
-   
-    const getMetadata = async(id) => {
-      let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/contracts/${process.env.REACT_APP_PRESTAMO_FA2}/bigmaps/token_metadata/keys/${id}`)
-      let bytes=result.data.value.token_info['']
-          bytes=hex2a(bytes)
-          let data =  await axios.get(bytes.replace('ipfs://', 'https://ipfs.io/ipfs/'))
-          let metadata = await data.data
-          return metadata
-    }
-
+  
   const showObjkt = (o) => {
     if (objktView) return (setObjktView(false))
     setObjkt(o)

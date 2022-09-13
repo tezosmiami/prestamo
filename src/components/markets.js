@@ -5,6 +5,7 @@ import { Objkt } from './objkt'
 import presta from '../presta.png'
 import presta2 from '../presta2.png'
 import { useTezosContext } from "../context/tezos-context";
+import { getMetadata } from '../utils/metadata'
 const axios = require('axios')
 const breakpointColumns = {
   default: 7,
@@ -84,18 +85,7 @@ export const Markets = () => {
     getMarket();
   }, [])
 
-  const getMetadata = async(contract, id) => {
-    // let metadata = ''
-    // let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/contracts/${contract}/bigmaps/token_metadata/keys/${id}`)
-    let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/tokens?contract=${contract}&tokenId=${id}`)
-    let metadata =await result.data[0].metadata  
-    // let bytes=data.value.token_info['']
-    //     bytes=hex2a(bytes)
-    //     metadata =  await axios.get(bytes.replace('ipfs://', 'https://ipfs.io/ipfs/'))
-    //     data = await metadata.data
-        return metadata
-  }
-
+ 
   const showObjkt = (o) => {
     if (objktView) return (setObjktView(false))
     setObjkt(o)
@@ -140,6 +130,7 @@ export const Markets = () => {
 
         {p.tokens.map((q,i) => (
         <div key={i} onClick= {() => {showObjkt(q)}}>
+        {console.log(q)}
         {q.metadata.formats[0].mimeType?.includes('image') && q.metadata.formats[0].mimeType !== 'image/svg+xml' ?
       
         <img alt='' className= 'pop'  src={`https://ipfs.io/ipfs/${q.metadata.displayUri ? q.metadata.displayUri?.slice(7) : q.metadata.artifactUri?.slice(7)}`}/> 

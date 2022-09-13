@@ -1,13 +1,13 @@
 const axios = require('axios')
 
-export const getMetadata = async(id) => {
+export const getMetadata = async(contract, id) => {
     const hex2a = (hex) => {
         var str = '';
         for (var i = 0; i < hex.length; i += 2)
             str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
         return str;
       }        
-    let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/contracts/${process.env.REACT_APP_PRESTAMO_FA2}/bigmaps/token_metadata/keys/${id}`)
+    let result = await axios.get(`https://api.jakartanet.tzkt.io/v1/contracts/${contract}/bigmaps/token_metadata/keys/${id}`)
     let bytes=result.data.value.token_info['']
         bytes=hex2a(bytes)
         let data =  await axios.get(bytes.replace('ipfs://', 'https://ipfs.io/ipfs/'))
