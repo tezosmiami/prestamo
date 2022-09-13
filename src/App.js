@@ -8,8 +8,7 @@ import { Mint } from './pages/Mint'
 import { About } from './pages/About'
 import { Menu } from './components/menu'
 import { ThemeButton } from './components/theme_button'
-import presta from './presta.png'
-import presta2 from './presta2.png'
+import { ReactComponent as Logo } from './presta.svg'
 import "./styles/styles.css"
 
 function App() {
@@ -21,7 +20,7 @@ function App() {
     <>
     <header>
     <Link className='purple' to="/">prestamo</Link>
-    <ThemeButton darkMode={darkMode} setDarkMode={setDarkMode} />
+    <ThemeButton />
  
     <div style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
     {app.address && <Link to={`/${app.alias || app.address}`}>
@@ -53,7 +52,7 @@ function App() {
     <a href={`https://faucet.jakartanet.teztnets.xyz/`} target="blank"
          rel="noopener noreferrer"> ꜩ faucet </a><p/>
 
-      {darkMode !== null && <img alt ='' style={{width:'55px', height:'55px'}} src={darkMode ? presta : presta2}/>}
+<Logo  className='loader' style={{width: '55px', height: '55px'}}/>
       <p/>
        <a href={`https://www.tzkt.io`} target="blank"
          rel="noopener noreferrer"> Indexed by tzkt</a>

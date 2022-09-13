@@ -388,3 +388,11 @@ input::-webkit-inner-spin-button {
   margin-left:18px;
   transition: all 0.2s linear;
 }
+
+.loader g{
+  width:'33px';
+  height: '33px'; 
+  fill: var(--text);
+  stroke: blue;
+
+}

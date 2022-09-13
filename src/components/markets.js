@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react'
 import ReactPlayer from 'react-player'
 import Masonry from 'react-masonry-css'
 import { Objkt } from './objkt'
-import presta from '../presta.png'
-import presta2 from '../presta2.png'
+import { ReactComponent as Logo } from '../presta.svg'
 import { useTezosContext } from "../context/tezos-context";
 import { getMetadata } from '../utils/metadata'
 const axios = require('axios')
@@ -36,7 +35,7 @@ export const Markets = () => {
   const [degree, setDegree] = useState(0)
   const [objkt, setObjkt] = useState({});
   const [bigmap, setBigmap] = useState()
-  const darkMode = window.localStorage.getItem('darkMode'); 
+
 //   /*
 //   useEffect(() => {
 //   const getMarket = async () => {
@@ -69,7 +68,7 @@ export const Markets = () => {
     for (let i=0; i < filtered.length; i++){
       filtered[i].value.market_id = filtered[i].key
       markets.push(filtered[i].value)
-      for(let token of filtered[i].value.tokens){
+      for(let token of markets[i].tokens){
       const metadata = await getMetadata(token.contract_address, token.token_id)
       token.metadata = metadata
     } 
@@ -91,7 +90,7 @@ export const Markets = () => {
 
   if (!bigmap) return (
       <>
-        <img alt='' src={darkMode=='true' ? presta : presta2} style={{width:'33px', height: '33px', transform:`rotate(${degree}deg)`}}></img>
+        <Logo  className='loader' style={{width: '33px', height: '33px', transform:`rotate(${degree}deg)`}}/>
         <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '1px', marginTop: '27px'}} />
         <div style= {{borderBottom: '3px dashed', width: '88%', marginBottom: '18px'}} />
        </>
