@@ -124,7 +124,6 @@ export const Markets = () => {
 
         {p.tokens.map((q,i) => (
         <div key={i} onClick= {() => {showObjkt(q)}}>
-        {console.log(q)}
         {q.metadata.formats[0].mimeType?.includes('image') && q.metadata.formats[0].mimeType !== 'image/svg+xml' ?
       
         <img alt='' className= 'pop'  src={`https://ipfs.io/ipfs/${q.metadata.displayUri ? q.metadata.displayUri?.slice(7) : q.metadata.artifactUri?.slice(7)}`}/> 
