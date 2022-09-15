@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import ReactPlayer from 'react-player'
-
+import { useOutsideClick } from '../hooks/useOutsideClick'
 
 export const Objkt = ({setObjktView, objkt}) => {
+  const ref = useRef();
+  useOutsideClick(ref, () => setObjktView(false));
 return(
   <>
-    <div className='objkt'>
+    <div ref={ref} className='objkt'>
     <button onClick= {() => {setObjktView(false)}}><p/>x</button>
     {objkt && objkt.metadata.formats[0].mimeType.includes('image') && objkt.metadata.formats[0].mimeType !== 'image/svg+xml' ?  
    

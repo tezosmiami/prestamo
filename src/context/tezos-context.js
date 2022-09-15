@@ -48,7 +48,7 @@ export const TezosContextProvider = ({ children }) => {
   const [tezos, setTezos] = useState(new TezosToolkit("https://jakartanet.ecadinfra.com"));
   const [activeAccount, setActiveAccount] = useState("");
   const [alias, setAlias] = useState("")
-  const operator = "KT1VYGJeJwiAqVDr8Q2JL38XWYBTKEHqovhf"
+ 
 
   useEffect(() => {
      const getLoggedIn = async () => {
@@ -112,7 +112,7 @@ export const TezosContextProvider = ({ children }) => {
 
 async function take_market(id, amount) {
   tezos.wallet
-  .at(operator)
+  .at(process.env.REACT_APP_PRESTAMO)
   .then((wallet) => {
 
     return wallet.methods.take_market(id).send({
@@ -131,7 +131,7 @@ async function take_market(id, amount) {
 
 async function claim_market(id, amount) {
   tezos.wallet
-  .at(operator)
+  .at(process.env.REACT_APP_PRESTAMO)
   .then((wallet) => {
 
     return wallet.methods.claim_market(id).send(amount)
@@ -152,14 +152,14 @@ await Promise.all(fa2s.map(async p=>{
   contract = await tezos.wallet.at(p.contract_address)
   return (transactions.push({"kind": OpKind.TRANSACTION, ...contract.methods.update_operators(
     [{add_operator: {
-          operator: operator ,
+          operator: process.env.REACT_APP_PRESTAMO ,
           token_id: parseFloat(p.token_id), 
           owner: address }}]).toTransferParams({ amount: 0, mutez: true, storageLimit: 180 })
         }))
       }))
 
 
-  contract = await tezos.wallet.at(operator)
+  contract = await tezos.wallet.at(process.env.REACT_APP_PRESTAMO)
   transactions.push({"kind": OpKind.TRANSACTION, ...contract.methods.make_market(
           parseFloat(values.loan_amount*1000000),
           parseFloat(values.interest*10), 
@@ -172,7 +172,7 @@ await Promise.all(fa2s.map(async p=>{
   contract = await tezos.wallet.at(p.contract_address)
   return (transactions.push({"kind": OpKind.TRANSACTION, ...contract.methods.update_operators(
     [{remove_operator: {
-          operator: operator ,
+          operator: process.env.REACT_APP_PRESTAMO ,
           token_id: parseFloat(p.token_id), 
           owner: address }}]).toTransferParams({ amount: 0, mutez: true, storageLimit: 180 })
         }))
@@ -189,7 +189,7 @@ async function recover_market(id, amount) {
   console.log(id)
     console.log(amount)
   tezos.wallet
-  .at(operator)
+  .at(process.env.REACT_APP_PRESTAMO)
   .then((wallet) => {
     return wallet.methods.recover_market(id).send({
       amount: parseFloat(amount),
@@ -207,7 +207,7 @@ async function recover_market(id, amount) {
 
 async function cancel_market(id) {
   tezos.wallet
-  .at(operator)
+  .at(process.env.REACT_APP_PRESTAMO)
   .then((wallet) => {
     return wallet.methods.cancel_market(id).send()
   })

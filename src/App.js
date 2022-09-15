@@ -14,7 +14,6 @@ import "./styles/styles.css"
 function App() {
   const  app = useTezosContext();
   const [open, setOpen] = useState(false)
-  const [darkMode, setDarkMode] = useState()
 
   return(
     <>
@@ -38,7 +37,7 @@ function App() {
   
      <div style={{minHeight: '50vh', opacity:open && '0.2'}}>
      <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home />} exact />
         <Route path='/:account' element={<Wallet />} />
         <Route path="/prestamo" element={<Market />} />
         <Route path="/mint" element={<Mint />} />

@@ -8,11 +8,9 @@ import * as yup from 'yup'
 
 const min_mint = 1;
 const max_mint = 10000;
-const max_fee = 100;
 const min_royalties = 1
 const max_royalties = 25
 
-const mintPayload=''
 const validationSchema = yup.object().shape({
     title: yup.string().required(),
     description: yup.string().required(),
@@ -25,13 +23,13 @@ const validationSchema = yup.object().shape({
     .max(max_royalties)
 });
 
-const bytesToMb = bytes => bytes / 1_000_000;
+// const bytesToMb = bytes => bytes / 1_000_000;
 
 
 export const Mint = () => {
     const [mintPayload, setMintPayload] = useState();
-    const [isMinting, setIsMinting] = useState(false);
-    const [isForm, setIsForm] = useState(true);
+    // const [isMinting, setIsMinting] = useState(false);
+    // const [isForm, setIsForm] = useState(true);
     const [file, setFile] = useState(null);
     const [isPreview, setIsPreview] = useState(null)
     const [loaded, setLoaded] = useState(false)
@@ -39,7 +37,7 @@ export const Mint = () => {
     const app = useTezosContext()
     const scrollRef = useRef()
     const navigate = useNavigate();
-    const {acceptedFiles, getRootProps, getInputProps} = useDropzone({
+    const { getRootProps, getInputProps } = useDropzone({
         accept: {
           'image/*': [],
           'video/*': [],
@@ -61,9 +59,7 @@ export const Mint = () => {
         setTimeout(() => {
             scrollRef.current.scrollIntoView(({behavior: 'smooth'}));
             console.log( scrollRef.current)
-        }, 800)
-        
-        
+        }, 800) 
       }, [loaded, scrollRef]);
 
     const initialValues = {
@@ -75,14 +71,14 @@ export const Mint = () => {
 
     };
     const handleMint = async () => {
-        setIsMinting(true)
+        // setIsMinting(true)
         setMessage('Ipfs. . .')
         const metadataUri = await setMetadata({values: mintPayload , file: file})
         setTimeout(async () => {
             setMessage('Minting. . .');
             const isSuccessful = await app.mint(metadataUri, mintPayload.editions, mintPayload.royalties);
             setMessage(isSuccessful ? 'Completed' : 'Error minting - try again. . .');
-            setIsMinting(false)
+            // setIsMinting(false)
             setTimeout(() => {
                 setMessage(null);
             }, 800)
@@ -119,7 +115,7 @@ export const Mint = () => {
            
        
     const handleSubmit = (values) => { 
-        setIsMinting(false)
+        // setIsMinting(false)
         values.address=app.address
         setMintPayload(values);
         setIsPreview(true)
@@ -139,7 +135,7 @@ console.log(file)
                        <p>drag 'n' drop file here - or click to select</p>
                         <p>[jpeg, png, gif, mp4]</p>
                         </div>
-                        : file.type.includes('image') ? <img className='view' src={file.preview} />
+                        : file.type.includes('image') ? <img alt='' className='view' src={file.preview} />
                         : file.type.includes('video') ? <video className='view' src={file.preview}  controls autoPlay/>
                         : null}   
                         </div>

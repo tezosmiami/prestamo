@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useTezosContext } from "../context/tezos-context"
+import { useOutsideClick } from '../hooks/useOutsideClick'
 import { Link } from 'react-router-dom'
 
 export const Menu = ({ open, setOpen}) => {
     const  app = useTezosContext();
-
+    const ref = useRef();
+    useOutsideClick(ref, () => setOpen(false));
     return (
     <>
     {open &&
-      <div style={{flexDirection:'row',  transition: 'all 1s linear', justifyContent:'space-evenly'}}>
+      <div ref={ref}style={{flexDirection:'row',  transition: 'all 1s linear', justifyContent:'space-evenly'}}>
        
         <Link to={`/${app.alias || app.address}`}  onClick={() => setOpen(false)} >account</Link>
         <Link to='/prestamo' onClick={() => setOpen(false)} >prestamo</Link>
