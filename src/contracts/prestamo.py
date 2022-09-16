@@ -52,7 +52,7 @@ class Prestamo(sp.Contract):
         and standard TZIP-12 and TZIP-016 key/values."""
         metadata_base = {
             "name": 'Prestamo',
-            "description": 'P2P NFT Collaterized Lending',
+            "description": 'P2P NFT Collateralized Lending',
             "version": "1.0.0",
             "interfaces": ["TZIP-012", "TZIP-016"],
             "authors": [
@@ -144,18 +144,18 @@ class Prestamo(sp.Contract):
     @sp.entry_point    
     def take_market(self,market_id):
          sp.set_type(market_id, sp.TNat)
-         sp.verify(self.data.markets.contains(market_id), message="WRONG_MARKET_ID")
+         market = sp.local(self.data.markets.get(market_id, message="WRONG_MARKET_ID")).value
+         sp.verify(market.active == True, message ="MARKET_NOT_ACTIVE")
          sp.verify(~self.data.markets_paused, message="MARKETS_PAUSED")
-         sp.verify(self.data.markets[market_id].active == True, message ="MARKET_NOT_ACTIVE")
-         sp.verify(self.data.markets[market_id].taker == sp.none, message="MARKET_TAKEN") 
-         sp.verify(sp.sender != self.data.markets[market_id].maker, message="MAKER_TAKER")
-         sp.verify(sp.amount == self.data.markets[market_id].amount, message="TEZ_SENT_DOESNT_MATCH_MARKET")
+         sp.verify(market.taker == sp.none, message="MARKET_TAKEN") 
+         sp.verify(sp.sender != market.maker, message="MAKER_TAKER")
+         sp.verify(sp.amount == market.amount, message="TEZ_SENT_DOESNT_MATCH_MARKET")
         
         #check math
          fee_amount = sp.local(
                 "fee_amount", sp.split_tokens(sp.amount, self.data.fee, 1000))
         
-         sp.send(self.data.markets[market_id].maker,
+         sp.send(market.maker,
                         (sp.amount-fee_amount.value)) 
          self.data.markets[market_id].start_time = sp.some(sp.now)
          self.data.markets[market_id].taker = sp.some(sp.sender)
@@ -164,11 +164,12 @@ class Prestamo(sp.Contract):
     @sp.entry_point    
     def cancel_market(self,market_id):
         sp.set_type(market_id, sp.TNat)
-        sp.verify(self.data.markets[market_id].maker == sp.sender, message = "NOT_MAKER")
-        sp.verify(~self.data.markets[market_id].taker.is_some(), message = "MARKERT_ALREADY_TAKEN")
-        sp.verify(self.data.markets[market_id].active == True, message = "MARKET_NOT_ACTIVE" )    
+        market = sp.local(self.data.markets.get(market_id, message="WRONG_MARKET_ID")).value
+        sp.verify(market.active == True, message = "MARKET_NOT_ACTIVE" )    
+        sp.verify(market.maker == sp.sender, message = "NOT_MAKER")
+        sp.verify(~market.taker.is_some(), message = "MARKET_ALREADY_TAKEN")
         
-        sp.for x in self.data.markets[market_id].tokens:
+        sp.for x in market.tokens:
             self.fa2_transfer(
             fa2 = x.contract_address,
             from_= sp.self_address,
@@ -181,13 +182,13 @@ class Prestamo(sp.Contract):
     @sp.entry_point    
     def claim_market(self,market_id):
         sp.set_type(market_id, sp.TNat)
-        sp.verify(self.data.markets.contains(market_id), message="WRONG_MARKET_ID")
-        sp.verify(self.data.markets[market_id].taker == sp.some(sp.sender), message = "NOT_TAKER")
-        sp.verify(self.data.markets[market_id].taker.is_some(), message = "MARKET_NOT_TAKEN")
-        sp.verify(self.data.markets[market_id].active == True, message = "MARKET_NOT_ACTIVE" )    
-        sp.verify(sp.now > self.data.markets[market_id].start_time.open_some().add_minutes(self.data.markets[market_id].term), message = "STILL_TIME")
+        sp.verify(market.active == True, message = "MARKET_NOT_ACTIVE" )    
+        market = sp.local(self.data.markets.get(market_id, message="WRONG_MARKET_ID")).value
+        sp.verify(market.taker.is_some(), message = "MARKET_NOT_TAKEN")
+        sp.verify(market.taker == sp.some(sp.sender), message = "NOT_TAKER")  
+        sp.verify(sp.now > market.start_time.open_some().add_minutes(self.market.term), message = "STILL_TIME")
         
-        sp.for x in self.data.markets[market_id].tokens:
+        sp.for x in market.tokens:
             self.fa2_transfer(
             fa2 = x.contract_address,
             from_= sp.self_address,
@@ -201,11 +202,11 @@ class Prestamo(sp.Contract):
     @sp.entry_point
     def recover_market(self, market_id): 
         sp.set_type(market_id, sp.TNat)
-        sp.verify(self.data.markets.contains(market_id), message="WRONG_MARKET_ID")
-        sp.verify(self.data.markets[market_id].maker == sp.sender, message = "NOT_MAKER")
-        sp.verify(self.data.markets[market_id].taker.is_some(), message = "MARKET_NOT_TAKEN")
-        sp.verify(self.data.markets[market_id].active == True, message = "MARKET_NOT_ACTIVE" )
-        sp.verify(sp.now < self.data.markets[market_id].start_time.open_some().add_minutes(self.data.markets[market_id].term), message = "TIMES_UP")    
+        market = sp.local(self.data.markets.get(market_id, message="WRONG_MARKET_ID")).value
+        sp.verify(market.active == True, message = "MARKET_NOT_ACTIVE" )
+        sp.verify(market.maker == sp.sender, message = "NOT_MAKER")
+        sp.verify(market.taker.is_some(), message = "MARKET_NOT_TAKEN")
+        sp.verify(sp.now < self.market.start_time.open_some().add_minutes(self.data.markets[market_id].term), message = "TIMES_UP")    
         
         interest_amount = sp.local(
                 "interest_amount", sp.split_tokens(self.data.markets[market_id].amount, self.data.markets[market_id].interest, 1000))  
@@ -215,7 +216,7 @@ class Prestamo(sp.Contract):
         fee_amount = sp.local(
                 "fee_amount", sp.split_tokens(sp.amount, self.data.fee, 1000))
         
-        sp.verify((self.data.markets[market_id].amount + interest_amount.value)  == sp.amount, message = "WRONG_AMOUNT")
+        sp.verify((market.amount + interest_amount.value)  == sp.amount, message = "WRONG_AMOUNT")
         
         sp.for x in self.data.markets[market_id].tokens:
             self.fa2_transfer(
@@ -226,7 +227,7 @@ class Prestamo(sp.Contract):
             token_amount = x.token_amount)
             #fee
         sp.send(self.data.fees_recipient, fee_amount.value)
-        sp.send(self.data.markets[market_id].taker.open_some(), (sp.amount-fee_amount.value))
+        sp.send(market.taker.open_some(), (sp.amount-fee_amount.value))
         self.data.markets[market_id].active = False  
         
     # @sp.entry_point    
