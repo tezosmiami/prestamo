@@ -262,9 +262,9 @@ class Prestamo(sp.Contract):
         self.data.fees_recipient = fees_to
 
     @sp.entry_point
-    def toggle_paused(self):
+    def update_paused(self, paused):
         self.check_admin()
-        self.data.markets_paused(~self.data.markets_paused) 
+        self.data.markets_paused = paused
 
     @sp.onchain_view()
     def get_admin(self):
