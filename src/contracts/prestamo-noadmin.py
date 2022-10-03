@@ -21,29 +21,17 @@ class Prestamo(sp.Contract):
         active=sp.TBool,
         tokens=sp.TList(token_type))
 
-    def __init__(self, admin, metadata, fee):
+    def __init__(self, metadata):
         self.init_type(sp.TRecord(
-            admin=sp.TAddress,
             metadata=sp.TBigMap(sp.TString, sp.TBytes),
-            # fa2s=sp.TSet(sp.TAddress),
-            fee=sp.TNat,
-            fees_recipient=sp.TAddress,
             markets=sp.TBigMap(sp.TNat, Prestamo.market_type),
-            counter=sp.TNat,
-            proposed_admin=sp.TOption(sp.TAddress),
-            markets_paused=sp.TBool))
+            counter=sp.TNat))
 
         # Initialize the contract storage
         self.init(
-            admin=admin,
             metadata=metadata,
-            fee=fee,
-            # fa2s=sp.set([]),
-            fees_recipient=admin,
             markets=sp.big_map(),
-            counter=0,
-            proposed_admin=sp.none,
-            markets_paused=False)
+            counter=0)
 
         self.generate_contract_metadata()
         
@@ -72,11 +60,7 @@ class Prestamo(sp.Contract):
                 # Include onchain views as tip 16 offchain views
                 offchain_views.append(attr)
         metadata_base["views"] = offchain_views
-        self.init_metadata("metadata_base", metadata_base)
-
-    def check_admin(self):
-        sp.verify(sp.sender == self.data.admin, message="ADMIN_REQUIRED")
-    
+ 
     def check_zero_amount(self):
         sp.verify(sp.amount > sp.mutez(0), message="ZERO_AMOUNT")
 
@@ -110,7 +94,6 @@ class Prestamo(sp.Contract):
             term=sp.TInt,
             tokens=sp.TList(Prestamo.token_type)).layout(
                 ("amount", ("interest", ("term", "tokens")))))
-        sp.verify(~self.data.markets_paused, message="MARKETS_PAUSED")
         sp.verify(params.amount > sp.tez(1), message="LOW_AMOUNT")
         sp.verify(sp.len(params.tokens) > 0, message="ZERO_FA2s")
         sp.verify(params.term > 0, message="ZERO_TERM")
@@ -139,26 +122,21 @@ class Prestamo(sp.Contract):
             tokens=params.tokens)
         
         self.data.counter += 1
+     
 
     @sp.entry_point    
     def take_market(self,market_id):
          sp.set_type(market_id, sp.TNat)
          market = sp.local('market', self.data.markets.get(market_id, message="WRONG_MARKET_ID")).value
          sp.verify(market.active == True, message ="MARKET_NOT_ACTIVE")
-         sp.verify(~self.data.markets_paused, message="MARKETS_PAUSED")
          sp.verify(market.taker == sp.none, message="MARKET_TAKEN") 
          sp.verify(sp.sender != market.maker, message="MAKER_TAKER")
          sp.verify(sp.amount == market.amount, message="TEZ_SENT_DOESNT_MATCH_MARKET")
         
-        #check math
-         fee_amount = sp.local(
-                "fee_amount", sp.split_tokens(sp.amount, self.data.fee, 1000))
-        
-         sp.send(market.maker,
-                        (sp.amount-fee_amount.value)) 
+         sp.send(market.maker, sp.amount) 
          self.data.markets[market_id].start_time = sp.some(sp.now)
          self.data.markets[market_id].taker = sp.some(sp.sender)
-         sp.send(self.data.fees_recipient, fee_amount.value)
+
 
     @sp.entry_point    
     def cancel_market(self,market_id):
@@ -209,12 +187,7 @@ class Prestamo(sp.Contract):
         
         interest_amount = sp.local(
                 "interest_amount", sp.split_tokens(self.data.markets[market_id].amount, self.data.markets[market_id].interest, 1000))  
-        
-        og_fee_amount = sp.local(
-                "og_fee_amount", sp.split_tokens(sp.amount, self.data.fee, 1000))
-        fee_amount = sp.local(
-                "fee_amount", sp.split_tokens(sp.amount, self.data.fee, 1000))
-        
+     
         sp.verify((market.amount + interest_amount.value)  == sp.amount, message = "WRONG_AMOUNT")
         
         sp.for x in self.data.markets[market_id].tokens:
@@ -224,59 +197,13 @@ class Prestamo(sp.Contract):
             to_= sp.sender,
             token_id = x.token_id,
             token_amount = x.token_amount)
-            #fee
-        sp.send(self.data.fees_recipient, fee_amount.value)
-        sp.send(market.taker.open_some(), (sp.amount-fee_amount.value))
+        sp.send(market.taker.open_some(), sp.amount)
         self.data.markets[market_id].active = False  
-        
-    # @sp.entry_point    
-    # def withdraw_fees(self,amount):    
-    
 
-    @sp.entry_point
-    def propose_admin(self, proposed_admin):
-        sp.set_type(proposed_admin, sp.TAddress)
-        self.check_admin()
-        self.data.proposed_admin = sp.some(proposed_admin)
-
-    
-    @sp.entry_point    
-    def accept_admin(self):  
-        sp.verify(self.data.proposed_admin.is_some(), message="NO_PROPOSED_ADMIN")
-        sp.verify(sp.sender == self.data.proposed_admin.open_some(), message="NOT_PROPOSED_ADMIN")
-        self.data.admin = sp.sender
-        self.data.proposed_admin = sp.none
-
-
-    @sp.entry_point
-    def update_fee(self, fee):
-        sp.set_type(fee, sp.TNat)
-        self.check_admin()
-        sp.verify(fee <= 180, message = "FEE_LIMIT_REACHED") 
-        self.data.fee = fee
-
-    @sp.entry_point
-    def update_fees_recipient(self, fees_to):
-        sp.set_type(fees_to, sp.TAddress)
-        self.check_admin()
-        self.data.fees_recipient = fees_to
-
-    @sp.entry_point
-    def update_paused(self, paused):
-        self.check_admin()
-        self.data.markets_paused = paused
-
-    @sp.onchain_view()
-    def get_admin(self):
-        sp.result(self.data.admin)
-    
+   
     @sp.onchain_view()
     def market_is_active(self,market_id):
         sp.result(self.data.markets[market_id].active)
-
-    @sp.onchain_view()
-    def markets_paused(self):
-        sp.result(self.data.markets_paused)
 
     @sp.onchain_view()
     def get_market(self, market_id):
@@ -288,19 +215,9 @@ class Prestamo(sp.Contract):
     def get_markets_counter(self):
         sp.result(self.data.counter)
 
-    @sp.onchain_view()
-    def get_fee(self):
-        sp.result(self.data.fee)
-
-    @sp.onchain_view()
-    def get_fees_recipient(self):
-        sp.result(self.data.fees_recipient)
-
 sp.add_compilation_target("prestamo", Prestamo(
-    admin=sp.address("tz1ag87A25Q3uAHoDXGiJz6Bwv6uTefEFEqN"),
-    metadata=sp.utils.metadata_of_url("ipfs://QmdjyY7GuajM785KaQfZiMLv89h2Y4w5kL5gCPSvXBhYGT"),
-    fee=sp.nat(18)))
-@sp.add_test(name="Fa2")
+    metadata=sp.utils.metadata_of_url("ipfs://QmdjyY7GuajM785KaQfZiMLv89h2Y4w5kL5gCPSvXBhYGT")))
+@sp.add_test(name="Prestamo")
 
 def test():
     sc = sp.test_scenario()
@@ -309,7 +226,5 @@ def test():
     sc.show(["tz1ag87A25Q3uAHoDXGiJz6Bwv6uTefEFEqN"])
     sc.h2("Prestamo")
     c1 = Prestamo(
-    admin=sp.address("tz1ag87A25Q3uAHoDXGiJz6Bwv6uTefEFEqN"),
-    metadata=sp.utils.metadata_of_url("ipfs://QmdjyY7GuajM785KaQfZiMLv89h2Y4w5kL5gCPSvXBhYGT"),
-    fee=sp.nat(18))
+    metadata=sp.utils.metadata_of_url("ipfs://QmdjyY7GuajM785KaQfZiMLv89h2Y4w5kL5gCPSvXBhYGT"))
     sc += c1
