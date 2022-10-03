@@ -58,7 +58,6 @@ export const setMetadata = async({values, file}) => {
             artifactUri,
             displayUri,
             creators: [values.address],
-            harbergerFee: values.harberger+'%',
             formats: [
                 {
                     uri: artifactUri,

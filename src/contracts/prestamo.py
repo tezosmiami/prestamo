@@ -301,3 +301,17 @@ sp.add_compilation_target("prestamo", Prestamo(
     admin=sp.address("tz1ag87A25Q3uAHoDXGiJz6Bwv6uTefEFEqN"),
     metadata=sp.utils.metadata_of_url("ipfs://QmdjyY7GuajM785KaQfZiMLv89h2Y4w5kL5gCPSvXBhYGT"),
     fee=sp.nat(18)))
+
+@sp.add_test(name="Fa2")
+def test():
+    sc = sp.test_scenario()
+    sc.table_of_contents()
+    sc.h1("Accounts")
+    sc.show(["tz1XRPyYPj85qUmY9uHRp6JeAHBrKuLvLUni"])
+    sc.h2("Prestamo")
+    c1 = FA2(
+      administrator=sp.address("tz1XRPyYPj85qUmY9uHRp6JeAHBrKuLvLUni"),
+      metadata=sp.utils.metadata_of_url("ipfs://Qmf2sWAEL7Z2RfKPETjacqbS2E2Ef4HbrPDhjYpJvigZPm"),
+
+    )
+    sc += c1
